@@ -1,0 +1,7 @@
+name: python3.13.2
+channels:
+  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+  - https://repo.anaconda.com/pkgs/msys2
+prefix: C:\Users\DELL\anaconda3\envs\python3.13.2
