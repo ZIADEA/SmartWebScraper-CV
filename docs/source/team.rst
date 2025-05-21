@@ -2,6 +2,8 @@
    sphinx-quickstart on Wed May 21 09:27:55 2025.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
+
+
 Team
 ====
 
@@ -10,8 +12,7 @@ Le projet **SmartWebScraper-CV** a été réalisé par deux étudiants de l’EN
 Superviseurs
 ------------
 
-- **Encadrant 1** : *(à compléter)*
-- **Encadrant 2** : *(à compléter)*
+- **Encadrant  ** : *Masrour Tawfik *
 
 Membres
 -------
@@ -19,5 +20,6 @@ Membres
 - **DJERI-ALASSANI OUBENOUPOU**  
   GitHub : https://github.com/ZIADEA
 
-- **Ton binôme**  
-  GitHub : *(à compléter)*
+- **Ton binôme EL MAJDI WALID**  
+  GitHub : *https://github.com/elm19*
+
