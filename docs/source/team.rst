@@ -1,7 +1,7 @@
 Team
 ====
 
-Le projet **SmartWebScraper-CV** a été réalisé par deux étudiants de l’ENSAM Meknès, dans le cadre de leur formation en Intelligence Artificielle et Technologie des Données.
+Le projet **SmartWebScraper-CV** a été réalisé par deux étudiants de l’ENSAM Meknès, dans le cadre de leur formation en Intelligence Artificielle et Technologie des Données  dans le cadre de l element **computer vision**.
 
 Superviseurs
 ------------
@@ -12,6 +12,7 @@ Membres
 -------
 
 - **DJERI-ALASSANI OUBENOUPOU**  
+
   GitHub : https://github.com/ZIADEA
 
 - **EL MAJDI WALID**  
