@@ -13,14 +13,21 @@ Le projet **SmartWebScraper-CV** a été réalisé par deux étudiants de l’EN
 Superviseurs
 ------------
 
-- **Encadrant  ** : *Masrour Tawfik *
+- **Masrour Tawfik **
 
 Membres
 -------
 
 - **DJERI-ALASSANI OUBENOUPOU**  
   GitHub : https://github.com/ZIADEA
+  
 
 - **Ton binôme EL MAJDI WALID**  
   GitHub : *https://github.com/elm19*
 
+
+Ecole
+-------
+- **Ecole Nationale Supérieure d'Art et Métiers (ENSAM) - Meknès**  
+  Site web : https://www.ensam.ac.ma/
+  Adresse : Route de l'Agriculture, BP 509, Meknès, Maroc
