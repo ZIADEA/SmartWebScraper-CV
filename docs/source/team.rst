@@ -12,7 +12,7 @@ Le projet **SmartWebScraper-CV** a été réalisé par deux étudiants de l’EN
 Superviseurs
 ------------
 
-- **Masrour Tawfik **
+- **Masrour Tawfik**
 
 Membres
 -------
