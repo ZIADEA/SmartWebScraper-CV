@@ -13,5 +13,10 @@ documentation for details.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Sommaire
 
+   team
+   installation
+   utilisation
+   architecture
+   modeles
