@@ -1,4 +1,5 @@
 absl-py==2.2.1
+accelerate==1.6.0
 albucore==0.0.24
 albumentations==2.0.6
 altair==5.5.0
@@ -8,9 +9,12 @@ anyio==4.9.0
 astor==0.8.1
 asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1733250440834/work
 attrs==25.3.0
+babel==2.17.0
 beautifulsoup4==4.13.4
 black==25.1.0
 blinker==1.9.0
+Bottleneck @ file:///C:/b/abs_816hr2khp1/croot/bottleneck_1731058648110/work
+Brotli @ file:///C:/b/abs_c415aux9ra/croot/brotli-split_1736182803933/work
 cachetools==5.5.2
 certifi==2025.4.26
 cffi==1.17.1
@@ -21,29 +25,33 @@ colorama==0.4.6
 comm @ file:///home/conda/feedstock_root/build_artifacts/comm_1733502965406/work
 contourpy @ file:///D:/bld/contourpy_1731428338157/work
 cors==1.0.1
+courlan==1.3.2
 cryptography==44.0.2
 cycler @ file:///home/conda/feedstock_root/build_artifacts/cycler_1733332471406/work
 Cython==3.0.12
+dateparser==1.2.1
 debugpy @ file:///D:/bld/debugpy_1741148401445/work
 decorator @ file:///home/conda/feedstock_root/build_artifacts/decorator_1740384970518/work
--e git+https://github.com/facebookresearch/detectron2.git@9604f5995cc628619f0e4fd913453b4d7d61db3f#egg=detectron2
+diffusers==0.32.2
 dotenv==0.9.9
+duckduckgo_search==2025.4.1
 effdet==0.4.1
 exceptiongroup @ file:///home/conda/feedstock_root/build_artifacts/exceptiongroup_1733208806608/work
 executing @ file:///home/conda/feedstock_root/build_artifacts/executing_1733569351617/work
 fastapi==0.115.12
-filelock==3.13.1
+filelock==3.18.0
 fire==0.7.0
 Flask==3.1.0
 flask-cors==5.0.1
 Flask-Login==0.6.3
 fonttools==4.57.0
-fsspec==2024.6.1
+fsspec==2025.3.2
 future==1.0.0
 fvcore==0.1.5.post20221221
 gevent==25.5.1
 gitdb==4.0.12
 GitPython==3.1.44
+googlesearch-python==1.3.0
 google-api-core==2.24.2
 google-api-python-client==2.169.0
 google-auth==2.40.0
@@ -53,6 +61,7 @@ googleapis-common-protos==1.70.0
 greenlet==3.2.2
 grpcio==1.71.0
 h11==0.16.0
+htmldate==1.9.3
 httpcore==1.0.9
 httplib2==0.22.0
 httpx==0.28.1
@@ -66,21 +75,26 @@ ipykernel @ file:///C:/b/abs_6c9ggygp01/croot/ipykernel_1737660720620/work
 ipython @ file:///D:/bld/bld/rattler-build_ipython_1741457807/work
 itsdangerous==2.2.0
 jedi @ file:///home/conda/feedstock_root/build_artifacts/jedi_1733300866624/work
-Jinja2==3.1.4
+Jinja2==3.1.6
 joblib==1.5.0
 jsonschema==4.23.0
 jsonschema-specifications==2025.4.1
 jupyter_client @ file:///home/conda/feedstock_root/build_artifacts/jupyter_client_1733440914442/work
 jupyter_core @ file:///D:/bld/jupyter_core_1727163532151/work
+jusText==3.0.2
 kiwisolver @ file:///C:/b/abs_faf90xet7a/croot/kiwisolver_1737040915779/work
 layoutparser==0.3.4
 lazy_loader==0.4
 lmdb==1.6.2
 lxml==5.4.0
+lxml_html_clean==0.4.1
 Markdown==3.7
-MarkupSafe==2.1.5
+MarkupSafe==3.0.2
 matplotlib==3.10.1
 matplotlib-inline @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-inline_1733416936468/work
+mkl-service==2.4.0
+mkl_fft @ file:///C:/Users/dev-admin/mkl/mkl_fft_1730823082242/work
+mkl_random @ file:///C:/Users/dev-admin/mkl/mkl_random_1730822522280/work
 mpmath==1.3.0
 munkres==1.1.4
 mypy-extensions==1.0.0
@@ -88,6 +102,7 @@ narwhals==1.38.0
 nest_asyncio @ file:///home/conda/feedstock_root/build_artifacts/nest-asyncio_1733325553580/work
 networkx==3.4.2
 nltk==3.9.1
+numexpr @ file:///C:/b/abs_05o8p7bfml/croot/numexpr_1730215959182/work
 numpy==2.2.5
 oauth2client==4.1.3
 oauthlib==3.2.2
@@ -112,6 +127,7 @@ pillow @ file:///C:/b/abs_68t826txdy/croot/pillow_1744613085333/work
 platformdirs @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_platformdirs_1742485085/work
 playwright==1.52.0
 portalocker==3.1.1
+primp==0.14.0
 prompt_toolkit @ file:///home/conda/feedstock_root/build_artifacts/prompt-toolkit_1737453357274/work
 proto-plus==1.26.1
 protobuf==3.20.2
@@ -131,6 +147,8 @@ pyee==13.0.0
 Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1736243443484/work
 pyparsing @ file:///home/conda/feedstock_root/build_artifacts/pyparsing_1743089729650/work
 pypdfium2==4.30.1
+PyQt6==6.7.1
+PyQt6_sip @ file:///C:/b/abs_28s7k4h_hl/croot/pyqt-split_1740498234166/work/pyqt_sip
 PySocks==1.7.1
 pytesseract==0.3.13
 python-dateutil @ file:///C:/b/abs_3au_koqnbs/croot/python-dateutil_1716495777160/work
@@ -156,6 +174,7 @@ selenium==4.32.0
 sentence-transformers==4.1.0
 sentencepiece==0.2.0
 shapely==2.1.0
+sip @ file:///C:/b/abs_5cto136kse/croot/sip_1738856220313/work
 simsimd==6.2.1
 six @ file:///home/conda/feedstock_root/build_artifacts/six_1733380938961/work
 smmap==5.0.2
@@ -175,6 +194,7 @@ termcolor==3.1.0
 threadpoolctl==3.6.0
 tifffile==2025.3.30
 timm==1.0.15
+tld==0.13
 tldextract==5.3.0
 tokenizers==0.21.1
 toml==0.10.2
@@ -185,13 +205,16 @@ torchsummary==1.5.1
 torchvision==0.22.0+cpu
 tornado @ file:///D:/bld/tornado_1732615925919/work
 tqdm==4.67.1
+trafilatura==2.0.0
 traitlets @ file:///home/conda/feedstock_root/build_artifacts/traitlets_1733367359838/work
 transformers==4.51.3
 trio==0.30.0
 trio-websocket==0.12.2
+tzdata==2025.2
+tzlocal==5.3.1
 typing-inspection==0.4.0
 typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_typing_extensions_1743201626/work
-tzdata==2025.2
+undetected-chromedriver==3.5.5
 unicodedata2 @ file:///D:/bld/unicodedata2_1736692513154/work
 uritemplate==4.1.1
 urllib3==2.4.0
@@ -200,9 +223,11 @@ watchdog==6.0.0
 wcwidth @ file:///home/conda/feedstock_root/build_artifacts/wcwidth_1733231326287/work
 webdriver-manager==4.0.2
 websocket-client==1.8.0
+websockets==15.0.1
 Werkzeug==3.1.3
 wsproto==1.2.0
 yacs==0.1.8
 zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1732827521216/work
 zope.event==5.0
 zope.interface==7.2
+-e git+https://github.com/facebookresearch/detectron2.git@9604f5995cc628619f0e4fd913453b4d7d61db3f#egg=detectron2
