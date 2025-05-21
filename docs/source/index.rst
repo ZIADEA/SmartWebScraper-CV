@@ -6,10 +6,9 @@
 SmartWebScraper-CV documentation
 ================================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+Bienvenue dans la documentation du projet **SmartWebScraper-CV**.
 
+Ce projet a pour but d’automatiser la capture, l’annotation et l’interrogation de pages web grâce à la vision par ordinateur et au traitement du langage naturel.
 
 .. toctree::
    :maxdepth: 2
