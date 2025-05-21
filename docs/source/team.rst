@@ -4,7 +4,6 @@
    contain the root `toctree` directive.
 
 
-
 Team
 ====
 
@@ -20,7 +19,7 @@ Membres
 
 - **DJERI-ALASSANI OUBENOUPOU**  
   GitHub : https://github.com/ZIADEA
-  
+
 
 - **Ton binôme EL MAJDI WALID**  
   GitHub : *https://github.com/elm19*
