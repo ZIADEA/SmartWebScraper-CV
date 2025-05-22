@@ -1,7 +1,7 @@
 Modèle de détection
 ===================
 
-Le modèle utilisé est basé sur **Fast_RCNN de Detectron2**, fine-tuné sur un dataset personnalisé au format COCO.
+Le modèle utilisé est basé sur **Fast_RCNN de Detectron2**, fine-tuné sur un dataset personnalisé au format COCO de **159 images **.
 
 Classes détectées
 -----------------
@@ -39,8 +39,10 @@ Format des annotations
 Performance 
 ---------------------
 
-- **mAP (IoU = 0.5)** : 81%
-- **IoU moyen** : 0.73
+- **AP (IoU = 0.5)** : 21% ce qui justifie la nécessité d'un human feedback pour la constitution d un data set d'entrainement plus robuste.
+
+
+
 
 Le modèle est en amélioration continue grâce à l'intégration de nouvelles données annotées via feedback utilisateur.
 
