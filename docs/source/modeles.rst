@@ -1,7 +1,7 @@
 Modèle de détection
 ===================
 
-Le modèle utilisé est basé sur **Detectron2**, fine-tuné sur un dataset personnalisé au format COCO.
+Le modèle utilisé est basé sur **Fast_RCNN de Detectron2**, fine-tuné sur un dataset personnalisé au format COCO.
 
 Classes détectées
 -----------------
@@ -29,11 +29,12 @@ Voici la liste complète des classes détectées par notre modèle :
 
 > 💡 Ces classes ont été définies manuellement dans `MetadataCatalog.get("__unused").thing_classes`.
 
+
+
 Format des annotations
 ----------------------
 
 - Format COCO (fichier JSON)
-- Les annotations sont générées automatiquement via le modèle, et peuvent être corrigées manuellement par les utilisateurs via l interface utilisateru de notr application (actuellement en developpement ).
 
 Performance 
 ---------------------
@@ -42,3 +43,13 @@ Performance
 - **IoU moyen** : 0.73
 
 Le modèle est en amélioration continue grâce à l'intégration de nouvelles données annotées via feedback utilisateur.
+
+Modèle de d extraction de texte
+===================
+Le modèle utilisé est le model preentrainé  **PaddleOCR **
+pour l’extraction de texte.
+Il est capable de détecter et d'extraire du texte à partir d'images, y compris des textes en plusieurs langues.
+
+Modèle utilisé pour la reponse aux questions 
+===================
+Le modèle (en cours de développement) est basé sur **--** et **--** pour la gestion des questions-réponses.

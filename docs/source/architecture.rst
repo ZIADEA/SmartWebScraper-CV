@@ -34,3 +34,4 @@ Technologies utilisées
 - Playwright / Selenium pour la capture web
 - (la partie NLP est en cours de développement)
 - (la partie de l’interface utilisateur est en cours de développement)
+

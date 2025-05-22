@@ -14,8 +14,10 @@ Ce projet a pour but d’automatiser la capture, l’annotation et l’interroga
    :maxdepth: 2
    :caption: Sommaire
 
+   introduction
    team
    installation
-   utilisation
+   local_app_utilisation
    architecture
    modeles
+   History
