@@ -31,9 +31,9 @@ Le dossier contient :
 
 Ce projet s’inscrit dans une démarche de recherche autour de la **vision par ordinateur** appliquée au **web scraping visuel**.  
 Il vise à créer un pipeline complet :
-1. Capture des pages web via Selenium/Playwright
+1. Capture des pages web via Selenium/Playwright avec undetect chrome driver et serAPI utiliser 
 2. Détection automatique de zones clés à l’aide de modèles fine-tunés (Detectron2, Faster R-CNN)
-3. Annotation automatique ou manuelle
+3. Annotation  entierement manuelle
 4. OCR pour extraire les textes visibles
 5. Interaction NLP (question-réponse, résumé, etc.)
 
