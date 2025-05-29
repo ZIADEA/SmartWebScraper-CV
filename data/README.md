@@ -16,15 +16,6 @@ Le dataset utilisé pour le fine-tuning de notre modèle de détection est égal
 
 👉 [📁 Dataset Hugging Face - MINESMARTWEBSCRAPERCV](https://huggingface.co/datasets/DJERI-ALASSANI/MINESMARTWEBSCRAPERCV-datasetV1)
 
----
-
-## 📂 Contenu du dossier
-
-- `images/` : les captures d’écran annotées de pages web  
-- `annotations_coco/` : les fichiers d’annotation au format COCO  
-- `ocr_results/` : les résultats OCR extraits des zones utiles  
-- `logs/` : les journaux de prédiction et d’exécution  
-- `README.txt` : description rapide des fichiers  
 
 ---
 
@@ -60,7 +51,7 @@ Le dataset comprend **19 classes de composants visuels** détectés sur des capt
 
 Ce projet s’inscrit dans une démarche de recherche autour de la **vision par ordinateur** appliquée au **web scraping visuel**.  
 Il vise à créer un pipeline complet :
-1. Capture des pages web via Selenium ou Playwright  
+1. Capture des pages web via Selenium ou Playwright avec utilisation de serAPI et undetected chromedriver
 2. Détection automatique des zones clés à l’aide d’un modèle Faster R-CNN (Detectron2)  
 3. Annotation automatique ou manuelle  
 4. OCR (PaddleOCR) pour extraire les textes utiles  
