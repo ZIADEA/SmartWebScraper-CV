@@ -1,0 +1,145 @@
+[32m[05/21 11:37:25 d2.utils.events]: [0m eta: 4:41:41  iter: 19  total_loss: 4.55  loss_cls: 2.784  loss_box_reg: 0.8022  loss_rpn_cls: 0.6884  loss_rpn_loc: 0.1452    time: 17.6418  last_time: 15.2069  data_time: 0.6249  last_data_time: 0.0072   lr: 4.9953e-06  
+[32m[05/21 11:43:30 d2.utils.events]: [0m eta: 4:46:45  iter: 39  total_loss: 4.196  loss_cls: 2.562  loss_box_reg: 0.7061  loss_rpn_cls: 0.6568  loss_rpn_loc: 0.1459    time: 17.9591  last_time: 19.8051  data_time: 0.0041  last_data_time: 0.0095   lr: 9.9902e-06  
+[32m[05/21 11:50:26 d2.utils.events]: [0m eta: 4:43:37  iter: 59  total_loss: 3.722  loss_cls: 2.207  loss_box_reg: 0.755  loss_rpn_cls: 0.4547  loss_rpn_loc: 0.1178    time: 18.9266  last_time: 20.6733  data_time: 0.0042  last_data_time: 0.0033   lr: 1.4985e-05  
+[32m[05/21 11:56:46 d2.utils.events]: [0m eta: 4:38:39  iter: 79  total_loss: 2.986  loss_cls: 1.667  loss_box_reg: 0.8327  loss_rpn_cls: 0.3244  loss_rpn_loc: 0.08963    time: 18.9460  last_time: 14.1657  data_time: 0.0039  last_data_time: 0.0021   lr: 1.998e-05  
+[32m[05/21 12:02:43 d2.utils.events]: [0m eta: 4:30:02  iter: 99  total_loss: 2.401  loss_cls: 1.218  loss_box_reg: 0.7541  loss_rpn_cls: 0.2711  loss_rpn_loc: 0.1171    time: 18.7298  last_time: 38.5957  data_time: 0.0032  last_data_time: 0.0051   lr: 2.4975e-05  
+[32m[05/21 12:10:44 d2.utils.events]: [0m eta: 4:26:32  iter: 119  total_loss: 2.225  loss_cls: 1.112  loss_box_reg: 0.756  loss_rpn_cls: 0.1644  loss_rpn_loc: 0.1102    time: 19.6300  last_time: 23.2345  data_time: 0.0063  last_data_time: 0.0064   lr: 2.997e-05  
+[32m[05/21 12:18:05 d2.utils.events]: [0m eta: 4:34:33  iter: 139  total_loss: 2.142  loss_cls: 1.02  loss_box_reg: 0.8135  loss_rpn_cls: 0.1386  loss_rpn_loc: 0.1029    time: 19.9812  last_time: 17.9877  data_time: 0.0056  last_data_time: 0.0034   lr: 3.4965e-05  
+[32m[05/21 12:24:20 d2.utils.events]: [0m eta: 4:21:08  iter: 159  total_loss: 2.031  loss_cls: 0.9441  loss_box_reg: 0.7941  loss_rpn_cls: 0.121  loss_rpn_loc: 0.09023    time: 19.8233  last_time: 23.7117  data_time: 0.0040  last_data_time: 0.0060   lr: 3.996e-05  
+[32m[05/21 12:30:59 d2.utils.events]: [0m eta: 4:16:27  iter: 179  total_loss: 1.957  loss_cls: 0.9123  loss_box_reg: 0.8118  loss_rpn_cls: 0.1104  loss_rpn_loc: 0.06415    time: 19.8371  last_time: 17.5743  data_time: 0.0057  last_data_time: 0.0029   lr: 4.4955e-05  
+[32m[05/21 13:22:03 d2.utils.events]: [0m eta: 4:08:41  iter: 199  total_loss: 1.88  loss_cls: 0.8578  loss_box_reg: 0.7624  loss_rpn_cls: 0.1119  loss_rpn_loc: 0.09192    time: 33.3050  last_time: 12.4597  data_time: 0.0042  last_data_time: 0.0061   lr: 4.995e-05  
+[32m[05/21 15:05:33 d2.utils.events]: [0m eta: 3:55:18  iter: 219  total_loss: 1.872  loss_cls: 0.8067  loss_box_reg: 0.7499  loss_rpn_cls: 0.1184  loss_rpn_loc: 0.0967    time: 58.7389  last_time: 12.8220  data_time: 0.0025  last_data_time: 0.0030   lr: 5.4945e-05  
+[32m[05/21 19:35:37 d2.utils.events]: [0m eta: 3:48:13  iter: 239  total_loss: 1.903  loss_cls: 0.8036  loss_box_reg: 0.8004  loss_rpn_cls: 0.1314  loss_rpn_loc: 0.09366    time: 121.9902  last_time: 12.3283  data_time: 0.0039  last_data_time: 0.0025   lr: 5.994e-05  
+[32m[05/21 19:40:46 d2.utils.events]: [0m eta: 3:41:02  iter: 259  total_loss: 1.811  loss_cls: 0.7787  loss_box_reg: 0.776  loss_rpn_cls: 0.0974  loss_rpn_loc: 0.0726    time: 113.7331  last_time: 13.3397  data_time: 0.0031  last_data_time: 0.0027   lr: 6.4935e-05  
+[32m[05/21 19:46:54 d2.utils.events]: [0m eta: 3:35:04  iter: 279  total_loss: 1.721  loss_cls: 0.6732  loss_box_reg: 0.7831  loss_rpn_cls: 0.105  loss_rpn_loc: 0.09081    time: 106.8726  last_time: 24.8753  data_time: 0.0042  last_data_time: 0.0046   lr: 6.993e-05  
+[32m[05/21 19:57:21 d2.utils.events]: [0m eta: 3:31:20  iter: 299  total_loss: 1.753  loss_cls: 0.72  loss_box_reg: 0.7678  loss_rpn_cls: 0.1027  loss_rpn_loc: 0.08601    time: 101.8063  last_time: 26.4610  data_time: 0.0080  last_data_time: 0.0040   lr: 7.4925e-05  
+[32m[05/21 20:05:33 d2.utils.events]: [0m eta: 3:30:10  iter: 319  total_loss: 1.606  loss_cls: 0.6117  loss_box_reg: 0.7613  loss_rpn_cls: 0.09407  loss_rpn_loc: 0.1064    time: 96.9511  last_time: 18.1625  data_time: 0.0062  last_data_time: 0.0037   lr: 7.992e-05  
+[32m[05/21 20:12:16 d2.utils.events]: [0m eta: 3:28:44  iter: 339  total_loss: 1.618  loss_cls: 0.6077  loss_box_reg: 0.738  loss_rpn_cls: 0.1013  loss_rpn_loc: 0.1169    time: 92.4054  last_time: 21.7106  data_time: 0.0043  last_data_time: 0.0037   lr: 8.4915e-05  
+[32m[05/21 20:20:39 d2.utils.events]: [0m eta: 3:25:07  iter: 359  total_loss: 1.563  loss_cls: 0.5952  loss_box_reg: 0.7201  loss_rpn_cls: 0.07331  loss_rpn_loc: 0.05996    time: 88.6486  last_time: 37.3426  data_time: 0.0056  last_data_time: 0.0055   lr: 8.991e-05  
+[32m[05/21 20:28:03 d2.utils.events]: [0m eta: 3:21:11  iter: 379  total_loss: 1.603  loss_cls: 0.5817  loss_box_reg: 0.7538  loss_rpn_cls: 0.07101  loss_rpn_loc: 0.09882    time: 85.1319  last_time: 20.0559  data_time: 0.0063  last_data_time: 0.0038   lr: 9.4905e-05  
+[32m[05/21 20:39:42 d2.utils.events]: [0m eta: 3:17:54  iter: 399  total_loss: 1.555  loss_cls: 0.5571  loss_box_reg: 0.7782  loss_rpn_cls: 0.08613  loss_rpn_loc: 0.06704    time: 82.6098  last_time: 32.6551  data_time: 0.0079  last_data_time: 0.0086   lr: 9.99e-05  
+[32m[05/21 20:47:25 d2.utils.events]: [0m eta: 3:11:08  iter: 419  total_loss: 1.482  loss_cls: 0.5845  loss_box_reg: 0.7263  loss_rpn_cls: 0.06969  loss_rpn_loc: 0.07406    time: 79.8195  last_time: 22.4156  data_time: 0.0044  last_data_time: 0.0035   lr: 0.0001049  
+[32m[05/21 20:53:07 d2.utils.events]: [0m eta: 3:01:51  iter: 439  total_loss: 1.358  loss_cls: 0.5027  loss_box_reg: 0.6988  loss_rpn_cls: 0.06421  loss_rpn_loc: 0.06773    time: 76.9547  last_time: 16.4301  data_time: 0.0041  last_data_time: 0.0045   lr: 0.00010989  
+[32m[05/21 20:58:49 d2.utils.events]: [0m eta: 2:52:48  iter: 459  total_loss: 1.381  loss_cls: 0.4864  loss_box_reg: 0.7271  loss_rpn_cls: 0.07024  loss_rpn_loc: 0.07406    time: 74.3401  last_time: 16.0762  data_time: 0.0037  last_data_time: 0.0047   lr: 0.00011489  
+[32m[05/21 21:04:20 d2.utils.events]: [0m eta: 2:45:15  iter: 479  total_loss: 1.421  loss_cls: 0.5055  loss_box_reg: 0.6929  loss_rpn_cls: 0.07904  loss_rpn_loc: 0.09039    time: 71.9218  last_time: 24.4948  data_time: 0.0034  last_data_time: 0.0032   lr: 0.00011988  
+[32m[05/21 21:09:56 d2.utils.events]: [0m eta: 2:37:50  iter: 499  total_loss: 1.389  loss_cls: 0.5249  loss_box_reg: 0.6536  loss_rpn_cls: 0.06287  loss_rpn_loc: 0.08831    time: 69.7083  last_time: 19.1275  data_time: 0.0035  last_data_time: 0.0031   lr: 0.00012488  
+[32m[05/21 21:17:30 d2.utils.events]: [0m eta: 2:32:48  iter: 519  total_loss: 1.329  loss_cls: 0.4759  loss_box_reg: 0.6514  loss_rpn_cls: 0.05549  loss_rpn_loc: 0.07387    time: 67.8929  last_time: 19.6038  data_time: 0.0060  last_data_time: 0.0204   lr: 0.00012987  
+[32m[05/21 21:24:30 d2.utils.events]: [0m eta: 2:26:29  iter: 539  total_loss: 1.287  loss_cls: 0.4719  loss_box_reg: 0.6378  loss_rpn_cls: 0.07471  loss_rpn_loc: 0.07645    time: 66.1499  last_time: 18.5893  data_time: 0.0042  last_data_time: 0.0043   lr: 0.00013487  
+[32m[05/21 21:31:17 d2.utils.events]: [0m eta: 2:20:35  iter: 559  total_loss: 1.248  loss_cls: 0.4262  loss_box_reg: 0.632  loss_rpn_cls: 0.06427  loss_rpn_loc: 0.1219    time: 64.5082  last_time: 21.8526  data_time: 0.0046  last_data_time: 0.0058   lr: 0.00013986  
+[32m[05/21 21:38:52 d2.utils.events]: [0m eta: 2:14:52  iter: 579  total_loss: 1.291  loss_cls: 0.4467  loss_box_reg: 0.6199  loss_rpn_cls: 0.04996  loss_rpn_loc: 0.06716    time: 63.0636  last_time: 22.8837  data_time: 0.0056  last_data_time: 0.0033   lr: 0.00014486  
+[32m[05/21 21:46:11 d2.utils.events]: [0m eta: 2:09:54  iter: 599  total_loss: 1.138  loss_cls: 0.3982  loss_box_reg: 0.496  loss_rpn_cls: 0.06979  loss_rpn_loc: 0.08738    time: 61.6883  last_time: 21.7788  data_time: 0.0056  last_data_time: 0.0045   lr: 0.00014985  
+[32m[05/21 21:53:30 d2.utils.events]: [0m eta: 2:04:40  iter: 619  total_loss: 0.9995  loss_cls: 0.3297  loss_box_reg: 0.5259  loss_rpn_cls: 0.06115  loss_rpn_loc: 0.07095    time: 60.4033  last_time: 21.3874  data_time: 0.0056  last_data_time: 0.0046   lr: 0.00015485  
+[32m[05/21 22:01:01 d2.utils.events]: [0m eta: 1:58:55  iter: 639  total_loss: 1.027  loss_cls: 0.3671  loss_box_reg: 0.5644  loss_rpn_cls: 0.04773  loss_rpn_loc: 0.07098    time: 59.2163  last_time: 23.0949  data_time: 0.0052  last_data_time: 0.0056   lr: 0.00015984  
+[32m[05/21 22:08:54 d2.utils.events]: [0m eta: 1:53:30  iter: 659  total_loss: 1.125  loss_cls: 0.3471  loss_box_reg: 0.5381  loss_rpn_cls: 0.04832  loss_rpn_loc: 0.06266    time: 58.1353  last_time: 24.1687  data_time: 0.0049  last_data_time: 0.0047   lr: 0.00016484  
+[32m[05/21 22:17:31 d2.utils.events]: [0m eta: 1:48:37  iter: 679  total_loss: 1.03  loss_cls: 0.32  loss_box_reg: 0.5475  loss_rpn_cls: 0.0602  loss_rpn_loc: 0.1092    time: 57.1828  last_time: 23.8261  data_time: 0.0062  last_data_time: 0.0065   lr: 0.00016983  
+[32m[05/21 22:25:50 d2.utils.events]: [0m eta: 1:42:52  iter: 699  total_loss: 1.075  loss_cls: 0.3534  loss_box_reg: 0.5189  loss_rpn_cls: 0.0523  loss_rpn_loc: 0.08853    time: 56.2595  last_time: 23.4416  data_time: 0.0054  last_data_time: 0.0058   lr: 0.00017483  
+[32m[05/21 22:38:08 d2.utils.events]: [0m eta: 1:37:00  iter: 719  total_loss: 0.9124  loss_cls: 0.3366  loss_box_reg: 0.4701  loss_rpn_cls: 0.04543  loss_rpn_loc: 0.05347    time: 55.7189  last_time: 41.6044  data_time: 0.0090  last_data_time: 0.0088   lr: 0.00017982  
+[32m[05/21 22:52:11 d2.utils.events]: [0m eta: 1:31:25  iter: 739  total_loss: 0.8837  loss_cls: 0.2854  loss_box_reg: 0.4614  loss_rpn_cls: 0.05232  loss_rpn_loc: 0.07511    time: 55.3520  last_time: 37.8548  data_time: 0.0116  last_data_time: 0.0104   lr: 0.00018482  
+[32m[05/21 23:04:28 d2.utils.events]: [0m eta: 1:25:08  iter: 759  total_loss: 1.04  loss_cls: 0.3474  loss_box_reg: 0.4889  loss_rpn_cls: 0.057  loss_rpn_loc: 0.06966    time: 54.8637  last_time: 42.0332  data_time: 0.0093  last_data_time: 0.0108   lr: 0.00018981  
+[32m[05/21 23:16:10 d2.utils.events]: [0m eta: 1:18:24  iter: 779  total_loss: 0.929  loss_cls: 0.2821  loss_box_reg: 0.515  loss_rpn_cls: 0.05134  loss_rpn_loc: 0.07571    time: 54.3554  last_time: 32.3390  data_time: 0.0074  last_data_time: 0.0074   lr: 0.00019481  
+[32m[05/21 23:26:24 d2.utils.events]: [0m eta: 1:11:48  iter: 799  total_loss: 0.9941  loss_cls: 0.3051  loss_box_reg: 0.5124  loss_rpn_cls: 0.06023  loss_rpn_loc: 0.06725    time: 53.7621  last_time: 33.1699  data_time: 0.0080  last_data_time: 0.0115   lr: 0.0001998  
+[32m[05/21 23:36:55 d2.utils.events]: [0m eta: 1:05:05  iter: 819  total_loss: 0.9352  loss_cls: 0.3361  loss_box_reg: 0.4486  loss_rpn_cls: 0.04516  loss_rpn_loc: 0.06617    time: 53.2189  last_time: 28.5483  data_time: 0.0079  last_data_time: 0.0059   lr: 0.0002048  
+[32m[05/21 23:45:28 d2.utils.events]: [0m eta: 0:58:18  iter: 839  total_loss: 0.877  loss_cls: 0.2594  loss_box_reg: 0.4481  loss_rpn_cls: 0.04643  loss_rpn_loc: 0.09169    time: 52.5612  last_time: 26.0339  data_time: 0.0057  last_data_time: 0.0045   lr: 0.00020979  
+[32m[05/21 23:54:11 d2.utils.events]: [0m eta: 0:51:33  iter: 859  total_loss: 0.9142  loss_cls: 0.2909  loss_box_reg: 0.4483  loss_rpn_cls: 0.05101  loss_rpn_loc: 0.06467    time: 51.9456  last_time: 24.6322  data_time: 0.0060  last_data_time: 0.0052   lr: 0.00021479  
+[32m[05/22 00:03:11 d2.utils.events]: [0m eta: 0:44:31  iter: 879  total_loss: 0.8156  loss_cls: 0.2425  loss_box_reg: 0.471  loss_rpn_cls: 0.03923  loss_rpn_loc: 0.05258    time: 51.3770  last_time: 27.4001  data_time: 0.0062  last_data_time: 0.0111   lr: 0.00021978  
+[32m[05/22 00:12:09 d2.utils.events]: [0m eta: 0:37:19  iter: 899  total_loss: 0.963  loss_cls: 0.2931  loss_box_reg: 0.4553  loss_rpn_cls: 0.04539  loss_rpn_loc: 0.1339    time: 50.8315  last_time: 31.5858  data_time: 0.0060  last_data_time: 0.0077   lr: 0.00022478  
+[32m[05/22 00:22:55 d2.utils.events]: [0m eta: 0:30:01  iter: 919  total_loss: 0.8799  loss_cls: 0.2581  loss_box_reg: 0.4551  loss_rpn_cls: 0.04348  loss_rpn_loc: 0.06218    time: 50.4281  last_time: 29.4529  data_time: 0.0076  last_data_time: 0.0081   lr: 0.00022977  
+[32m[05/22 00:33:18 d2.utils.events]: [0m eta: 0:22:45  iter: 939  total_loss: 0.7678  loss_cls: 0.2535  loss_box_reg: 0.4239  loss_rpn_cls: 0.03556  loss_rpn_loc: 0.05601    time: 50.0168  last_time: 33.3813  data_time: 0.0080  last_data_time: 0.0055   lr: 0.00023477  
+[32m[05/22 00:44:05 d2.utils.events]: [0m eta: 0:15:16  iter: 959  total_loss: 0.8864  loss_cls: 0.2801  loss_box_reg: 0.4264  loss_rpn_cls: 0.03845  loss_rpn_loc: 0.05242    time: 49.6484  last_time: 34.5127  data_time: 0.0073  last_data_time: 0.0073   lr: 0.00023976  
+[32m[05/22 00:54:20 d2.utils.events]: [0m eta: 0:07:42  iter: 979  total_loss: 0.8218  loss_cls: 0.2402  loss_box_reg: 0.4232  loss_rpn_cls: 0.03571  loss_rpn_loc: 0.06036    time: 49.2611  last_time: 30.0896  data_time: 0.0077  last_data_time: 0.0073   lr: 0.00024476  
+[32m[05/22 01:04:57 d2.utils.events]: [0m eta: 0:00:00  iter: 999  total_loss: 0.7988  loss_cls: 0.2661  loss_box_reg: 0.4161  loss_rpn_cls: 0.03581  loss_rpn_loc: 0.07258    time: 48.9064  last_time: 31.7791  data_time: 0.0077  last_data_time: 0.0063   lr: 0.00024975  
+[32m[05/22 01:04:57 d2.engine.hooks]: [0mOverall training speed: 998 iterations in 13:33:28 (48.9065 s / it)
+[32m[05/22 01:04:57 d2.engine.hooks]: [0mTotal training time: 13:33:37 (0:00:09 on hooks)
+[32m[05/22 01:04:57 d2.data.datasets.coco]: [0mLoaded 31 images in COCO format from web_scrapper_images_annotes.v2i.coco/valid/_annotations.coco.json
+[32m[05/22 01:04:58 d2.data.build]: [0mDistribution of instances among all 19 categories:
+[36m|   category    | #instances   |   category    | #instances   |   category    | #instances   |
+|:-------------:|:-------------|:-------------:|:-------------|:-------------:|:-------------|
+|    header     | 0            | advertisement | 6            |    chaine     | 3            |
+|  commentaire  | 3            |  description  | 3            |    footer     | 25           |
+|    header     | 25           | left sidebar  | 34           |     likes     | 3            |
+|     logo      | 42           |     media     | 390          |  none access  | 1            |
+|     other     | 2            |    pop up     | 15           | recommendat.. | 3            |
+| right sidebar | 13           |  suggestions  | 2            |     title     | 15           |
+|     vues      | 3            |               |              |               |              |
+|     total     | 588          |               |              |               |              |[0m
+[32m[05/22 01:04:58 d2.data.dataset_mapper]: [0m[DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[32m[05/22 01:04:58 d2.data.common]: [0mSerializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[32m[05/22 01:04:58 d2.data.common]: [0mSerializing 31 elements to byte tensors and concatenating them all ...
+[32m[05/22 01:04:58 d2.data.common]: [0mSerialized dataset takes 0.03 MiB
+[5m[31mWARNING[0m [32m[05/22 01:04:58 d2.engine.defaults]: [0mNo evaluator found. Use `DefaultTrainer.test(evaluators=)`, or implement its `build_evaluator` method.
+[32m[05/22 01:04:58 d2.evaluation.coco_evaluation]: [0mFast COCO eval is not built. Falling back to official COCO eval.
+[5m[31mWARNING[0m [32m[05/22 01:04:58 d2.evaluation.coco_evaluation]: [0mCOCO Evaluator instantiated using config, this is deprecated behavior. Please pass in explicit arguments instead.
+[32m[05/22 01:04:58 d2.data.datasets.coco]: [0mLoaded 16 images in COCO format from web_scrapper_images_annotes.v2i.coco/test/_annotations.coco.json
+[32m[05/22 01:04:58 d2.data.build]: [0mDistribution of instances among all 19 categories:
+[36m|   category    | #instances   |   category    | #instances   |   category    | #instances   |
+|:-------------:|:-------------|:-------------:|:-------------|:-------------:|:-------------|
+|    header     | 0            | advertisement | 8            |    chaine     | 4            |
+|  commentaire  | 4            |  description  | 4            |    footer     | 12           |
+|    header     | 14           | left sidebar  | 1            |     likes     | 4            |
+|     logo      | 16           |     media     | 372          |  none access  | 1            |
+|     other     | 5            |    pop up     | 6            | recommendat.. | 4            |
+| right sidebar | 2            |  suggestions  | 1            |     title     | 8            |
+|     vues      | 4            |               |              |               |              |
+|     total     | 470          |               |              |               |              |[0m
+[32m[05/22 01:04:58 d2.data.dataset_mapper]: [0m[DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[32m[05/22 01:04:58 d2.data.common]: [0mSerializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[32m[05/22 01:04:58 d2.data.common]: [0mSerializing 16 elements to byte tensors and concatenating them all ...
+[32m[05/22 01:04:58 d2.data.common]: [0mSerialized dataset takes 0.02 MiB
+🧪 Évaluation en cours...
+[32m[05/22 01:04:58 d2.evaluation.evaluator]: [0mStart inference on 16 batches
+[32m[05/22 01:05:37 d2.evaluation.evaluator]: [0mInference done 1/16. Dataloading: 25.9399 s/iter. Inference: 12.7179 s/iter. Eval: 0.0150 s/iter. Total: 38.6845 s/iter. ETA=0:09:40
+[32m[05/22 01:05:48 d2.evaluation.evaluator]: [0mInference done 2/16. Dataloading: 12.9728 s/iter. Inference: 12.0869 s/iter. Eval: 0.0084 s/iter. Total: 25.0776 s/iter. ETA=0:05:51
+[32m[05/22 01:06:01 d2.evaluation.evaluator]: [0mInference done 3/16. Dataloading: 8.6514 s/iter. Inference: 12.2731 s/iter. Eval: 0.0063 s/iter. Total: 20.9390 s/iter. ETA=0:04:32
+[32m[05/22 01:06:12 d2.evaluation.evaluator]: [0mInference done 4/16. Dataloading: 6.4894 s/iter. Inference: 11.9955 s/iter. Eval: 0.0055 s/iter. Total: 18.4978 s/iter. ETA=0:03:41
+[32m[05/22 01:06:23 d2.evaluation.evaluator]: [0mInference done 5/16. Dataloading: 5.1935 s/iter. Inference: 11.8685 s/iter. Eval: 0.0047 s/iter. Total: 17.0736 s/iter. ETA=0:03:07
+[32m[05/22 01:06:34 d2.evaluation.evaluator]: [0mInference done 6/16. Dataloading: 0.0000 s/iter. Inference: 10.8753 s/iter. Eval: 0.0013 s/iter. Total: 10.8766 s/iter. ETA=0:01:48
+[32m[05/22 01:06:46 d2.evaluation.evaluator]: [0mInference done 7/16. Dataloading: 0.0034 s/iter. Inference: 11.1412 s/iter. Eval: 0.0024 s/iter. Total: 11.1495 s/iter. ETA=0:01:40
+[32m[05/22 01:06:57 d2.evaluation.evaluator]: [0mInference done 8/16. Dataloading: 0.0039 s/iter. Inference: 11.1517 s/iter. Eval: 0.0024 s/iter. Total: 11.1611 s/iter. ETA=0:01:29
+[32m[05/22 01:07:08 d2.evaluation.evaluator]: [0mInference done 9/16. Dataloading: 0.0046 s/iter. Inference: 11.1879 s/iter. Eval: 0.0022 s/iter. Total: 11.1981 s/iter. ETA=0:01:18
+[32m[05/22 01:07:19 d2.evaluation.evaluator]: [0mInference done 10/16. Dataloading: 0.0048 s/iter. Inference: 11.1979 s/iter. Eval: 0.0020 s/iter. Total: 11.2084 s/iter. ETA=0:01:07
+[32m[05/22 01:07:31 d2.evaluation.evaluator]: [0mInference done 11/16. Dataloading: 0.0051 s/iter. Inference: 11.3045 s/iter. Eval: 0.0019 s/iter. Total: 11.3153 s/iter. ETA=0:00:56
+[32m[05/22 01:07:43 d2.evaluation.evaluator]: [0mInference done 12/16. Dataloading: 0.0054 s/iter. Inference: 11.3015 s/iter. Eval: 0.0020 s/iter. Total: 11.3133 s/iter. ETA=0:00:45
+[32m[05/22 01:07:54 d2.evaluation.evaluator]: [0mInference done 13/16. Dataloading: 0.0059 s/iter. Inference: 11.2745 s/iter. Eval: 0.0020 s/iter. Total: 11.2870 s/iter. ETA=0:00:33
+[32m[05/22 01:08:05 d2.evaluation.evaluator]: [0mInference done 14/16. Dataloading: 0.0059 s/iter. Inference: 11.3271 s/iter. Eval: 0.0019 s/iter. Total: 11.3396 s/iter. ETA=0:00:22
+[32m[05/22 01:08:17 d2.evaluation.evaluator]: [0mInference done 15/16. Dataloading: 0.0058 s/iter. Inference: 11.3222 s/iter. Eval: 0.0022 s/iter. Total: 11.3348 s/iter. ETA=0:00:11
+[32m[05/22 01:08:28 d2.evaluation.evaluator]: [0mInference done 16/16. Dataloading: 0.0057 s/iter. Inference: 11.3282 s/iter. Eval: 0.0021 s/iter. Total: 11.3406 s/iter. ETA=0:00:00
+[32m[05/22 01:08:30 d2.evaluation.evaluator]: [0mTotal inference time: 0:02:06.795606 (11.526873 s / iter per device, on 1 devices)
+[32m[05/22 01:08:30 d2.evaluation.evaluator]: [0mTotal inference pure compute time: 0:02:04 (11.328226 s / iter per device, on 1 devices)
+[32m[05/22 01:08:30 d2.evaluation.coco_evaluation]: [0mPreparing results for COCO format ...
+[32m[05/22 01:08:30 d2.evaluation.coco_evaluation]: [0mSaving results to ./output_detectron_web\coco_instances_results.json
+[32m[05/22 01:08:30 d2.evaluation.coco_evaluation]: [0mEvaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.01s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=2.11s).
+Accumulating evaluation results...
+DONE (t=0.27s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.104
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.215
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.082
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.009
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.169
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.183
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.124
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.144
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.152
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.023
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.245
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.250
+[32m[05/22 01:08:33 d2.evaluation.coco_evaluation]: [0mEvaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 10.387 | 21.507 | 8.165  | 0.882 | 16.923 | 18.321 |
+[32m[05/22 01:08:33 d2.evaluation.coco_evaluation]: [0mPer-category bbox AP: 
+| category      | AP     | category      | AP     | category        | AP     |
+|:--------------|:-------|:--------------|:-------|:----------------|:-------|
+| header        | nan    | advertisement | 21.717 | chaine          | 0.000  |
+| commentaire   | 0.000  | description   | 0.000  | footer          | 53.622 |
+| header        | 33.788 | left sidebar  | 0.000  | likes           | 0.000  |
+| logo          | 2.819  | media         | 12.433 | none access     | 0.000  |
+| other         | 0.000  | pop up        | 26.051 | recommendations | 0.000  |
+| right sidebar | 30.099 | suggestions   | 0.000  | title           | 6.436  |
+| vues          | 0.000  |               |        |                 |        |
