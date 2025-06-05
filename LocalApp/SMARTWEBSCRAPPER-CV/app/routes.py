@@ -383,12 +383,8 @@ def user_question_nlp(capture_id):
     # === 2. Déterminer le chemin absolu réel (pour OCR)
     absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
 
-    # === 3. Traiter l'image pour l'OCR/NLP
+    # === 3. Traiter l'image pour l'OCR/NLP (une seule fois)
     nlp_system.process_image(absolute_image_path, use_layout=True)
-
-
-    # Re-traiter si jamais pas déjà fait (optionnel selon logique)
-    nlp_system.process_image(image_path, use_layout=True)
 
     answer = None
     question = None
