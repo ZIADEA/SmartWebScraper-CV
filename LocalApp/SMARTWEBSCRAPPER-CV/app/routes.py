@@ -969,31 +969,6 @@ def remove_uniform_bands(img, tolerance=5):
     new_img = img[keep_rows, :, :]
     return new_img
 
-def save_manual_annotation_to_human_data(capture_id):
-    img_extensions = [".png", ".jpg", ".jpeg"]
-    src_img = None
-
-    for ext in img_extensions:
-        candidate = os.path.join("static", "images", f"{capture_id}{ext}")
-        if os.path.exists(candidate):
-            src_img = candidate
-            break
-
-    if not src_img:
-        raise FileNotFoundError(f"Aucune image trouvée dans static/images pour : {capture_id}")
-
-    src_json = os.path.join("static", "annotations", f"{capture_id}.json")
-    if not os.path.exists(src_json):
-        raise FileNotFoundError(f"Annotation JSON introuvable pour : {capture_id}")
-
-    dest_dir = os.path.join("data", "human_data", "manual", capture_id)
-    os.makedirs(dest_dir, exist_ok=True)
-
-    shutil.copy(src_img, os.path.join(dest_dir, f"{capture_id}.jpg"))  # Toujours enregistrée en .jpg
-    shutil.copy(src_json, os.path.join(dest_dir, f"{capture_id}.json"))
-
-
-
 
 def save_annotations_as_coco(image_id, annotations, image_path, output_json_path):
     from PIL import Image
