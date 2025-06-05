@@ -43,19 +43,8 @@
         </div>
 
         <div class="options">
-<div class="options">
-    <!-- Accès direct à l'ancien système de question -->
-    <a href="{{ url_for('user_question', capture_id=capture_info.capture_id) }}" class="btn-question">Poser une question</a>
-
-    <!-- Accès au nouveau choix de question -->
-    <a href="{{ url_for('user_question_choice', capture_id=capture_info.capture_id) }}" class="btn-question">Poser une question</a>
-
-    <!-- Enregistrer ou modifier l’annotation -->
-    <a href="{{ url_for('user_save_options', capture_id=capture_info.capture_id) }}" class="btn-save">Sauvegarder / Modifier</a>
-</div>
-
-            <!-- Link to save/modify options (1.1.2.2) -->
-            <a href="{{ url_for("user_save_options", capture_id=capture_info.capture_id) }}" class="btn-save">Sauvegarder / Modifier</a>
+            <a href="{{ url_for('user_question_choice', capture_id=capture_info.capture_id) }}" class="btn-question">Poser une question</a>
+            <a href="{{ url_for('user_save_options', capture_id=capture_info.capture_id) }}" class="btn-save">Sauvegarder / Modifier</a>
         </div>
 
         <a href="{{ url_for("user_capture") }}" class="back-link">Capturer une autre page</a>
