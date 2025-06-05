@@ -43,8 +43,7 @@
         </div>
 
         <div class="options">
-            <!-- TODO: Link to actual question page (1.1.2.1) -->
-          <a href="{{ url_for('user_question', capture_id=capture_info.capture_id) }}" class="btn-question">Poser une question</a>
+          <a href="{{ url_for('user_question_choice', capture_id=capture_info.capture_id) }}" class="btn-question">Poser une question</a>
             <!-- Link to save/modify options (1.1.2.2) -->
             <a href="{{ url_for("user_save_options", capture_id=capture_info.capture_id) }}" class="btn-save">Sauvegarder / Modifier</a>
         </div>
