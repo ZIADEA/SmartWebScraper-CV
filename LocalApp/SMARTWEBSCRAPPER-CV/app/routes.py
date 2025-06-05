@@ -998,25 +998,6 @@ def save_visited_links(links):
         flash(f"Error saving visited links: {e}", "danger")
 
 
-def remove_uniform_bands(img, tolerance=5):
-    """
-    Supprime les bandes horizontales uniformes (blancs) après la suppression.
-    """
-    h, w = img.shape[:2]
-    keep_rows = []
-
-    for y in range(h):
-        row = img[y, :, :]  # ligne entière
-        max_diff = np.max(np.abs(row - row[0]))
-        if max_diff > tolerance:
-            keep_rows.append(y)
-
-    if len(keep_rows) == h:
-        return img  # rien à supprimer
-
-    # Reconstruction image nettoyée
-    new_img = img[keep_rows, :, :]
-    return new_img
 
 
 def save_annotations_as_coco(image_id, annotations, image_path, output_json_path):
