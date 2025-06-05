@@ -28,6 +28,9 @@ from flask import (
     abort,
 )
 
+import openai
+
+
 #NLP
 nlp_system = CompleteOCRQASystem(language='french', ocr_lang='fr')
 
@@ -72,8 +75,9 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        # Hardcoded credentials as per spec (replace with secure method later)
-        if email == "djeryala@gmail.com" and password == "DJERI":
+        admin_email = current_app.config.get("ADMIN_EMAIL")
+        admin_password = current_app.config.get("ADMIN_PASSWORD")
+        if email == admin_email and password == admin_password:
             session["admin_logged_in"] = True
             flash("Login successful!", "success")
             return redirect(url_for("admin_dashboard"))
@@ -343,8 +347,8 @@ def user_capture():
 
     return render_template("user_capture.html")
 
-@app.route("/user/question/<capture_id>", methods=["GET", "POST"])
-def user_question(capture_id):
+@app.route("/user/question_nlp/<capture_id>", methods=["GET", "POST"])
+def user_question_nlp(capture_id):
     image_path = os.path.join(app.config["ORIGINALS_FOLDER"], f"{capture_id}.png")
 
     capture_info = find_capture_by_id(capture_id)
@@ -370,6 +374,43 @@ def user_question(capture_id):
             answer = nlp_system.ask_question(question)
 
     return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+
+
+@app.route("/user/question_chatgpt/<capture_id>", methods=["GET", "POST"])
+def user_question_chatgpt(capture_id):
+    image_filename = f"{capture_id}.png"
+    absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
+
+    nlp_system.process_image(absolute_image_path, use_layout=True)
+    context_text = " ".join(nlp_system.qa_system.sentences)
+
+    answer = None
+    question = None
+
+    if request.method == "POST":
+        question = request.form.get("question", "").strip()
+        if question:
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                answer = "Clé API OpenAI manquante"
+            else:
+                try:
+                    client = openai.OpenAI(api_key=api_key)
+                    prompt = f"{context_text}\n\nQuestion: {question}\nRéponds en français :"
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role": "user", "content": prompt}]
+                    )
+                    answer = response.choices[0].message.content.strip()
+                except Exception as e:
+                    answer = f"Erreur OpenAI : {e}"
+
+    return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+
+
+@app.route("/user/question_choice/<capture_id>")
+def user_question_choice(capture_id):
+    return render_template("user_question_choice.html", capture_id=capture_id)
 
 
 
