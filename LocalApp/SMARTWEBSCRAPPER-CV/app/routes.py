@@ -65,8 +65,9 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        # Hardcoded credentials as per spec (replace with secure method later)
-        if email == "djeryala@gmail.com" and password == "DJERI":
+        admin_email = current_app.config.get("ADMIN_EMAIL")
+        admin_password = current_app.config.get("ADMIN_PASSWORD")
+        if email == admin_email and password == admin_password:
             session["admin_logged_in"] = True
             flash("Login successful!", "success")
             return redirect(url_for("admin_dashboard"))
