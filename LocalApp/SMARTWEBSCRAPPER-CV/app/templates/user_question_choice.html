@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Choisir le système de réponse</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .choice-buttons { margin-top: 2em; display: flex; gap: 1em; }
+        .btn-choice { padding: 0.5em 1.2em; background-color: #007bff; color: white; border: none; border-radius: 4px; text-decoration: none; }
+        .btn-choice:hover { background-color: #0069d9; }
+    </style>
+</head>
+<body>
+    <h1>Choisissez le système de réponse</h1>
+
+    <div class="choice-buttons">
+        <a href="{{ url_for('user_question_chatgpt', capture_id=capture_id) }}" class="btn-choice">ChatGPT</a>
+        <a href="{{ url_for('user_question_nlp', capture_id=capture_id) }}" class="btn-choice">NLP</a>
+    </div>
+
+    <p><a href="{{ url_for('user_display_capture', filename=capture_id) }}">← Retour à l'image</a></p>
+</body>
+</html>
