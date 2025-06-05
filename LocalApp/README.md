@@ -71,22 +71,20 @@ option :
 	poser une question --> page 1.1.2.1
 	sauvegarder l image --> page 1.1.2.2
 
-page 1.1.2.1 : 
-afficher : 'vous preferer que qui vous repond ?' 
+page 1.1.2.1 :
+afficher : "vous préférez que qui vous réponde ?"
 CHAT GPT -->
 
  NLP classic >
 
-page 1.1.2.1.1 : 
-l utilisateur entre sa question 
-(paddel ocr pour extraire le txt + nlp pour obtenir les reponse du text avec senten transformers )
-la reponse a laquestino s affiche en bas
+page 1.1.2.1.1 :
+l'utilisateur saisit sa question qui est envoyée à l'API ChatGPT.
+La réponse générée s'affiche en bas de page.
 
 
-page 1.1.2.1.2 : 
-l utilisateur entre sa question 
-(paddel ocr pour extraire le txt + nlp pour obtenir les reponse du text avec senten transformers )
-la reponse a laquestino s affiche en bas
+page 1.1.2.1.2 :
+l'utilisateur pose sa question.
+Le texte de la page est extrait avec PaddleOCR puis traité localement avec les sentence transformers pour fournir une réponse affichée en bas.
 
 page 1.1.2.2 : 
 approter des modification ?

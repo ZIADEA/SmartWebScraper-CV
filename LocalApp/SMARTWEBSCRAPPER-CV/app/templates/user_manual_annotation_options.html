@@ -50,14 +50,13 @@
 
         <div class="options">
             <!-- Oui -> Page B1.1 (Remove boxes from manual annotation) -->
-            <!-- TODO: Create route user_manual_remove_boxes -->
-            <a href="#" class="btn-yes">Oui, vérifier/supprimer des boîtes</a> 
+            <a href="{{ url_for('manual_boxes_review', capture_id=capture_info.capture_id) }}" class="btn-yes">Oui, vérifier/supprimer des boîtes</a>
             <!-- Non -> Page Tou (Display final manual annotation + download) -->
             <!-- This assumes the manual annotation is saved directly to human_data -->
             <a href="{{ url_for("user_display_final_annotation", capture_id=capture_info.capture_id, source="manual_validated") }}" class="btn-no">Non, tout est correct</a> 
         </div>
 
-        <a href="{{ url_for("user_manual_annotation", capture_id=capture_info.capture_id) }}" class="back-link">Retour à l'annotation (Roboflow)</a>
+        <a href="{{ url_for("manual_annotation", capture_id=capture_info.capture_id) }}" class="back-link">Retour à l'annotation (Roboflow)</a>
         <a href="{{ url_for("index") }}" class="back-link">Retour à l'accueil</a>
     </div>
 </body>

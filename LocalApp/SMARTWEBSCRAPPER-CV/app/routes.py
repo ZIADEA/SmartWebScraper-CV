@@ -1,25 +1,35 @@
 import shutil
-import traceback
-from flask import current_app, jsonify, render_template, request, redirect, send_file, url_for, flash, session, send_from_directory
-from app import app
 import os
 import json
-import uuid # For generating unique IDs
-from datetime import datetime # For timestamping
+import uuid  # For generating unique IDs
+from datetime import datetime  # For timestamping
+import cv2
+import numpy as np
+from PIL import Image, ImageDraw
 from playwright.sync_api import sync_playwright
-import validators # To validate URL
-import random, cv2
-import torch
+import validators  # To validate URL
 from detectron2.engine import DefaultPredictor
-from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.data import MetadataCatalog
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
-from detectron2.structures import Boxes
-import numpy as np
-from flask import Flask, request, jsonify, url_for, redirect, flash
-from flask import send_file, abort
+from app import app
 from app.utils.nlp_module import CompleteOCRQASystem  # chemin adapté
+from flask import (
+    current_app,
+    jsonify,
+    render_template,
+    request,
+    redirect,
+    send_file,
+    url_for,
+    flash,
+    session,
+    send_from_directory,
+    abort,
+)
+
+import openai
+
 
 #NLP
 nlp_system = CompleteOCRQASystem(language='french', ocr_lang='fr')
@@ -47,6 +57,10 @@ if not os.path.exists(app.config["VISITED_LINKS_FILE"]):
     with open(app.config["VISITED_LINKS_FILE"], 'w') as f:
         json.dump([], f)
 
+# Folder used to store images filtered manually by users
+SUPPRESSION_HUMAN_FOLDER = os.path.join(app.root_path, "data", "suppression_human")
+os.makedirs(SUPPRESSION_HUMAN_FOLDER, exist_ok=True)
+
 
 # Placeholder for authentication check
 def is_admin_logged_in():
@@ -65,8 +79,9 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        # Hardcoded credentials as per spec (replace with secure method later)
-        if email == "djeryala@gmail.com" and password == "DJERI":
+        admin_email = current_app.config.get("ADMIN_EMAIL")
+        admin_password = current_app.config.get("ADMIN_PASSWORD")
+        if email == admin_email and password == admin_password:
             session["admin_logged_in"] = True
             flash("Login successful!", "success")
             return redirect(url_for("admin_dashboard"))
@@ -248,6 +263,16 @@ def admin_delete_item(item_id):
     return redirect(url_for("admin_dashboard"))
 
 
+@app.route("/admin/modify_item/<item_id>")
+def admin_modify_item(item_id):
+    """Redirect admin to the manual annotation page to modify an item."""
+    if not is_admin_logged_in():
+        flash("Please log in to access this page.", "warning")
+        return redirect(url_for("login"))
+
+    return redirect(url_for("manual_annotation", capture_id=item_id))
+
+
 @app.route("/admin/fine_tune_data")
 def admin_fine_tune_data():
     # Page 1.2.1.4: Display count of items in fine_tune_data and option to launch fine-tuning
@@ -270,6 +295,17 @@ def admin_fine_tune_data():
 
     # Render the template displaying the count and the button
     return render_template("admin_fine_tune_data.html", image_count=image_count)
+
+
+@app.route("/admin/launch_finetuning", methods=["POST"])
+def admin_launch_finetuning():
+    """Placeholder route to trigger the fine-tuning process."""
+    if not is_admin_logged_in():
+        flash("Please log in to perform this action.", "warning")
+        return redirect(url_for("login"))
+
+    flash("Fine-tuning launched (simulation).", "info")
+    return redirect(url_for("admin_fine_tune_data"))
 
 
 # --- User Routes --- #
@@ -336,8 +372,8 @@ def user_capture():
 
     return render_template("user_capture.html")
 
-@app.route("/user/question/<capture_id>", methods=["GET", "POST"])
-def user_question(capture_id):
+@app.route("/user/question_nlp/<capture_id>", methods=["GET", "POST"])
+def user_question_nlp(capture_id):
     image_path = os.path.join(app.config["ORIGINALS_FOLDER"], f"{capture_id}.png")
 
     capture_info = find_capture_by_id(capture_id)
@@ -347,12 +383,8 @@ def user_question(capture_id):
     # === 2. Déterminer le chemin absolu réel (pour OCR)
     absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
 
-    # === 3. Traiter l'image pour l'OCR/NLP
+    # === 3. Traiter l'image pour l'OCR/NLP (une seule fois)
     nlp_system.process_image(absolute_image_path, use_layout=True)
-
-
-    # Re-traiter si jamais pas déjà fait (optionnel selon logique)
-    nlp_system.process_image(image_path, use_layout=True)
 
     answer = None
     question = None
@@ -363,6 +395,43 @@ def user_question(capture_id):
             answer = nlp_system.ask_question(question)
 
     return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+
+
+@app.route("/user/question_chatgpt/<capture_id>", methods=["GET", "POST"])
+def user_question_chatgpt(capture_id):
+    image_filename = f"{capture_id}.png"
+    absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
+
+    nlp_system.process_image(absolute_image_path, use_layout=True)
+    context_text = " ".join(nlp_system.qa_system.sentences)
+
+    answer = None
+    question = None
+
+    if request.method == "POST":
+        question = request.form.get("question", "").strip()
+        if question:
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                answer = "Clé API OpenAI manquante"
+            else:
+                try:
+                    client = openai.OpenAI(api_key=api_key)
+                    prompt = f"{context_text}\n\nQuestion: {question}\nRéponds en français :"
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role": "user", "content": prompt}]
+                    )
+                    answer = response.choices[0].message.content.strip()
+                except Exception as e:
+                    answer = f"Erreur OpenAI : {e}"
+
+    return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+
+
+@app.route("/user/question_choice/<capture_id>")
+def user_question_choice(capture_id):
+    return render_template("user_question_choice.html", capture_id=capture_id)
 
 
 
@@ -621,7 +690,6 @@ def manual_annotation(capture_id):
 # ───────────────────────────────
 @app.route("/user/manual/save", methods=["POST"])
 def manual_annotation_save():
-    import shutil, json, os
 
     data = request.get_json()
     image_id = data.get("image_id")
@@ -655,9 +723,6 @@ def manual_annotation_save():
 # ───────────────────────────────
 @app.route("/user/manual/review/<capture_id>", methods=["GET", "POST"])
 def manual_boxes_review(capture_id):
-    import json
-    from PIL import Image, ImageDraw
-    import numpy as np
 
     base_dir = os.path.dirname(current_app.root_path)
     ann_dir = os.path.join(base_dir, "app", "data", "human_data", "manual", capture_id)
@@ -678,9 +743,7 @@ def manual_boxes_review(capture_id):
             json.dump(filtered, f, indent=2)
 
         # 🧽 Nettoyage des zones supprimées
-        output_dir = os.path.join(base_dir, "app", "data", "suppresion_human")
-        os.makedirs(output_dir, exist_ok=True)
-        output_path = os.path.join(output_dir, f"{capture_id}_filtered.jpg")
+        output_path = os.path.join(SUPPRESSION_HUMAN_FOLDER, f"{capture_id}_filtered.jpg")
 
         remove_zones_from_image(img_path, filtered, output_path)
 
@@ -701,12 +764,8 @@ def manual_boxes_review(capture_id):
 
 @app.route("/user/manual/serve_filtered/<filename>")
 def serve_filtered_manual_image(filename):
-    import os
-    from flask import send_file, abort, current_app
 
-    base_dir = os.path.dirname(current_app.root_path)
-    suppression_dir = os.path.join(base_dir, "app", "data", "suppresion_human")
-    image_path = os.path.join(suppression_dir, filename)
+    image_path = os.path.join(SUPPRESSION_HUMAN_FOLDER, filename)
 
     if not os.path.exists(image_path):
         print("[404] Image filtrée manuelle introuvable :", image_path)
@@ -723,11 +782,6 @@ def serve_filtered_manual_image(filename):
 # ───────────────────────────────
 @app.route("/user/manual/final_display/<capture_id>")
 def manual_display_final_annotation(capture_id):
-    import os
-    import json
-    import cv2
-    import numpy as np
-    from flask import current_app, flash
 
     capture_info = find_capture_by_id(capture_id)
     if not capture_info:
@@ -739,10 +793,8 @@ def manual_display_final_annotation(capture_id):
     json_path = os.path.join(ann_dir, f"{capture_id}.json")
     img_path = os.path.join(ann_dir, f"{capture_id}.png")
 
-    output_dir = os.path.join(base_dir, "app", "data", "suppresion_human")
-    os.makedirs(output_dir, exist_ok=True)
     output_filename = f"{capture_id}_filtered.jpg"
-    output_path = os.path.join(output_dir, output_filename)
+    output_path = os.path.join(SUPPRESSION_HUMAN_FOLDER, output_filename)
 
     try:
         if not os.path.exists(json_path):
@@ -790,8 +842,7 @@ def manual_display_final_annotation(capture_id):
 # ───────────────────────────────
 @app.route("/user/manual/download/<capture_id>")
 def download_manual_filtered_image(capture_id):
-    base_dir = os.path.dirname(current_app.root_path)
-    path = os.path.join(base_dir, "app", "data", "suppresion_human", f"{capture_id}_filtered.jpg")
+    path = os.path.join(SUPPRESSION_HUMAN_FOLDER, f"{capture_id}_filtered.jpg")
     if not os.path.exists(path):
         flash("Image non trouvée.", "danger")
         return redirect(url_for("user_capture"))
@@ -802,8 +853,6 @@ def download_manual_filtered_image(capture_id):
 # ───────────────────────────────
 @app.route("/user/manual/serve_annotated/<filename>")
 def serve_manual_annotated_image(filename):
-    import os
-    from flask import send_file, abort, current_app
 
     base_dir = os.path.dirname(current_app.root_path)
     folder = os.path.join(base_dir, "app", "data", "annoted_by_human")
@@ -969,36 +1018,8 @@ def remove_uniform_bands(img, tolerance=5):
     new_img = img[keep_rows, :, :]
     return new_img
 
-def save_manual_annotation_to_human_data(capture_id):
-    img_extensions = [".png", ".jpg", ".jpeg"]
-    src_img = None
-
-    for ext in img_extensions:
-        candidate = os.path.join("static", "images", f"{capture_id}{ext}")
-        if os.path.exists(candidate):
-            src_img = candidate
-            break
-
-    if not src_img:
-        raise FileNotFoundError(f"Aucune image trouvée dans static/images pour : {capture_id}")
-
-    src_json = os.path.join("static", "annotations", f"{capture_id}.json")
-    if not os.path.exists(src_json):
-        raise FileNotFoundError(f"Annotation JSON introuvable pour : {capture_id}")
-
-    dest_dir = os.path.join("data", "human_data", "manual", capture_id)
-    os.makedirs(dest_dir, exist_ok=True)
-
-    shutil.copy(src_img, os.path.join(dest_dir, f"{capture_id}.jpg"))  # Toujours enregistrée en .jpg
-    shutil.copy(src_json, os.path.join(dest_dir, f"{capture_id}.json"))
-
-
-
 
 def save_annotations_as_coco(image_id, annotations, image_path, output_json_path):
-    from PIL import Image
-    import json
-    import os
 
     image = Image.open(image_path)
     width, height = image.size
@@ -1047,10 +1068,6 @@ def save_annotations_as_coco(image_id, annotations, image_path, output_json_path
         json.dump(coco, f, indent=2, ensure_ascii=False)
 
 def draw_boxes_cv2(image_path, annotations, output_path):
-    import cv2
-    import json
-    from PIL import Image
-    import numpy as np
 
     image = Image.open(image_path).convert("RGB")
     image_np = np.array(image)
@@ -1071,9 +1088,6 @@ def draw_boxes_cv2(image_path, annotations, output_path):
 
 
 def remove_zones_from_image(image_path, annotations, output_path):
-    import cv2
-    import numpy as np
-    from PIL import Image
 
     image = cv2.imread(image_path)
     if image is None:
@@ -1097,7 +1111,6 @@ def remove_zones_from_image(image_path, annotations, output_path):
 
 
 def remove_uniform_bands(image_np):
-    import numpy as np
 
     # Supprime les bandes blanches (uniformes) en haut, bas, gauche, droite
     gray = np.mean(image_np, axis=2)

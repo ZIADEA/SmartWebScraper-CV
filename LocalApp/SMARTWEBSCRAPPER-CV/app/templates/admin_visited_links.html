@@ -29,9 +29,9 @@
             <ul>
                 <li><a href="{{ url_for("admin_dashboard") }}">Tableau de Bord</a></li>
                 <li><a href="{{ url_for("admin_visited_links") }}">Liens Visités</a></li>
-                <li><a href="#">Prédictions Validées</a></li>
-                <li><a href="#">Annotations Manuelles</a></li>
-                <li><a href="#">Données Fine-Tuning</a></li>
+                <li><a href="{{ url_for('admin_view_human_data', data_type='validated_predictions') }}">Prédictions Validées</a></li>
+                <li><a href="{{ url_for('admin_view_human_data', data_type='manual_annotations') }}">Annotations Manuelles</a></li>
+                <li><a href="{{ url_for('admin_fine_tune_data') }}">Données Fine-Tuning</a></li>
                 <li><a href="{{ url_for("logout") }}" class="logout-link">Déconnexion</a></li>
             </ul>
         </nav>
@@ -67,7 +67,7 @@
                         <td>{{ link.timestamp | replace("T", " ") }}</td>
                         <td>{{ link.capture_id }}</td>
                         <td>{{ link.filename }}</td>
-                        <td><a href="#">Voir Capture</a></td>
+                        <td><a href="{{ url_for('user_display_capture', filename=link.filename) }}">Voir Capture</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

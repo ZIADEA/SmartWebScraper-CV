@@ -48,8 +48,7 @@
 
         <div class="options">
             <!-- Oui -> Page B (Roboflow iframe) -->
-            <!-- TODO: Create route user_manual_annotation -->
-            <a href="#" class="btn-yes">Oui, annoter maintenant</a> 
+            <a href="{{ url_for('manual_annotation', capture_id=capture_info.capture_id) }}" class="btn-yes">Oui, annoter maintenant</a>
             <!-- Non -> Maybe back to index or display original? Redirecting to index for now -->
             <a href="{{ url_for("index") }}" class="btn-no">Non, annuler</a> 
         </div>
