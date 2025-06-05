@@ -42,7 +42,7 @@
                 <li><a href="{{ url_for("admin_visited_links") }}">Liens Visités</a></li>
                 <li><a href="{{ url_for("admin_view_human_data", data_type=\"validated_predictions\") }}">Prédictions Validées</a></li>
                 <li><a href="{{ url_for("admin_view_human_data", data_type=\"manual_annotations\") }}">Annotations Manuelles</a></li>
-                <li><a href="#">Données Fine-Tuning</a></li>
+                <li><a href="{{ url_for('admin_fine_tune_data') }}">Données Fine-Tuning</a></li>
                 <li><a href="{{ url_for("logout") }}" class="logout-link">Déconnexion</a></li>
             </ul>
         </nav>
@@ -79,8 +79,7 @@
                     <form method="post" action="{{ url_for("admin_delete_item", item_id=item_id) }}" style="margin:0;" onsubmit="return confirm("Êtes-vous sûr de vouloir supprimer cet élément de human_data ?");">
                         <button type="submit" class="btn-delete">Supprimer de Human Data</button>
                     </form>
-                    <!-- TODO: Create route admin_modify_item (Roboflow iframe Page A) -->
-                    <a href="#" class="btn-modify">Modifier l'Annotation (Roboflow)</a>
+                    <a href="{{ url_for('admin_modify_item', item_id=item_id) }}" class="btn-modify">Modifier l'Annotation (Roboflow)</a>
                 </div>
             </div>
         </div>
