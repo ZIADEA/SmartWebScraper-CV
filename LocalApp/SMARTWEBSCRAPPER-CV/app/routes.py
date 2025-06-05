@@ -1,25 +1,32 @@
 import shutil
-import traceback
-from flask import current_app, jsonify, render_template, request, redirect, send_file, url_for, flash, session, send_from_directory
-from app import app
 import os
 import json
-import uuid # For generating unique IDs
-from datetime import datetime # For timestamping
+import uuid  # For generating unique IDs
+from datetime import datetime  # For timestamping
+import cv2
+import numpy as np
+from PIL import Image, ImageDraw
 from playwright.sync_api import sync_playwright
-import validators # To validate URL
-import random, cv2
-import torch
+import validators  # To validate URL
 from detectron2.engine import DefaultPredictor
-from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.data import MetadataCatalog
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
-from detectron2.structures import Boxes
-import numpy as np
-from flask import Flask, request, jsonify, url_for, redirect, flash
-from flask import send_file, abort
+from app import app
 from app.utils.nlp_module import CompleteOCRQASystem  # chemin adapté
+from flask import (
+    current_app,
+    jsonify,
+    render_template,
+    request,
+    redirect,
+    send_file,
+    url_for,
+    flash,
+    session,
+    send_from_directory,
+    abort,
+)
 
 #NLP
 nlp_system = CompleteOCRQASystem(language='french', ocr_lang='fr')
@@ -621,7 +628,6 @@ def manual_annotation(capture_id):
 # ───────────────────────────────
 @app.route("/user/manual/save", methods=["POST"])
 def manual_annotation_save():
-    import shutil, json, os
 
     data = request.get_json()
     image_id = data.get("image_id")
@@ -655,9 +661,6 @@ def manual_annotation_save():
 # ───────────────────────────────
 @app.route("/user/manual/review/<capture_id>", methods=["GET", "POST"])
 def manual_boxes_review(capture_id):
-    import json
-    from PIL import Image, ImageDraw
-    import numpy as np
 
     base_dir = os.path.dirname(current_app.root_path)
     ann_dir = os.path.join(base_dir, "app", "data", "human_data", "manual", capture_id)
@@ -701,8 +704,6 @@ def manual_boxes_review(capture_id):
 
 @app.route("/user/manual/serve_filtered/<filename>")
 def serve_filtered_manual_image(filename):
-    import os
-    from flask import send_file, abort, current_app
 
     base_dir = os.path.dirname(current_app.root_path)
     suppression_dir = os.path.join(base_dir, "app", "data", "suppresion_human")
@@ -723,11 +724,6 @@ def serve_filtered_manual_image(filename):
 # ───────────────────────────────
 @app.route("/user/manual/final_display/<capture_id>")
 def manual_display_final_annotation(capture_id):
-    import os
-    import json
-    import cv2
-    import numpy as np
-    from flask import current_app, flash
 
     capture_info = find_capture_by_id(capture_id)
     if not capture_info:
@@ -802,8 +798,6 @@ def download_manual_filtered_image(capture_id):
 # ───────────────────────────────
 @app.route("/user/manual/serve_annotated/<filename>")
 def serve_manual_annotated_image(filename):
-    import os
-    from flask import send_file, abort, current_app
 
     base_dir = os.path.dirname(current_app.root_path)
     folder = os.path.join(base_dir, "app", "data", "annoted_by_human")
@@ -996,9 +990,6 @@ def save_manual_annotation_to_human_data(capture_id):
 
 
 def save_annotations_as_coco(image_id, annotations, image_path, output_json_path):
-    from PIL import Image
-    import json
-    import os
 
     image = Image.open(image_path)
     width, height = image.size
@@ -1047,10 +1038,6 @@ def save_annotations_as_coco(image_id, annotations, image_path, output_json_path
         json.dump(coco, f, indent=2, ensure_ascii=False)
 
 def draw_boxes_cv2(image_path, annotations, output_path):
-    import cv2
-    import json
-    from PIL import Image
-    import numpy as np
 
     image = Image.open(image_path).convert("RGB")
     image_np = np.array(image)
@@ -1071,9 +1058,6 @@ def draw_boxes_cv2(image_path, annotations, output_path):
 
 
 def remove_zones_from_image(image_path, annotations, output_path):
-    import cv2
-    import numpy as np
-    from PIL import Image
 
     image = cv2.imread(image_path)
     if image is None:
@@ -1097,7 +1081,6 @@ def remove_zones_from_image(image_path, annotations, output_path):
 
 
 def remove_uniform_bands(image_np):
-    import numpy as np
 
     # Supprime les bandes blanches (uniformes) en haut, bas, gauche, droite
     gray = np.mean(image_np, axis=2)
