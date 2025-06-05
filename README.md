@@ -43,4 +43,22 @@
 challenges: 
 1 - data collect
 
-2 - images annotation 
+2 - images annotation
+
+## Admin Credentials
+
+The admin dashboard requires credentials that can be supplied either as environment variables or through a configuration file placed at the repository root.
+
+### Using environment variables
+
+Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` before starting the application:
+
+```bash
+export ADMIN_EMAIL="admin@example.com"
+export ADMIN_PASSWORD="secret"
+```
+
+### Using a config file
+
+Create an `admin_config.json` file based on the provided `admin_config.json.example` and populate it with the desired credentials.
+
