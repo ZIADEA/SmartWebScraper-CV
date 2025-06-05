@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Détail Élément</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 1000px; margin: auto; padding: 1em; }
+        h1 { text-align: center; }
+        nav { background-color: #f8f9fa; padding: 1em; border-radius: 5px; margin-bottom: 1em; }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: space-around; }
+        nav ul li a { text-decoration: none; color: #007bff; }
+        nav ul li a:hover { text-decoration: underline; }
+        .logout-link { float: right; }
+        .content-container { display: flex; gap: 2em; margin-top: 1em; }
+        .image-container { flex: 2; text-align: center; }
+        .image-container img { max-width: 100%; height: auto; border: 1px solid #ccc; }
+        .info-container { flex: 1; border: 1px solid #eee; padding: 1em; border-radius: 5px; background-color: #f8f9fa; }
+        .info-container h3 { margin-top: 0; }
+        .info-container pre { background-color: #fff; padding: 0.5em; border: 1px solid #ddd; max-height: 300px; overflow-y: auto; font-size: 0.9em; }
+        .actions { margin-top: 1.5em; display: flex; flex-direction: column; gap: 0.5em; }
+        .actions button, .actions a { padding: 0.7em 1.5em; text-decoration: none; border-radius: 5px; cursor: pointer; font-size: 1em; text-align: center; border: none; }
+        .btn-validate { background-color: #28a745; color: white; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        .btn-modify { background-color: #ffc107; color: black; }
+        .btn-validate:hover { background-color: #218838; }
+        .btn-delete:hover { background-color: #c82333; }
+        .btn-modify:hover { background-color: #e0a800; }
+        .flash-messages { margin-top: 1em; }
+        .alert { padding: 0.5em; border: 1px solid; border-radius: 3px; margin-bottom: 0.5em; }
+        .alert-warning { border-color: orange; color: orange; }
+        .alert-danger { border-color: red; color: red; }
+        .back-link { display: block; text-align: center; margin-top: 1em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="{{ url_for("admin_dashboard") }}">Tableau de Bord</a></li>
+                <li><a href="{{ url_for("admin_visited_links") }}">Liens Visités</a></li>
+                <li><a href="{{ url_for("admin_view_human_data", data_type=\"validated_predictions\") }}">Prédictions Validées</a></li>
+                <li><a href="{{ url_for("admin_view_human_data", data_type=\"manual_annotations\") }}">Annotations Manuelles</a></li>
+                <li><a href="#">Données Fine-Tuning</a></li>
+                <li><a href="{{ url_for("logout") }}" class="logout-link">Déconnexion</a></li>
+            </ul>
+        </nav>
+
+        <h1>Détail de l'Élément : {{ item_id }}</h1>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="content-container">
+            <div class="image-container">
+                <h3>Image</h3>
+                <img src="{{ image_path_url }}" alt="Image {{ item_id }}">
+            </div>
+            <div class="info-container">
+                <h3>Informations</h3>
+                <p><strong>ID:</strong> {{ item_id }}</p>
+                <p><strong>Fichier Image:</strong> {{ image_filename }}</p>
+                <p><strong>Fichier JSON:</strong> {{ json_filename }}</p>
+                <h3>Contenu JSON (Simulation)</h3>
+                <pre>{{ json_content }}</pre>
+                <div class="actions">
+                    <form method="post" action="{{ url_for("admin_validate_item", item_id=item_id) }}" style="margin:0;">
+                        <button type="submit" class="btn-validate">Valider (Envoyer vers Fine-Tune Data)</button>
+                    </form>
+                    <form method="post" action="{{ url_for("admin_delete_item", item_id=item_id) }}" style="margin:0;" onsubmit="return confirm("Êtes-vous sûr de vouloir supprimer cet élément de human_data ?");">
+                        <button type="submit" class="btn-delete">Supprimer de Human Data</button>
+                    </form>
+                    <!-- TODO: Create route admin_modify_item (Roboflow iframe Page A) -->
+                    <a href="#" class="btn-modify">Modifier l'Annotation (Roboflow)</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- TODO: Add link back to the correct list view (validated_predictions or manual_annotations) -->
+        <a href="{{ url_for("admin_dashboard") }}" class="back-link">Retour au Tableau de Bord</a>
+
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Tableau de Bord Admin</title>
+    <!-- Ajout de Google Fonts pour une police moderne -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Utilisation d'une police moderne et d'un fond légèrement gris pour un look épuré */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 2em;
+            background-color: #f5f7fa;
+            color: #2d3748;
+        }
+
+        /* Conteneur centré avec une largeur maximale plus large pour un design aéré */
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 1.5em;
+        }
+
+        /* Titre avec une police plus grande et un espacement soigné */
+        h1 {
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 1.5em;
+            color: #1a202c;
+        }
+
+        /* Barre de navigation modernisée avec ombre et transitions */
+        nav {
+            background-color: #ffffff;
+            padding: 1em;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2em;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #2b6cb0;
+            font-weight: 600;
+            padding: 0.5em 1em;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            color: #ffffff;
+            background-color: #2b6cb0;
+            text-decoration: none;
+        }
+
+        /* Style spécifique pour le lien de déconnexion */
+        .logout-link {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+
+        .logout-link:hover {
+            background-color: #e53e3e;
+            color: #ffffff;
+        }
+
+        /* Contenu avec une apparence plus soignée */
+        .content {
+            background-color: #ffffff;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            line-height: 1.6;
+        }
+
+        /* Messages flash avec des couleurs modernes et des transitions */
+        .flash-messages {
+            margin-bottom: 1.5em;
+        }
+
+        .alert {
+            padding: 1em;
+            border-radius: 6px;
+            margin-bottom: 1em;
+            font-size: 0.95em;
+            transition: opacity 0.3s ease;
+        }
+
+        .alert-success {
+            background-color: #e6fffa;
+            border: 1px solid #38b2ac;
+            color: #2c7a7b;
+        }
+
+        .alert-info {
+            background-color: #e6f3ff;
+            border: 1px solid #4299e1;
+            color: #2b6cb0;
+        }
+
+        /* Style pour la grille 2x2 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5em;
+            margin-top: 2em;
+        }
+
+        .grid-item {
+            background-color: #ffffff;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .grid-item a {
+            text-decoration: none;
+            color: #2b6cb0;
+            font-weight: 600;
+            font-size: 1.1em;
+            display: block;
+            padding: 1em;
+            transition: color 0.3s ease;
+        }
+
+        .grid-item a:hover {
+            color: #1a4971;
+        }
+
+        /* Responsive design pour petits écrans */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav ul li {
+                margin: 0.5em 0;
+            }
+
+            nav ul li a {
+                display: block;
+                width: 100%;
+            }
+
+            .logout-link {
+                margin-top: 1em;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('admin_dashboard') }}">Tableau de Bord</a></li>
+                <li><a href="{{ url_for('logout') }}" class="logout-link">Déconnexion</a></li>
+            </ul>
+        </nav>
+
+        <h1>Tableau de Bord Administrateur</h1>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="content">
+            <p>Bienvenue sur le tableau de bord administrateur.</p>
+            <div class="dashboard-grid">
+                <div class="grid-item">
+                <a href="{{ url_for('admin_visited_links') }}">Liens Visités</a>
+                </div>
+                <div class="grid-item">
+                    <a href="#">Prédictions Validées </a>
+                </div>
+                <div class="grid-item">
+                    <a href="#">Annotations Manuelles </a>
+                </div>
+                <div class="grid-item">
+                    <a href="#">Données Fine-Tuning </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

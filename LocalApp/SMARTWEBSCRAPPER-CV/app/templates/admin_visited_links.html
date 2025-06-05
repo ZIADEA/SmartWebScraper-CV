@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Liens Visités</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 1000px; margin: auto; padding: 1em; }
+        h1 { text-align: center; }
+        nav { background-color: #f8f9fa; padding: 1em; border-radius: 5px; margin-bottom: 1em; }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: space-around; }
+        nav ul li a { text-decoration: none; color: #007bff; }
+        nav ul li a:hover { text-decoration: underline; }
+        .logout-link { float: right; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .flash-messages { margin-top: 1em; }
+        .alert { padding: 0.5em; border: 1px solid; border-radius: 3px; margin-bottom: 0.5em; }
+        .alert-warning { border-color: orange; color: orange; }
+        .alert-info { border-color: blue; color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="{{ url_for("admin_dashboard") }}">Tableau de Bord</a></li>
+                <li><a href="{{ url_for("admin_visited_links") }}">Liens Visités</a></li>
+                <li><a href="#">Prédictions Validées</a></li>
+                <li><a href="#">Annotations Manuelles</a></li>
+                <li><a href="#">Données Fine-Tuning</a></li>
+                <li><a href="{{ url_for("logout") }}" class="logout-link">Déconnexion</a></li>
+            </ul>
+        </nav>
+
+        <h1>Liens des Sites Capturés</h1>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% if links %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Date de Capture</th>
+                        <th>ID Capture</th>
+                        <th>Nom Fichier Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for link in links %}
+                    <tr>
+                        <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+                        <td>{{ link.timestamp | replace("T", " ") }}</td>
+                        <td>{{ link.capture_id }}</td>
+                        <td>{{ link.filename }}</td>
+                        <td><a href="#">Voir Capture</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucun lien n'a encore été capturé.</p>
+        {% endif %}
+
+    </div>
+</body>
+</html>
+

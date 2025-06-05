@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Connexion Administrateur</title>
+    <!-- Ajout de Google Fonts pour une police moderne -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Style global avec police moderne et fond clair */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 2em;
+            background-color: #f5f7fa;
+            color: #2d3748;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Centre la page verticalement */
+        }
+
+        /* Conteneur avec un design de carte moderne */
+        .container {
+            max-width: 450px; /* Légèrement plus large pour plus d'aération */
+            margin: auto;
+            padding: 2em;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Titre avec une police plus grande et soignée */
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 1.5em;
+            color: #1a202c;
+        }
+
+        /* Style des labels pour plus de lisibilité */
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* Style des champs de formulaire avec effet de focus */
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75em;
+            margin-bottom: 1.5em;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+
+        /* Style du bouton avec transition fluide */
+        button {
+            padding: 0.85em;
+            background-color: #2b6cb0;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1a4971;
+        }
+
+        /* Messages flash avec style cohérent */
+        .flash-messages {
+            margin-bottom: 1.5em;
+        }
+
+        .alert {
+            padding: 1em;
+            border-radius: 6px;
+            margin-bottom: 1em;
+            font-size: 0.95em;
+            transition: opacity 0.3s ease;
+        }
+
+        .alert-danger {
+            background-color: #fff5f5;
+            border: 1px solid #f56565;
+            color: #c53030;
+        }
+
+        .alert-warning {
+            background-color: #fffaf0;
+            border: 1px solid #ed8936;
+            color: #c05621;
+        }
+
+        /* Lien de retour stylisé */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5em;
+            text-decoration: none;
+            color: #2b6cb0;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #1a4971;
+            text-decoration: underline;
+        }
+
+        /* Responsive design pour petits écrans */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5em;
+            }
+
+            h1 {
+                font-size: 1.7em;
+            }
+
+            input[type="email"],
+            input[type="password"],
+            button {
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Connexion Administrateur</h1>
+        
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('login') }}">
+            <div>
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" value="djeryala@gmail.com" required>
+            </div>
+            <div>
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" value="DJERI" required>
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+        <a href="{{ url_for('index') }}" class="back-link">Retour à l'accueil</a>
+    </div>
+</body>
+</html>

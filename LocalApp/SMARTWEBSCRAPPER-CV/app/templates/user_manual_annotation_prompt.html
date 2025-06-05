@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Annotation Manuelle ?</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 90%; margin: auto; padding: 1em; }
+        h1, h2 { text-align: center; }
+        .capture-display { text-align: center; margin-bottom: 1em; }
+        .capture-display img { max-width: 80%; height: auto; border: 1px solid #ccc; }
+        .options { display: flex; justify-content: center; gap: 2em; margin-top: 1em; }
+        .options a { padding: 0.8em 2em; text-decoration: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; border: 1px solid; }
+        .btn-yes { background-color: #28a745; color: white; border-color: #28a745; }
+        .btn-no { background-color: #6c757d; color: white; border-color: #6c757d; } /* Using grey for 'No' here */
+        .btn-yes:hover { background-color: #218838; }
+        .btn-no:hover { background-color: #5a6268; }
+        .flash-messages { margin-top: 1em; max-width: 90%; margin: 1em auto; }
+        .alert { padding: 0.5em; border: 1px solid; border-radius: 3px; margin-bottom: 0.5em; }
+        .alert-danger { border-color: red; color: red; }
+        .alert-info { border-color: blue; color: blue; }
+        .back-link { display: block; text-align: center; margin-top: 2em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Annotation Manuelle</h1>
+        <h2>Capture de : {{ capture_info.url }}</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="capture-display">
+            <p>Image originale :</p>
+            <img src="{{ image_path }}" alt="Capture originale de {{ capture_info.url }}">
+        </div>
+
+        <h2>Le modèle n'a pas correctement annoté. Pouvez-vous annoter l'image vous-même ?</h2>
+
+        <div class="options">
+            <!-- Oui -> Page B (Roboflow iframe) -->
+            <!-- TODO: Create route user_manual_annotation -->
+            <a href="#" class="btn-yes">Oui, annoter maintenant</a> 
+            <!-- Non -> Maybe back to index or display original? Redirecting to index for now -->
+            <a href="{{ url_for("index") }}" class="btn-no">Non, annuler</a> 
+        </div>
+
+        <a href="{{ url_for("user_feedback", capture_id=capture_info.capture_id) }}" class="back-link">Retour à l'étape de feedback</a>
+        <a href="{{ url_for("index") }}" class="back-link">Retour à l'accueil</a>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Options Annotation Manuelle</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 90%; margin: auto; padding: 1em; }
+        h1, h2 { text-align: center; }
+        .capture-display { text-align: center; margin-bottom: 1em; }
+        /* Displaying original image for context */
+        .capture-display img { max-width: 80%; height: auto; border: 1px solid #ccc; }
+        .options { display: flex; justify-content: center; gap: 2em; margin-top: 1em; }
+        .options a { padding: 0.8em 2em; text-decoration: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; border: 1px solid; }
+        .btn-yes { background-color: #ffc107; color: black; border-color: #ffc107; } /* Yellow for modify */
+        .btn-no { background-color: #28a745; color: white; border-color: #28a745; } /* Green for validate */
+        .btn-yes:hover { background-color: #e0a800; }
+        .btn-no:hover { background-color: #218838; }
+        .flash-messages { margin-top: 1em; max-width: 90%; margin: 1em auto; }
+        .alert { padding: 0.5em; border: 1px solid; border-radius: 3px; margin-bottom: 0.5em; }
+        .alert-danger { border-color: red; color: red; }
+        .alert-success { border-color: green; color: green; }
+        .back-link { display: block; text-align: center; margin-top: 2em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Annotation Manuelle Terminée</h1>
+        <h2>Capture de : {{ capture_info.url }}</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="capture-display">
+            <p>Image originale (pour référence) :</p>
+            <img src="{{ image_path }}" alt="Capture originale de {{ capture_info.url }}">
+            <p><small>(L'image avec vos annotations manuelles a été enregistrée - simulation)</small></p>
+        </div>
+
+        <h2>Souhaitez-vous supprimer certaines des boîtes que vous venez de créer ?</h2>
+
+        <div class="options">
+            <!-- Oui -> Page B1.1 (Remove boxes from manual annotation) -->
+            <!-- TODO: Create route user_manual_remove_boxes -->
+            <a href="#" class="btn-yes">Oui, vérifier/supprimer des boîtes</a> 
+            <!-- Non -> Page Tou (Display final manual annotation + download) -->
+            <!-- This assumes the manual annotation is saved directly to human_data -->
+            <a href="{{ url_for("user_display_final_annotation", capture_id=capture_info.capture_id, source="manual_validated") }}" class="btn-no">Non, tout est correct</a> 
+        </div>
+
+        <a href="{{ url_for("user_manual_annotation", capture_id=capture_info.capture_id) }}" class="back-link">Retour à l'annotation (Roboflow)</a>
+        <a href="{{ url_for("index") }}" class="back-link">Retour à l'accueil</a>
+    </div>
+</body>
+</html>
+

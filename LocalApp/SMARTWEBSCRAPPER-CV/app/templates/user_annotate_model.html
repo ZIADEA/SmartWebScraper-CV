@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Annotation du Modèle</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 95%; margin: auto; padding: 1em; display: flex; gap: 2em; }
+        .image-container { flex: 3; text-align: center; }
+        .image-container img { max-width: 100%; height: auto; border: 1px solid #ccc; }
+        .controls-container { flex: 1; border: 1px solid #eee; padding: 1em; border-radius: 5px; background-color: #f8f9fa; }
+        h1, h2 { text-align: center; }
+        h3 { margin-top: 0; }
+        .box-list { list-style: none; padding: 0; max-height: 400px; overflow-y: auto; margin-bottom: 1em; }
+        .box-list li { margin-bottom: 0.5em; padding: 0.3em; border-bottom: 1px solid #ddd; }
+        .box-list label { display: block; }
+        button { padding: 0.7em 1.5em; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 1em; margin-top: 1em; }
+        button:hover { background-color: #0056b3; }
+        .flash-messages { margin-bottom: 1em; }
+        .alert { padding: 0.5em; border: 1px solid; border-radius: 3px; margin-bottom: 0.5em; }
+        .alert-danger { border-color: red; color: red; }
+        .back-link { display: block; text-align: center; margin-top: 1em; }
+    </style>
+</head>
+<body>
+    <h1>Annotation Proposée par le Modèle</h1>
+    <h2>Capture de : {{ capture_info.url }}</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages" style="max-width: 90%; margin: auto;">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <div class="image-container">
+            <img src="{{ annotated_image_path }}" alt="Capture annotée de {{ capture_info.url }}">
+        </div>
+        <div class="controls-container">
+            <h3>Boîtes Détectées</h3>
+            <p>Décochez les boîtes que vous souhaitez supprimer :</p>
+            <form method="post" action="{{ url_for("user_process_annotation", capture_id=capture_info.capture_id) }}"> 
+                <ul class="box-list">
+                    {% for box in detected_boxes %}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="keep_box" value="{{ box.id }}" checked> 
+                            {{ box.class }} (ID: {{ box.id }})
+                        </label>
+                    </li>
+                    {% else %}
+                    <li>Aucune boîte détectée par le modèle.</li>
+                    {% endfor %}
+                </ul>
+                <button type="submit">Valider les choix et passer au Feedback</button>
+            </form>
+            <a href="{{ url_for("user_save_options", capture_id=capture_info.capture_id) }}" class="back-link">Retour aux options</a>
+        </div>
+    </div>
+
+</body>
+</html>
+

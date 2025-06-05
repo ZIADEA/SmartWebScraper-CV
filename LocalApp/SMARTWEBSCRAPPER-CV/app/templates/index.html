@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Accueil</title>
+    <!-- Add basic CSS later -->
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 600px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 5px; }
+        h1 { text-align: center; }
+        .role-selection { display: flex; justify-content: space-around; margin-top: 2em; }
+        .role-selection a { padding: 1em 2em; border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: 5px; }
+        .role-selection a:hover { background-color: #007bff; color: white; }
+        .alert-danger { border: 1px solid red !important; }
+        .alert-info { border: 1px solid blue !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenue dans SmartWebScraper-CV</h1>
+        <p>Votre outil intelligent de capture et d'annotation web.</p>
+        
+        <h2>Sélectionnez votre rôle :</h2>
+        <div class="role-selection">
+            <a href="{{ url_for('user_capture') }}">Utilisateur</a>
+            <a href="{{ url_for('login') }}">Administrateur</a>
+        </div>
+        
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+                <div class="alert alert-{{ category }} {% if category == 'danger' %}alert-danger{% else %}alert-info{% endif %}" style="padding: 0.5em; border-radius: 3px; margin-bottom: 0.5em;">{{ message }}</div>
+              {% for category, message in messages %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Poser une question</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        textarea, input[type="text"] { width: 100%; padding: 0.5em; margin-top: 1em; }
+        .btn-submit { padding: 0.5em 1.2em; background-color: #28a745; color: white; border: none; border-radius: 4px; }
+        .btn-submit:hover { background-color: #218838; }
+        .answer-box { margin-top: 2em; padding: 1em; background-color: #f8f9fa; border-left: 4px solid #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>Posez une question sur la capture</h1>
+
+    <form method="post">
+        <label for="question">Votre question :</label>
+        <input type="text" name="question" id="question" placeholder="Ex : Résume ce texte">
+
+        <button type="submit" class="btn-submit">Envoyer</button>
+    </form>
+
+    {% if answer %}
+    <div class="answer-box">
+        <h3>Réponse :</h3>
+        <p>{{ answer }}</p>
+    </div>
+    {% endif %}
+
+
+    <p><a href="{{ url_for('user_display_capture', filename=capture_id) }}">← Retour à l'image</a></p>
+</body>
+</html>

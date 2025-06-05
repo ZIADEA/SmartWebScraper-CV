@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Capture Affichée</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 90%; margin: auto; padding: 1em; }
+        h1 { text-align: center; }
+        .capture-display { text-align: center; margin-bottom: 2em; }
+        .capture-display img { max-width: 100%; height: auto; border: 1px solid #ccc; }
+        .options { display: flex; justify-content: center; gap: 1em; margin-bottom: 1em; }
+        .options a, .options button { padding: 0.7em 1.5em; text-decoration: none; border-radius: 5px; cursor: pointer; font-size: 1em; }
+        .btn-question { background-color: #ffc107; color: black; border: none; }
+        .btn-save { background-color: #17a2b8; color: white; border: none; }
+        .btn-question:hover { background-color: #e0a800; }
+        .btn-save:hover { background-color: #138496; }
+        .flash-messages { margin-top: 1em; }
+        .alert { padding: 0.5em; border: 1px solid; border-radius: 3px; margin-bottom: 0.5em; }
+        .alert-success { border-color: green; color: green; }
+        .alert-danger { border-color: red; color: red; }
+        .back-link { display: block; text-align: center; margin-top: 1em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Capture de la page : {{ capture_info.url }}</h1>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="capture-display">
+            <img src="{{ image_path }}" alt="Capture de {{ capture_info.url }}">
+        </div>
+
+        <div class="options">
+            <!-- TODO: Link to actual question page (1.1.2.1) -->
+          <a href="{{ url_for('user_question', capture_id=capture_info.capture_id) }}" class="btn-question">Poser une question</a>
+            <!-- Link to save/modify options (1.1.2.2) -->
+            <a href="{{ url_for("user_save_options", capture_id=capture_info.capture_id) }}" class="btn-save">Sauvegarder / Modifier</a>
+        </div>
+
+        <a href="{{ url_for("user_capture") }}" class="back-link">Capturer une autre page</a>
+        <a href="{{ url_for("index") }}" class="back-link">Retour à l'accueil</a>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Données Fine-Tuning</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 800px; margin: auto; padding: 1em; }
+        h1 { text-align: center; }
+        nav { background-color: #f8f9fa; padding: 1em; border-radius: 5px; margin-bottom: 1em; }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: space-around; }
+        nav ul li a { text-decoration: none; color: #007bff; }
+        nav ul li a:hover { text-decoration: underline; }
+        .logout-link { float: right; }
+        .content { border: 1px solid #ccc; padding: 2em; border-radius: 5px; text-align: center; margin-top: 1em; }
+        .count-info { font-size: 1.2em; margin-bottom: 1.5em; }
+        .btn-finetune { padding: 0.8em 2em; background-color: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; }
+        .btn-finetune:hover { background-color: #e66a0a; }
+        .btn-finetune:disabled { background-color: #6c757d; cursor: not-allowed; }
+        .flash-messages { margin-top: 1em; }
+        .alert { padding: 0.5em; border: 1px solid; border-radius: 3px; margin-bottom: 0.5em; }
+        .alert-warning { border-color: orange; color: orange; }
+        .alert-danger { border-color: red; color: red; }
+        .alert-success { border-color: green; color: green; }
+        .alert-info { border-color: blue; color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="{{ url_for("admin_dashboard") }}">Tableau de Bord</a></li>
+                <li><a href="{{ url_for("admin_visited_links") }}">Liens Visités</a></li>
+                <li><a href="{{ url_for("admin_view_human_data", data_type=\"validated_predictions\") }}">Prédictions Validées</a></li>
+                <li><a href="{{ url_for("admin_view_human_data", data_type=\"manual_annotations\") }}">Annotations Manuelles</a></li>
+                <li><a href="{{ url_for("admin_fine_tune_data") }}">Données Fine-Tuning</a></li>
+                <li><a href="{{ url_for("logout") }}" class="logout-link">Déconnexion</a></li>
+            </ul>
+        </nav>
+
+        <h1>Données Prêtes pour le Fine-Tuning</h1>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="content">
+            <p class="count-info">Nombre d'images (avec JSON COCO) dans le dossier <code>fine_tune_data</code> : <strong>{{ image_count }}</strong></p>
+            
+            <!-- TODO: Create route admin_launch_finetuning -->
+            <form method="post" action="#">
+                <button type="submit" class="btn-finetune" {{ "disabled" if image_count == 0 }}>
+                    Lancer le Fine-Tuning
+                </button>
+            </form>
+            <p><small>Note : Lancer le fine-tuning exécutera le script local et supprimera ensuite les données du dossier <code>fine_tune_data</code>.</small></p>
+        </div>
+
+    </div>
+</body>
+</html>
+
