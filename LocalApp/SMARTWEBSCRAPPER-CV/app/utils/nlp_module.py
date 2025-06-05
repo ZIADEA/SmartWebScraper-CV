@@ -622,7 +622,7 @@ class CompleteOCRQASystem:
         
     def process_image(self, image_path, use_layout=True):
         """Traite une image de n'importe quelle taille"""
-        print(f"=== TRAITEMENT DE L'IMAGE ===")
+        print("=== TRAITEMENT DE L'IMAGE ===")
         print(f"Chemin : {image_path}")
         
         if not os.path.exists(image_path):
