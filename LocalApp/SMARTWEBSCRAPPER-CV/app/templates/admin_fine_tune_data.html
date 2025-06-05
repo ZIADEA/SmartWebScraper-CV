@@ -55,8 +55,7 @@
         <div class="content">
             <p class="count-info">Nombre d'images (avec JSON COCO) dans le dossier <code>fine_tune_data</code> : <strong>{{ image_count }}</strong></p>
             
-            <!-- TODO: Create route admin_launch_finetuning -->
-            <form method="post" action="#">
+            <form method="post" action="{{ url_for('admin_launch_finetuning') }}">
                 <button type="submit" class="btn-finetune" {{ "disabled" if image_count == 0 }}>
                     Lancer le Fine-Tuning
                 </button>

@@ -207,13 +207,13 @@
                 <a href="{{ url_for('admin_visited_links') }}">Liens Visités</a>
                 </div>
                 <div class="grid-item">
-                    <a href="#">Prédictions Validées </a>
+                    <a href="{{ url_for('admin_view_human_data', data_type='validated_predictions') }}">Prédictions Validées </a>
                 </div>
                 <div class="grid-item">
-                    <a href="#">Annotations Manuelles </a>
+                    <a href="{{ url_for('admin_view_human_data', data_type='manual_annotations') }}">Annotations Manuelles </a>
                 </div>
                 <div class="grid-item">
-                    <a href="#">Données Fine-Tuning </a>
+                    <a href="{{ url_for('admin_fine_tune_data') }}">Données Fine-Tuning </a>
                 </div>
             </div>
         </div>

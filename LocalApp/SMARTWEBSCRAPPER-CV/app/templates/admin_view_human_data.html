@@ -33,7 +33,7 @@
                 <!-- Highlight current page? -->
                 <li><a href="{{ url_for("admin_view_human_data", data_type=\"validated_predictions\") }}">Prédictions Validées</a></li>
                 <li><a href="{{ url_for("admin_view_human_data", data_type=\"manual_annotations\") }}">Annotations Manuelles</a></li>
-                <li><a href="#">Données Fine-Tuning</a></li>
+                <li><a href="{{ url_for('admin_fine_tune_data') }}">Données Fine-Tuning</a></li>
                 <li><a href="{{ url_for("logout") }}" class="logout-link">Déconnexion</a></li>
             </ul>
         </nav>
@@ -61,8 +61,7 @@
                         <p>ID: {{ item.id }}</p>
                         <p>Image: {{ item.image_filename }}</p>
                         <p>JSON: {{ item.json_filename }}</p>
-                        {# TODO: Create route admin_view_item_detail #}
-                        <a href="#">Voir Détails / Valider</a>
+                        <a href="{{ url_for('admin_view_item_detail', item_id=item.id) }}">Voir Détails / Valider</a>
                     </div>
                 {% endfor %}
             </div>

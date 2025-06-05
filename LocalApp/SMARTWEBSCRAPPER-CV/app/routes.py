@@ -248,6 +248,16 @@ def admin_delete_item(item_id):
     return redirect(url_for("admin_dashboard"))
 
 
+@app.route("/admin/modify_item/<item_id>")
+def admin_modify_item(item_id):
+    """Redirect admin to the manual annotation page to modify an item."""
+    if not is_admin_logged_in():
+        flash("Please log in to access this page.", "warning")
+        return redirect(url_for("login"))
+
+    return redirect(url_for("manual_annotation", capture_id=item_id))
+
+
 @app.route("/admin/fine_tune_data")
 def admin_fine_tune_data():
     # Page 1.2.1.4: Display count of items in fine_tune_data and option to launch fine-tuning
@@ -270,6 +280,17 @@ def admin_fine_tune_data():
 
     # Render the template displaying the count and the button
     return render_template("admin_fine_tune_data.html", image_count=image_count)
+
+
+@app.route("/admin/launch_finetuning", methods=["POST"])
+def admin_launch_finetuning():
+    """Placeholder route to trigger the fine-tuning process."""
+    if not is_admin_logged_in():
+        flash("Please log in to perform this action.", "warning")
+        return redirect(url_for("login"))
+
+    flash("Fine-tuning launched (simulation).", "info")
+    return redirect(url_for("admin_fine_tune_data"))
 
 
 # --- User Routes --- #
