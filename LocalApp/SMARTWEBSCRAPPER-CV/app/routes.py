@@ -47,6 +47,10 @@ if not os.path.exists(app.config["VISITED_LINKS_FILE"]):
     with open(app.config["VISITED_LINKS_FILE"], 'w') as f:
         json.dump([], f)
 
+# Folder used to store images filtered manually by users
+SUPPRESSION_HUMAN_FOLDER = os.path.join(app.root_path, "data", "suppression_human")
+os.makedirs(SUPPRESSION_HUMAN_FOLDER, exist_ok=True)
+
 
 # Placeholder for authentication check
 def is_admin_logged_in():
@@ -678,9 +682,7 @@ def manual_boxes_review(capture_id):
             json.dump(filtered, f, indent=2)
 
         # 🧽 Nettoyage des zones supprimées
-        output_dir = os.path.join(base_dir, "app", "data", "suppresion_human")
-        os.makedirs(output_dir, exist_ok=True)
-        output_path = os.path.join(output_dir, f"{capture_id}_filtered.jpg")
+        output_path = os.path.join(SUPPRESSION_HUMAN_FOLDER, f"{capture_id}_filtered.jpg")
 
         remove_zones_from_image(img_path, filtered, output_path)
 
@@ -704,9 +706,7 @@ def serve_filtered_manual_image(filename):
     import os
     from flask import send_file, abort, current_app
 
-    base_dir = os.path.dirname(current_app.root_path)
-    suppression_dir = os.path.join(base_dir, "app", "data", "suppresion_human")
-    image_path = os.path.join(suppression_dir, filename)
+    image_path = os.path.join(SUPPRESSION_HUMAN_FOLDER, filename)
 
     if not os.path.exists(image_path):
         print("[404] Image filtrée manuelle introuvable :", image_path)
@@ -739,10 +739,8 @@ def manual_display_final_annotation(capture_id):
     json_path = os.path.join(ann_dir, f"{capture_id}.json")
     img_path = os.path.join(ann_dir, f"{capture_id}.png")
 
-    output_dir = os.path.join(base_dir, "app", "data", "suppresion_human")
-    os.makedirs(output_dir, exist_ok=True)
     output_filename = f"{capture_id}_filtered.jpg"
-    output_path = os.path.join(output_dir, output_filename)
+    output_path = os.path.join(SUPPRESSION_HUMAN_FOLDER, output_filename)
 
     try:
         if not os.path.exists(json_path):
@@ -790,8 +788,7 @@ def manual_display_final_annotation(capture_id):
 # ───────────────────────────────
 @app.route("/user/manual/download/<capture_id>")
 def download_manual_filtered_image(capture_id):
-    base_dir = os.path.dirname(current_app.root_path)
-    path = os.path.join(base_dir, "app", "data", "suppresion_human", f"{capture_id}_filtered.jpg")
+    path = os.path.join(SUPPRESSION_HUMAN_FOLDER, f"{capture_id}_filtered.jpg")
     if not os.path.exists(path):
         flash("Image non trouvée.", "danger")
         return redirect(url_for("user_capture"))
