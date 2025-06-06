@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Annotation Manuelle - SmartWebScraper-CV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: row;
+        }
+        .left-panel {
+            flex: 3;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+        }
+        .right-panel {
+            flex: 2;
+            padding: 20px;
+            background-color: #ffffff;
+            border-left: 1px solid #ddd;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        canvas {
+            border: 2px solid #333;
+            cursor: crosshair;
+        }
+        .export-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .annotation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eee;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+        }
+        .delete-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        select {
+            padding: 4px;
+        }
+        ul {
+            font-size: 14px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <canvas id="annotCanvas" width="1000" height="800"></canvas>
+    </div>
+    <div class="right-panel">
+        <h1>Annotation manuelle de l'image {{ image_filename }}</h1>
+        <p><strong>Instructions :</strong> Dessinez des boîtes sur l'image avec votre souris. Ensuite, sélectionnez leur classe parmi celles ci-dessous :</p>
+        <ul>
+            <li><b>advertisement</b> : Publicité ou annonce</li>
+            <li><b>chaine</b> : Chaîne ou fil d'éléments</li>
+            <li><b>commentaire</b> : Avis ou commentaires d'utilisateurs</li>
+            <li><b>description</b> : Texte descriptif</li>
+            <li><b>header</b> : En-tête de page</li>
+            <li><b>footer</b> : Pied de page</li>
+            <li><b>left sidebar</b> : Barre latérale gauche</li>
+            <li><b>logo</b> : Logo ou marque du site</li>
+            <li><b>likes</b> : Boutons "J'aime" ou réactions</li>
+            <li><b>media</b> : Contenu multimédia (image, vidéo, audio)</li>
+            <li><b>pop up</b> : Fenêtre pop-up ou modale</li>
+            <li><b>recommendations</b> : Suggestions de contenu</li>
+            <li><b>right sidebar</b> : Barre latérale droite</li>
+            <li><b>suggestions</b> : Propositions de contenu similaire</li>
+            <li><b>title</b> : Titre principal</li>
+            <li><b>vues</b> : Indicateur de nombre de vues</li>
+            <li><b>none access</b> : Zone non accessible ou restreinte</li>
+            <li><b>other</b> : Autre élément non classé</li>
+        </ul>
+
+        <button class="export-btn" onclick="exportAnnotations()">Sauvegarder les annotations</button>
+
+        <div id="annotationList"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('annotCanvas');
+        const ctx = canvas.getContext('2d');
+        const annotations = [];
+        let isDrawing = false;
+        let startX, startY;
+        let imageUrl = "/data/originals/{{ image_filename }}";
+        let image = new Image();
+        let imageId = "{{ capture_id }}";
+        const CLASSES = [
+        "advertisement", "chaine", "commentaire", "description", "header", "footer", "left sidebar",
+        "logo", "likes", "media", "pop up", "recommendations", "right sidebar", "suggestions",
+        "title", "vues", "none access", "other"
+    ];
+
+        image.onload = () => {
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0);
+        };
+        image.src = imageUrl;
+
+        canvas.addEventListener("mousedown", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            isDrawing = true;
+        });
+
+        canvas.addEventListener("mousemove", (e) => {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            let currentX = e.clientX - rect.left;
+            let currentY = e.clientY - rect.top;
+            renderAnnotations();
+            ctx.strokeStyle = "#2ecc71";
+            ctx.setLineDash([6]);
+            ctx.strokeRect(startX, startY, currentX - startX, currentY - startY);
+            ctx.setLineDash([]);
+        });
+
+        canvas.addEventListener("mouseup", (e) => {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            let endX = e.clientX - rect.left;
+            let endY = e.clientY - rect.top;
+            let x = Math.min(startX, endX);
+            let y = Math.min(startY, endY);
+            let width = Math.abs(endX - startX);
+            let height = Math.abs(endY - startY);
+            if (width < 5 || height < 5) return;
+            let annotation = {
+                id: Date.now(),
+                x, y, width, height,
+                label: "content"
+            };
+            annotations.push(annotation);
+            renderAnnotations();
+            isDrawing = false;
+        });
+
+        function renderAnnotations() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0);
+            annotations.forEach((ann) => {
+                ctx.strokeStyle = "#e74c3c";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(ann.x, ann.y, ann.width, ann.height);
+                ctx.fillStyle = "#e74c3c";
+                ctx.font = "14px Arial";
+                ctx.fillText(ann.label, ann.x + 4, ann.y + 16);
+            });
+            updateList();
+        }
+
+        function updateList() {
+            const container = document.getElementById("annotationList");
+            container.innerHTML = "";
+            annotations.forEach(ann => {
+                const div = document.createElement("div");
+                div.className = "annotation";
+                div.innerHTML = `
+                    <span>${Math.round(ann.x)},${Math.round(ann.y)} – ${Math.round(ann.width)}x${Math.round(ann.height)}</span>
+                    <select onchange="updateLabel(${ann.id}, this.value)">
+                        ${CLASSES.map(cls => `<option value="${cls}" ${cls === ann.label ? "selected" : ""}>${cls}</option>`).join("")}
+                    </select>
+                    <button class="delete-btn" onclick="removeAnnotation(${ann.id})">Supprimer</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateLabel(id, newLabel) {
+            const ann = annotations.find(a => a.id === id);
+            if (ann) ann.label = newLabel;
+            renderAnnotations();
+        }
+
+        function removeAnnotation(id) {
+            const index = annotations.findIndex(a => a.id === id);
+            if (index >= 0) annotations.splice(index, 1);
+            renderAnnotations();
+        }
+
+        function exportAnnotations() {
+    fetch("/user/manual/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            image_id: "{{ capture_id }}",
+            annotations: annotations.map(ann => ({
+                id: ann.id,
+                value: {
+                    x: (ann.x / canvas.width) * 100,
+                    y: (ann.y / canvas.height) * 100,
+                    width: (ann.width / canvas.width) * 100,
+                    height: (ann.height / canvas.height) * 100,
+                    rectanglelabels: [ann.label]
+                }
+            }))
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Réponse du serveur:", data);
+        
+        if (data.status === "success") {
+            console.log("Sauvegarde réussie, redirection vers:", data.redirect);
+            // Redirection immédiate si succès
+            window.location.href = data.redirect;
+        } else {
+            console.error("Erreur serveur:", data);
+            alert(`Erreur: ${data.message}`);
+        }
+    })
+    .catch(error => {
+        console.error("Erreur complète:", error);
+        alert("Échec de la sauvegarde: " + error.message);
+    });
+}
+
+
+    </script>
+</body>
+</html>

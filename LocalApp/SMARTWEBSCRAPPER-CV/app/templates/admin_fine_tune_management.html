@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Fine-Tuning - Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #ffc107, #ff8f00);
+            color: #212529;
+            padding: 20px;
+            text-align: center;
+        }
+        .breadcrumb {
+            background-color: #e9ecef;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .breadcrumb a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stat-number.primary { color: #007bff; }
+        .stat-number.success { color: #28a745; }
+        .stat-number.warning { color: #ffc107; }
+        .stat-label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .action-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .action-card h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 3px solid #ffc107;
+            padding-bottom: 10px;
+        }
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        .alert {
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+        .alert-warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+        .alert-success { background: #d4edda; border-left-color: #28a745; color: #155724; }
+        .alert-danger { background: #f8d7da; border-left-color: #dc3545; color: #721c24; }
+        .alert-info { background: #d1ecf1; border-left-color: #17a2b8; color: #0c5460; }
+        .files-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .files-table h3 {
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+        }
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge-primary { background: #007bff; color: white; }
+        .badge-success { background: #28a745; color: white; }
+        .file-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Gestion Fine-Tuning</h1>
+        <p>Gestion des données d'entraînement et lancement du processus de fine-tuning</p>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="{{ url_for('admin_dashboard') }}">🏠 Dashboard Admin</a> > 
+        <strong>Gestion Fine-Tuning</strong>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Statistiques -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number primary">{{ image_count }}</div>
+                <div class="stat-label">Images</div>
+                <div class="stat-desc">Prêtes pour fine-tuning</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number success">{{ json_count }}</div>
+                <div class="stat-label">Annotations JSON</div>
+                <div class="stat-desc">Format COCO</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number warning">{{ (image_count + json_count) }}</div>
+                <div class="stat-label">Total Fichiers</div>
+                <div class="stat-desc">Dans fine_tune_data</div>
+            </div>
+        </div>
+
+        <!-- Action de lancement -->
+        <div class="action-card">
+            <h3>🚀 Lancer le Fine-Tuning</h3>
+            
+            {% if image_count > 0 %}
+                <p>Vous avez <strong>{{ image_count }} images</strong> et <strong>{{ json_count }} annotations</strong> prêtes pour l'entraînement.</p>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ Attention:</strong> Après le fine-tuning, toutes les images seront automatiquement supprimées du dossier fine_tune_data et sauvegardées dans un backup horodaté.
+                </div>
+                
+                <form method="POST" action="{{ url_for('admin_launch_fine_tuning_validated') }}" 
+                      onsubmit="return confirm('🚀 Lancer le fine-tuning ?\n\nCette action va :\n• Traiter tous les fichiers\n• Les déplacer vers un backup\n• Vider le dossier fine_tune_data\n\nConfirmer ?')">
+                    <button type="submit" class="btn btn-primary">
+                        🎯 Lancer le Fine-Tuning
+                    </button>
+                </form>
+            {% else %}
+                <p class="text-muted">Aucune image disponible pour le fine-tuning.</p>
+                <p>Validez d'abord des prédictions ou annotations depuis les autres sections administrateur.</p>
+                <button type="button" class="btn btn-disabled" disabled>
+                    Fine-Tuning Indisponible
+                </button>
+            {% endif %}
+        </div>
+
+        <!-- Liste des fichiers -->
+        {% if files_info %}
+            <div class="files-table">
+                <h3>📁 Fichiers dans fine_tune_data ({{ files_info|length }} fichiers)</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom du fichier</th>
+                            <th>Type</th>
+                            <th>Taille</th>
+                            <th>Date création</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files_info %}
+                            <tr>
+                                <td>
+                                    <span class="file-icon">
+                                        {% if file.type == 'image' %}🖼️{% else %}📄{% endif %}
+                                    </span>
+                                    <code>{{ file.name }}</code>
+                                </td>
+                                <td>
+                                    <span class="badge badge-{{ 'primary' if file.type == 'image' else 'success' }}">
+                                        {{ file.type.upper() }}
+                                    </span>
+                                </td>
+                                <td>{{ file.size|filesize_format }}</td>
+                                <td>{{ file.timestamp|timestamp_to_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="action-card">
+                <h3>📁 Aucun fichier dans fine_tune_data</h3>
+                <p>Le dossier de données d'entraînement est vide. Pour obtenir des données :</p>
+                <ul>
+                    <li>✅ Validez des prédictions depuis la section "Prédictions Validées"</li>
+                    <li>✅ Validez des annotations depuis la section "Annotations Manuelles"</li>
+                </ul>
+                <div style="margin-top: 20px;">
+                    <a href="{{ url_for('admin_predictions_validees') }}" class="btn btn-primary" style="margin-right: 10px;">
+                        🎯 Voir Prédictions
+                    </a>
+                    <a href="{{ url_for('admin_annotations_manuelles') }}" class="btn btn-primary">
+                        ✍️ Voir Annotations
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 40px; text-align: center;">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                ← Retour au Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Choix du système de question</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .options { display: flex; gap: 1em; }
+        .options a { padding: 0.5em 1.2em; text-decoration: none; border-radius: 4px; }
+        .btn-chatgpt { background-color: #4a90e2; color: white; }
+        .btn-nlp { background-color: #28a745; color: white; }
+        .btn-LLM { background-color: #17a2b8; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Choisissez le moteur de réponse</h1>
+    <div class="options">
+        <a href="{{ url_for('user_question_nlp', capture_id=capture_id) }}" class="btn-nlp">NLP interne</a>
+        <a href="{{ url_for('user_question_chatgpt', capture_id=capture_id) }}" class="btn-chatgpt">ChatGPT</a>
+        <a href="{{ url_for('user_question_local_llm', capture_id=capture_id) }}" class="btn-LLM">Another LLM</a>
+
+
+    </div>
+    <p><a href="{{ url_for('user_display_capture', filename=capture_id) }}">← Retour à l'image</a></p>
+</body>
+</html>
