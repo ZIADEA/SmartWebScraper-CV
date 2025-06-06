@@ -495,9 +495,11 @@ def admin_prediction_detail(item_id):
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
+            annotations = json_data.get("annotations", [])
+            unique_cats = {ann.get("category_id") for ann in annotations if ann.get("category_id") is not None}
             json_info = {
-                "nb_annotations": len(json_data.get("annotations", [])),
-                "categories": len(json_data.get("categories", [])),
+                "nb_annotations": len(annotations),
+                "categories": len(unique_cats),
                 "image_info": json_data.get("images", [{}])[0] if json_data.get("images") else {}
             }
             print(f"[DEBUG] JSON chargé pour {item_id}: {json_info}")
@@ -988,9 +990,11 @@ def admin_annotation_manuelle_detail(item_id):
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
+            annotations = json_data.get("annotations", [])
+            unique_cats = {ann.get("category_id") for ann in annotations if ann.get("category_id") is not None}
             json_info = {
-                "nb_annotations": len(json_data.get("annotations", [])),
-                "categories": len(json_data.get("categories", [])),
+                "nb_annotations": len(annotations),
+                "categories": len(unique_cats),
                 "image_info": json_data.get("images", [{}])[0]
             }
     except Exception as e:
