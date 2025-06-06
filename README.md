@@ -62,3 +62,7 @@ export ADMIN_PASSWORD="secret"
 
 Create an `admin_config.json` file based on the provided `admin_config.json.example` and populate it with the desired credentials.
 
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
