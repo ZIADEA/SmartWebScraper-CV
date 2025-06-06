@@ -559,6 +559,7 @@ def admin_validate_prediction(item_id):
     
     return redirect(url_for("admin_predictions_validees"))
 
+@app.route("/admin/annotations_manuelle")
 @app.route("/admin/delete_prediction/<item_id>", methods=["POST"])
 def admin_delete_prediction(item_id):
     """Supprimer une prédiction"""
@@ -974,12 +975,21 @@ def admin_annotation_manuelle_detail(item_id):
     human_data_path = app.config["HUMAN_DATA_FOLDER"]
     manual_folder = os.path.join(human_data_path, "manual", item_id)
     
-    if not os.path.exists(manual_folder):
-        flash(f"Annotation manuelle {item_id} non trouvée.", "danger")
-        return redirect(url_for("admin_annotations_manuelles"))
-    
-    image_filename = f"{item_id}.png"
-    json_filename = f"{item_id}_coco.json"
+
+    annotated_filename = f"annotated_{image_filename}"
+    if os.path.exists(os.path.join(app.config['ANNOTATED_FOLDER'], annotated_filename)):
+        annotated_image_url = url_for('serve_annotated_image', filename=annotated_filename)
+    else:
+        annotated_image_url = None
+
+
+    return render_template(
+        "admin_annotation_manuelle_detail.html",
+        item_id=item_id,
+        image_url=image_url,
+        json_info=json_info,
+        annotated_image_url=annotated_image_url,
+    )
     image_path = os.path.join(manual_folder, image_filename)
     json_path = os.path.join(manual_folder, json_filename)
     
