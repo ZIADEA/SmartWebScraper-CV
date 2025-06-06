@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Annotation finale validée par le modèle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 90%; margin: auto; padding: 1em; }
+        h1, h2 { text-align: center; }
+        .image-display { text-align: center; margin-bottom: 2em; }
+        .image-display img { max-width: 90%; height: auto; border: 1px solid #ccc; }
+        .info { text-align: center; margin-bottom: 2em; font-size: 1.1em; }
+        .download-section { text-align: center; margin-top: 2em; }
+        .btn-download {
+            padding: 0.8em 2em;
+            font-size: 1.1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-download:hover {
+            background-color: #0056b3;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Résultat final de l'annotation automatique</h1>
+    <h2>Capture traitée : {{ capture_info.url }}</h2>
+
+    <div class="image-display">
+        <p>Image annotée après suppression des éléments non désirés :</p>
+        <img src="{{ annotated_image_path }}" alt="Image nettoyée">
+    </div>
+
+    <div class="info">
+        <p>Cette image a été générée à partir des prédictions du modèle validées par vous. Les zones comme <strong>footer</strong>, <strong>ads</strong>, <strong>popup</strong> ont été supprimées si demandé.</p>
+    </div>
+
+    <div class="download-section">
+        <a href="{{ url_for('download_final_image', filename=download_filename) }}" class="btn-download">Télécharger</a>
+    </div>
+
+    <a href="{{ url_for('index') }}" class="back-link">Retour à l'accueil</a>
+</div>
+</body>
+</html>
