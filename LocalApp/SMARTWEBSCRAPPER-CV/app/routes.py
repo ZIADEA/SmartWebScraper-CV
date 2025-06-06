@@ -508,7 +508,7 @@ def admin_prediction_detail(item_id):
         print(f"[ERROR] Erreur JSON pour {item_id}: {e}")
 
     # Vérifier si une image annotée par OpenCV existe
-     annotated_filename = f"annotated_{image_filename}"
+    annotated_filename = f"annotated_{image_filename}"
     annotated_path = os.path.join(app.config['ANNOTATED_FOLDER'], annotated_filename)
     if os.path.exists(annotated_path):
         annotated_image_url = url_for('serve_annotated_image', filename=annotated_filename)
