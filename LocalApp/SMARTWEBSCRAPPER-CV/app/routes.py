@@ -584,6 +584,7 @@ def admin_delete_prediction(item_id):
 # GESTION DES ANNOTATIONS MANUELLES
 # ───────────────────────────────────────────────────────────────────
 
+@app.route("/admin/annotations_manuelle")
 @app.route("/admin/annotations_manuelles")
 def admin_annotations_manuelles():
     """Affichage des annotations créées manuellement"""
