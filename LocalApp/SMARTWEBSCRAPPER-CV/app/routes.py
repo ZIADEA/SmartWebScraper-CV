@@ -507,11 +507,22 @@ def admin_prediction_detail(item_id):
     
     # CORRECTION: URL pour servir l'image depuis le bon dossier
     image_url = url_for("serve_human_data_prediction", item_id=item_id, filename=image_filename)
-    
-    return render_template("admin_prediction_detail.html", 
-                         item_id=item_id,
-                         image_url=image_url,
-                         json_info=json_info)
+
+    # Annotated image logic
+    annotated_filename = f"annotated_{image_filename}"
+    annotated_path = os.path.join(app.config['ANNOTATED_FOLDER'], annotated_filename)
+    if os.path.exists(annotated_path):
+        annotated_image_url = url_for('serve_annotated_image', filename=annotated_filename)
+    else:
+        annotated_image_url = None
+
+    return render_template(
+        "admin_prediction_detail.html",
+        item_id=item_id,
+        image_url=image_url,
+        json_info=json_info,
+        annotated_image_url=annotated_image_url,
+    )
 
 @app.route("/admin/validate_prediction/<item_id>", methods=["POST"])
 def admin_validate_prediction(item_id):
