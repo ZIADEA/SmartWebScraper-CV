@@ -1,10 +1,7 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>SmartWebScraper-CV - {{ title }}</title>
-    <style>
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<style>
         body { font-family: sans-serif; margin: 2em; }
         .container { max-width: 1200px; margin: auto; padding: 1em; }
         h1 { text-align: center; }
@@ -70,6 +67,6 @@
         {% endif %}
 
     </div>
-</body>
-</html>
+{% endblock %}
+
 
