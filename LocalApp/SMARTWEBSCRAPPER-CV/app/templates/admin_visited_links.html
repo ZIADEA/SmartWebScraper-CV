@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sites Visités - Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .breadcrumb {
+            background-color: #e9ecef;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .breadcrumb a {
+            color: #17a2b8;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .stats-banner {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .badge {
+            background: #17a2b8;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .nav-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .nav-card h5 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #17a2b8;
+            padding-bottom: 8px;
+        }
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .table-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .table-card h5 {
+            margin: 0;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+        }
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        .empty-state {
+            text-align: center;
+            background: white;
+            padding: 60px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #999;
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 12px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .alert-danger { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .alert-warning { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        .alert-info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .url-text {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .url-text:hover {
+            text-decoration: underline;
+        }
+        code {
+            background: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔗 Historique des Sites Visités</h1>
+        <p>Gestion et consultation des captures effectuées par les utilisateurs</p>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="{{ url_for('admin_dashboard') }}">🏠 Dashboard Admin</a> > 
+        <strong>Sites Visités</strong>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="stats-banner">
+            <div>
+                <h2 style="margin: 0; color: #333;">🔗 Historique des Sites Capturés</h2>
+                <p style="margin: 5px 0 0 0; color: #666;">Liste complète des URLs traitées par l'application</p>
+            </div>
+            <div class="badge">{{ links|length }} sites</div>
+        </div>
+
+        <!-- Navigation rapide vers autres sections -->
+        <div class="nav-card">
+            <h5>🚀 Navigation Rapide vers les Données</h5>
+            <div class="nav-buttons">
+                <a href="{{ url_for('admin_predictions_validees') }}" class="btn btn-primary">
+                    🎯 Prédictions Validées
+                </a>
+                <a href="{{ url_for('admin_annotations_manuelles') }}" class="btn btn-success">
+                    ✍️ Annotations Manuelles
+                </a>
+                <a href="{{ url_for('admin_fine_tune_management') }}" class="btn btn-warning">
+                    🚀 Fine-Tuning Data
+                </a>
+            </div>
+        </div>
+
+        {% if links %}
+            <div class="table-card">
+                <h5>📋 Liste des Captures ({{ links|length }} éléments)</h5>
+                <div style="overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>🌐 URL</th>
+                                <th>📷 Fichier</th>
+                                <th>🆔 Capture ID</th>
+                                <th>🕒 Date</th>
+                                <th>⚡ Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in links %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ link.url }}" target="_blank" class="url-text">
+                                            {{ link.url[:60] }}{% if link.url|length > 60 %}...{% endif %}
+                                        </a>
+                                    </td>
+                                    <td><code>{{ link.filename }}</code></td>
+                                    <td><small style="color: #666;">{{ link.capture_id }}</small></td>
+                                    <td>{{ link.timestamp }}</td>
+                                    <td>
+                                        <a href="{{ url_for('user_display_capture', filename=link.filename) }}" 
+                                           class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">
+                                            👁️ Voir
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>🔗 Aucun site visité</h3>
+                <p>Les sites capturés par les utilisateurs apparaîtront ici automatiquement.</p>
+                <p style="color: #999;">L'historique se peuple quand les utilisateurs font des captures via l'interface.</p>
+                <a href="{{ url_for('user_capture') }}" class="btn btn-primary">
+                    📸 Faire une Première Capture
+                </a>
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 40px; text-align: center;">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                ← Retour au Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SmartWebScraper-CV - Capturer une page</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 700px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 5px; }
+        h1 { text-align: center; }
+        label { display: block; margin-bottom: 0.5em; }
+        input[type="url"] { 
+            width: 100%; 
+            padding: 0.5em; 
+            margin-bottom: 1em; 
+            border: 1px solid #ccc; 
+            border-radius: 3px; 
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button { 
+            padding: 0.7em 1.5em; 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        button:hover { background-color: #218838; }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .flash-messages { margin-top: 1em; }
+        .alert { 
+            padding: 0.8em; 
+            border: 1px solid; 
+            border-radius: 3px; 
+            margin-bottom: 0.8em;
+            font-size: 15px;
+        }
+        .alert-warning { 
+            border-color: #ffc107;
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .alert-danger { 
+            border-color: #dc3545;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .alert-success { 
+            border-color: #28a745;
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .back-link { 
+            display: block; 
+            text-align: center; 
+            margin-top: 1.5em;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .progress-container {
+            display: none;
+            margin-top: 1em;
+        }
+        progress {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Capturer une nouvelle page web</h1>
+        
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form id="capture-form" method="post" action="{{ url_for('user_capture') }}">
+            <div>
+                <label for="url">Entrez l'URL de la page à capturer :</label>
+                <input type="url" id="url" name="url" placeholder="https://example.com" required
+                       pattern="https?://.+" title="L'URL doit commencer par http:// ou https://">
+            </div>
+            <button type="submit" id="submit-btn">
+                <span id="spinner" class="loading-spinner"></span>
+                <span id="btn-text">Lancer la capture</span>
+            </button>
+            
+            <div id="progress-container" class="progress-container">
+                <p>Capture en cours... Cette opération peut prendre quelques secondes</p>
+                <progress id="capture-progress" value="0" max="100"></progress>
+            </div>
+        </form>
+        <a href="{{ url_for('index') }}" class="back-link">Retour à l'accueil</a>
+    </div>
+
+    <script>
+        document.getElementById('capture-form').addEventListener('submit', function(e) {
+            const urlInput = document.getElementById('url');
+            const submitBtn = document.getElementById('submit-btn');
+            const spinner = document.getElementById('spinner');
+            const btnText = document.getElementById('btn-text');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('capture-progress');
+            
+            // Validation client-side
+            if (!urlInput.value || !urlInput.checkValidity()) {
+                e.preventDefault();
+                urlInput.focus();
+                return;
+            }
+            
+            // Désactiver le bouton pendant le traitement
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = 'Traitement en cours...';
+            progressContainer.style.display = 'block';
+            
+            // Simulation de progression (à adapter avec du vrai AJAX si possible)
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBar.value = progress;
+                
+                if (progress >= 90) {
+                    clearInterval(interval);
+                }
+            }, 300);
+        });
+
+        // Validation en temps réel
+        document.getElementById('url').addEventListener('input', function(e) {
+            if (this.checkValidity()) {
+                this.style.borderColor = '#28a745';
+            } else {
+                this.style.borderColor = '#dc3545';
+            }
+        });
+    </script>
+</body>
+</html>

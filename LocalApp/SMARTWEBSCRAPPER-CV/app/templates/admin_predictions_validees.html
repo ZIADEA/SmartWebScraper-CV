@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Prédictions Validées{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>🎯 Prédictions Validées</h2>
+                <span class="badge bg-primary fs-6">{{ items|length }} éléments</span>
+            </div>
+            <p class="text-muted">
+                Images annotées automatiquement par le modèle et validées par les utilisateurs
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Prédictions Validées</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Actions groupées -->
+    <div class="row mb-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-0">⚡ Actions groupées</h6>
+                            <small class="text-muted">Sélectionnez des éléments puis choisissez une action</small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm" onclick="validateSelected()">
+                                    ✅ Valider sélection
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteSelected()">
+                                    🗑️ Supprimer sélection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des prédictions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>📋 Liste des Prédictions</h5>
+                </div>
+                <div class="card-body">
+                    {% if items %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="40">
+                                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                        </th>
+                                        <th>🆔 ID</th>
+                                        <th>🖼️ Image</th>
+                                        <th>📝 Fichier JSON</th>
+                                        <th>🕒 Date</th>
+                                        <th>⚡ Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="item-checkbox" value="{{ item.id }}">
+                                        </td>
+                                        <td>
+                                            <strong>{{ item.id }}</strong><br>
+                                            <small class="text-muted">Prédiction validée</small>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <div class="bg-primary text-white rounded d-flex align-items-center justify-content-center" 
+                                                         style="width: 40px; height: 40px;">
+                                                        🖼️
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <strong>{{ item.image_filename }}</strong><br>
+                                                    <small class="text-muted">Image annotée</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">📝 {{ item.json_filename }}</span>
+                                        </td>
+                                        <td>
+                                            {{ item.timestamp | timestamp_to_date }}<br>
+                                            <small class="text-muted">{{ item.timestamp | timestamp_to_date }}</small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <!-- Voir détails -->
+                                                <a href="{{ url_for('admin_prediction_detail', item_id=item.id) }}" 
+                                                   class="btn btn-outline-info" title="Voir les détails">
+                                                    🔍 Détails
+                                                </a>
+                                                
+                                                <!-- Actions rapides -->
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" 
+                                                            data-bs-toggle="dropdown">
+                                                        ⚡ Actions
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <form method="POST" action="{{ url_for('admin_action_prediction', item_id=item.id, action='validate') }}" class="d-inline">
+                                                                <button type="submit" class="dropdown-item text-success" 
+                                                                        onclick="return confirm('✅ Valider {{ item.id }} ?\n\nCette action va déplacer les fichiers vers fine_tune_data/ et supprimer les autres copies.')">
+                                                                    ✅ Valider
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item text-warning" 
+                                                               href="{{ url_for('admin_annotation_manuelle', capture_id=item.id) }}">
+                                                                ✏️ Modifier
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <form method="POST" action="{{ url_for('admin_action_prediction', item_id=item.id, action='delete') }}" class="d-inline">
+                                                                <button type="submit" class="dropdown-item text-danger" 
+                                                                        onclick="return confirm('🗑️ SUPPRIMER {{ item.id }} ?\n\n⚠️ Cette action supprimera TOUS les fichiers liés à cette prédiction.\n\nCette action est IRRÉVERSIBLE !')">
+                                                                    🗑️ Supprimer
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-5">
+                            <div class="display-1">📭</div>
+                            <h4>Aucune prédiction validée</h4>
+                            <p>Les prédictions automatiques validées par les utilisateurs apparaîtront ici.</p>
+                            <hr>
+                            <small>
+                                Les utilisateurs doivent d'abord utiliser l'application pour capturer des pages,
+                                laisser le modèle faire des prédictions, puis valider ces prédictions.
+                            </small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aide et informations -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">💡 À propos des Prédictions Validées</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>🔄 Workflow :</h6>
+                            <ol>
+                                <li><strong>Capture :</strong> L'utilisateur capture une page web</li>
+                                <li><strong>Prédiction :</strong> Le modèle IA annote automatiquement</li>
+                                <li><strong>Validation utilisateur :</strong> L'utilisateur approuve les annotations</li>
+                                <li><strong>Stockage :</strong> Les données arrivent dans <code>human_data/model/</code></li>
+                                <li><strong>Validation admin :</strong> Vous décidez de valider, modifier ou supprimer</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>⚡ Actions disponibles :</h6>
+                            <ul>
+                                <li><strong>✅ Valider :</strong> Déplace vers <code>fine_tune_data/</code> pour réentraînement</li>
+                                <li><strong>✏️ Modifier :</strong> Ouvre l'interface d'annotation admin (Page AA)</li>
+                                <li><strong>🗑️ Supprimer :</strong> Supprime complètement tous les fichiers liés</li>
+                            </ul>
+                            
+                            <div class="alert alert-warning mt-3">
+                                <small>
+                                    <strong>⚠️ Important :</strong> Après validation, les fichiers vont dans <code>fine_tune_data/</code>
+                                    et sont supprimés d'ici. Le lien d'origine reste dans <code>visited_links.json</code>.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAll.checked;
+    });
+}
+
+function getSelectedItems() {
+    const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function validateSelected() {
+    const selected = getSelectedItems();
+    if (selected.length === 0) {
+        alert('⚠️ Veuillez sélectionner au moins un élément.');
+        return;
+    }
+    
+    if (confirm(`✅ Valider ${selected.length} prédiction(s) ?\n\nCes éléments seront déplacés vers fine_tune_data/ et supprimés d'ici.\n\nContinuer ?`)) {
+        // TODO: Implémenter la validation groupée
+        alert('🚧 Fonctionnalité en cours de développement');
+    }
+}
+
+function deleteSelected() {
+    const selected = getSelectedItems();
+    if (selected.length === 0) {
+        alert('⚠️ Veuillez sélectionner au moins un élément.');
+        return;
+    }
+    
+    if (confirm(`🗑️ SUPPRIMER ${selected.length} prédiction(s) ?\n\n⚠️ Cette action supprimera TOUS les fichiers liés à ces prédictions.\n\n❌ CETTE ACTION EST IRRÉVERSIBLE !\n\nContinuer ?`)) {
+        // TODO: Implémenter la suppression groupée
+        alert('🚧 Fonctionnalité en cours de développement');
+    }
+}
+
+// Mettre à jour la case "tout sélectionner" quand on change les cases individuelles
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    const selectAll = document.getElementById('selectAll');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedCount = document.querySelectorAll('.item-checkbox:checked').length;
+            const totalCount = checkboxes.length;
+            
+            selectAll.checked = checkedCount === totalCount;
+            selectAll.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+        });
+    });
+});
+</script>
+
+<style>
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.btn-group-sm .btn {
+    border-radius: 6px;
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.badge {
+    border-radius: 8px;
+}
+
+.alert {
+    border-radius: 8px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+</style>
+{% endblock %}

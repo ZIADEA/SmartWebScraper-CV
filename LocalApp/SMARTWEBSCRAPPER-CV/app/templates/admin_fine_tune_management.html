@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion Fine-Tuning{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>🚀 Gestion du Fine-Tuning</h2>
+                <span class="badge bg-gradient fs-6" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white;">
+                    📊 Données pour réentraînement
+                </span>
+            </div>
+            <p class="text-muted">
+                Gérez les données dans <code>fine_tune_data/</code> et lancez le réentraînement du modèle
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Fine-Tuning</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center border-primary">
+                <div class="card-body">
+                    <div class="display-6 text-primary">{{ image_count }}</div>
+                    <h5 class="card-title">🖼️ Images</h5>
+                    <p class="card-text text-muted">Fichiers .png/.jpg</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <div class="display-6 text-success">{{ json_count }}</div>
+                    <h5 class="card-title">📝 Annotations</h5>
+                    <p class="card-text text-muted">Fichiers .json COCO</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-warning">
+                <div class="card-body">
+                    <div class="display-6 text-warning">{{ image_count + json_count }}</div>
+                    <h5 class="card-title">📁 Total</h5>
+                    <p class="card-text text-muted">Fichiers dans fine_tune_data/</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-info">
+                <div class="card-body">
+                    <div class="display-6 text-info">{{ (image_count / 2) | round | int if image_count > 0 else 0 }}</div>
+                    <h5 class="card-title">🎯 Paires</h5>
+                    <p class="card-text text-muted">Images + JSON</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Actions de Fine-Tuning -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>🚀 Lancement du Fine-Tuning</h5>
+                </div>
+                <div class="card-body">
+                    {% if image_count == 0 and json_count == 0 %}
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Attention :</strong> Aucun fichier dans fine_tune_data/. 
+                            Vous devez d'abord valider des prédictions ou annotations.
+                        </div>
+                        <button class="btn btn-secondary w-100" disabled>
+                            🚫 Pas de données disponibles
+                        </button>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <strong>📋 Prêt pour le fine-tuning :</strong><br>
+                            • {{ image_count }} images prêtes<br>
+                            • {{ json_count }} annotations au format COCO<br>
+                            • Données validées par l'admin
+                        </div>
+                        
+                        <form method="POST" action="{{ url_for('admin_launch_fine_tuning_final') }}">
+                            <button type="submit" class="btn btn-gradient w-100 mb-3" 
+                                    style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;"
+                                    onclick="return confirm('🚀 LANCER LE FINE-TUNING ?\n\n📋 Processus :\n1. Backup automatique des données\n2. Réentraînement du modèle\n3. SUPPRESSION AUTOMATIQUE de fine_tune_data/\n\n⚠️ APRÈS LE FINE-TUNING :\n• Toutes les données seront supprimées\n• Un backup sera créé automatiquement\n• Le dossier fine_tune_data/ sera vidé\n\n✅ Continuer ?')">
+                                🚀 Lancer le Fine-Tuning
+                            </button>
+                        </form>
+                        
+                        <small class="text-danger">
+                            <strong>⚠️ Important :</strong> Après le fine-tuning, tous les fichiers de fine_tune_data/ seront automatiquement supprimés.
+                        </small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Historique des Backups -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>📦 Backups Fine-Tuning</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        Voir l'historique des sessions de fine-tuning précédentes
+                    </p>
+                    <a href="{{ url_for('admin_fine_tune_backups') }}" class="btn btn-outline-primary w-100">
+                        📋 Voir les Backups
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des fichiers -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>📁 Fichiers dans fine_tune_data/</h5>
+                    <span class="badge bg-secondary">{{ files_info|length }} fichiers</span>
+                </div>
+                <div class="card-body">
+                    {% if files_info %}
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                            <table class="table table-sm table-hover">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th>📄 Nom</th>
+                                        <th>📊 Type</th>
+                                        <th>💾 Taille</th>
+                                        <th>🕒 Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for file in files_info %}
+                                    <tr>
+                                        <td>
+                                            <small class="font-monospace">{{ file.name }}</small>
+                                        </td>
+                                        <td>
+                                            {% if file.type == 'image' %}
+                                                <span class="badge bg-primary">🖼️ Image</span>
+                                            {% elif file.type == 'json' %}
+                                                <span class="badge bg-success">📝 JSON</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ (file.size / 1024) | round(1) }} KB</small>
+                                        </td>
+                                        <td>
+                                            <small>{{ file.timestamp | timestamp_to_date }}</small>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <div class="display-1">📭</div>
+                            <h5>Aucun fichier</h5>
+                            <p>Le dossier fine_tune_data/ est vide.</p>
+                            <hr>
+                            <small>
+                                Pour ajouter des fichiers ici, validez des prédictions ou annotations depuis le dashboard.
+                            </small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow et Aide -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">💡 Comment ça marche ?</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>🔄 Workflow Fine-Tuning :</h6>
+                            <ol>
+                                <li><strong>Collecte :</strong> Les admins valident des prédictions et annotations</li>
+                                <li><strong>Stockage :</strong> Les données vont dans <code>fine_tune_data/</code></li>
+                                <li><strong>Fine-Tuning :</strong> Le modèle se réentraîne avec ces nouvelles données</li>
+                                <li><strong>Nettoyage :</strong> <code>fine_tune_data/</code> est automatiquement vidé</li>
+                                <li><strong>Backup :</strong> Une sauvegarde est créée pour l'historique</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>📁 Sources des données :</h6>
+                            <ul>
+                                <li><strong>Prédictions validées :</strong> Annotations automatiques approuvées par l'utilisateur puis l'admin</li>
+                                <li><strong>Annotations manuelles :</strong> Annotations créées à la main par l'utilisateur puis validées par l'admin</li>
+                                <li><strong>Annotations admin :</strong> Annotations créées directement par l'admin (Page AA)</li>
+                            </ul>
+                            
+                            <h6 class="mt-3">⚠️ Après Fine-Tuning :</h6>
+                            <ul class="text-danger">
+                                <li>Tous les fichiers de <code>fine_tune_data/</code> sont supprimés</li>
+                                <li>Le modèle est mis à jour avec les nouvelles données</li>
+                                <li>Un backup horodaté est créé automatiquement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles personnalisés -->
+<style>
+.btn-gradient {
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.6);
+}
+
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge {
+    border-radius: 8px;
+}
+
+.display-6 {
+    font-weight: bold;
+}
+
+.alert {
+    border-radius: 8px;
+}
+
+.font-monospace {
+    font-family: 'Courier New', monospace;
+}
+</style>
+{% endblock %}
