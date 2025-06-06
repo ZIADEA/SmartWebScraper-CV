@@ -1,67 +1,121 @@
 # SmartWebScraper-CV
 
-
 ## Features
 
-- **Data Collection**: 
-- **Data Annotation**: 
-- **Model Training**:
-- **Evaluation & Backtesting**: Assess model performance on historical data.
-- **Deployment**: Deploy the trained model via API or web interface.
+- **Data Collection**: Automatically capture website screenshots using Playwright or Selenium.
+- **Data Annotation**: Use pretrained models or manual tools to annotate web page regions (headers, footers, ads, media, etc.).
+- **Model Training**: Fine-tune object detection models (e.g., Faster R-CNN) using COCO-formatted data.
+- **Evaluation & Backtesting**: Assess model performance on annotated images.
+- **Deployment**: Serve predictions and postprocessing via a Flask web interface.
 
 ## Repository Structure
 
 ```
 📂 SmartWebScraper-CV
-├── 📂 data                 # images and COCO data
-├── 📂 notebooks            # Jupyter notebooks 
+├── 📂 data                 # Images and COCO data (originals, annotated, fine-tune data)
+├── 📂 notebooks            # Jupyter notebooks for training, evaluation, etc.
 ├── 📂 models               # Trained models and saved weights
-├── 📂 scripts              # scripts used for data collection, data annotaition .
-├── 📂 api                  # Deployment API (Flask/FastAPI)(LATER)
-├── 📂 reports              # resume of project and results
-├── .gitignore              # Git ignore file
+├── 📂 scripts              # Scripts for data collection, annotation, preprocessing
+├── 📂 api                  # Deployment API (Flask/FastAPI) — to be implemented
+├── 📂 reports              # Project summaries, metrics, diagrams
+├── .gitignore              # Git ignore rules
 ├── README.md               # Project documentation
-
+```
 
 ## Requirements
 
 - Python 3.x
-- 
-- 
-- Flask/FastAPI (for deployment)
+- Flask
+- OpenCV
+- Detectron2
+- PaddleOCR
+- Playwright or Selenium
+- COCO API
+- (Full list in `requirements.txt`)
 
 ## Getting Started
 
-1. Clone the repository:
+1. **Clone the repository**:
    ```bash
-   git clone https://github.com/ZIADEA/SmartWebScraper-CV.git   https://github.com/elm19/goldspot-predictor.git
+   git clone https://github.com/ZIADEA/SmartWebScraper-CV.git
    cd SmartWebScraper-CV
    ```
-   
-  
-  
-challenges: 
-1 - data collect
 
-2 - images annotation
+2. **Create and activate a virtual environment**:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Install local app dependencies**:
+   ```bash
+   cd LocalApp/SMARTWEBSCRAPPER-CV
+   pip install -r requirements.txt
+   ```
 
 ## Admin Credentials
 
-The admin dashboard requires credentials that can be supplied either as environment variables or through a configuration file placed at the repository root.
+The admin dashboard requires credentials that can be supplied either as **environment variables** or through a **JSON config file** at the project root.
 
-### Using environment variables
-
-Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` before starting the application:
+### Option 1 — Environment variables
 
 ```bash
 export ADMIN_EMAIL="admin@example.com"
-export ADMIN_PASSWORD="secret"
+export ADMIN_PASSWORD="your_password"
 ```
 
-### Using a config file
+### Option 2 — Configuration file
 
-Create an `admin_config.json` file based on the provided `admin_config.json.example` and populate it with the desired credentials.
+Create a file named `admin_config.json` at the root, based on `admin_config.json.example`:
 
+```json
+{
+  "email": "admin@example.com",
+  "password": "your_password"
+}
+```
+
+## Launching the Flask App
+
+From `LocalApp/SMARTWEBSCRAPPER-CV`:
+
+```bash
+python run.py
+```
+
+The application will be available at: [http://localhost:5000](http://localhost:5000)
+
+The app will automatically create the following folders:
+- `originals/`
+- `resized/`
+- `annotated/`
+- `predictions_raw/`
+- `predictions_scaled/`
+- `human_data/`
+- `fine_tune_data/`
+- `visited_links.json` (for web scraping tracking)
+
+## Documentation
+
+Detailed documentation is available in the [`docs/`](docs) folder.
+
+To build the HTML documentation:
+
+```bash
+cd docs
+make html
+```
+
+Then open:
+
+```bash
+docs/build/html/index.html
+```
 
 ## License
 
