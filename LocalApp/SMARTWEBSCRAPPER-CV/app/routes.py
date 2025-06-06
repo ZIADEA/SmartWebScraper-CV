@@ -495,9 +495,11 @@ def admin_prediction_detail(item_id):
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
+            annotations = json_data.get("annotations", [])
+            unique_cats = {ann.get("category_id") for ann in annotations if ann.get("category_id") is not None}
             json_info = {
-                "nb_annotations": len(json_data.get("annotations", [])),
-                "categories": len(json_data.get("categories", [])),
+                "nb_annotations": len(annotations),
+                "categories": len(unique_cats),
                 "image_info": json_data.get("images", [{}])[0] if json_data.get("images") else {}
             }
             print(f"[DEBUG] JSON chargé pour {item_id}: {json_info}")
@@ -507,11 +509,22 @@ def admin_prediction_detail(item_id):
     
     # CORRECTION: URL pour servir l'image depuis le bon dossier
     image_url = url_for("serve_human_data_prediction", item_id=item_id, filename=image_filename)
-    
-    return render_template("admin_prediction_detail.html", 
-                         item_id=item_id,
-                         image_url=image_url,
-                         json_info=json_info)
+
+    # Annotated image logic: check if an OpenCV-annotated version exists
+    annotated_filename = f"annotated_{image_filename}"
+    annotated_path = os.path.join(app.config['ANNOTATED_FOLDER'], annotated_filename)
+    if os.path.exists(annotated_path):
+        annotated_image_url = url_for('serve_annotated_image', filename=annotated_filename)
+    else:
+        annotated_image_url = None
+
+    return render_template(
+        "admin_prediction_detail.html",
+        item_id=item_id,
+        image_url=image_url,
+        json_info=json_info,
+        annotated_image_url=annotated_image_url,
+    )
 
 @app.route("/admin/validate_prediction/<item_id>", methods=["POST"])
 def admin_validate_prediction(item_id):
@@ -977,9 +990,11 @@ def admin_annotation_manuelle_detail(item_id):
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
+            annotations = json_data.get("annotations", [])
+            unique_cats = {ann.get("category_id") for ann in annotations if ann.get("category_id") is not None}
             json_info = {
-                "nb_annotations": len(json_data.get("annotations", [])),
-                "categories": len(json_data.get("categories", [])),
+                "nb_annotations": len(annotations),
+                "categories": len(unique_cats),
                 "image_info": json_data.get("images", [{}])[0]
             }
     except Exception as e:
