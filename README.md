@@ -37,6 +37,13 @@
    git clone https://github.com/ZIADEA/SmartWebScraper-CV.git   https://github.com/elm19/goldspot-predictor.git
    cd SmartWebScraper-CV
    ```
+
+2. Install the main dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+   This file lists every package needed to develop and train the project. If you only want to run the local application located under `LocalApp/SMARTWEBSCRAPPER-CV`, install the requirements found in that folder instead.
    
   
   

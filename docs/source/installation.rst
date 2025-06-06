@@ -26,7 +26,9 @@ Installation des dépendances
 
     python -m venv venv
     source venv/bin/activate  # ou venv\\Scripts\\activate sous Windows
-    pip install -r requirement.txt
+    pip install -r requirements.txt
+
+Ce fichier contient toutes les dépendances nécessaires au développement et à l'entraînement du projet. L'application Web située dans ``LocalApp/SMARTWEBSCRAPPER-CV`` possède son propre fichier ``requirements.txt`` dédié à son exécution locale.
 
 environment activation
 --------------------

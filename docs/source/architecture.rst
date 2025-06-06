@@ -10,7 +10,7 @@ Structure du dépôt
 
     SmartWebScraper-CV/
     ├── README.md                # Présentation du projet
-    ├── requirement.txt          # Dépendances du projet
+    ├── requirements.txt         # Dépendances du projet
     ├── notebooks/               # Tests et démonstrations
     ├── script/                  # Scripts de traitement
     ├── modelExternUtiliser/    # Modèles pré-entraînés
