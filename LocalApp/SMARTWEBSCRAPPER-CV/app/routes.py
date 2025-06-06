@@ -495,26 +495,29 @@ def admin_prediction_detail(item_id):
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
+            annotations = json_data.get("annotations", [])
+            unique_cats = {ann.get("category_id") for ann in annotations if ann.get("category_id") is not None}
             json_info = {
-                "nb_annotations": len(json_data.get("annotations", [])),
-                "categories": len(json_data.get("categories", [])),
+                "nb_annotations": len(annotations),
+                "categories": len(unique_cats),
                 "image_info": json_data.get("images", [{}])[0] if json_data.get("images") else {}
             }
             print(f"[DEBUG] JSON chargé pour {item_id}: {json_info}")
     except Exception as e:
         json_info = {"error": f"Erreur lecture JSON: {e}"}
         print(f"[ERROR] Erreur JSON pour {item_id}: {e}")
-    
-    # CORRECTION: URL pour servir l'image depuis le bon dossier
-    image_url = url_for("serve_human_data_prediction", item_id=item_id, filename=image_filename)
 
-    # Annotated image logic
-    annotated_filename = f"annotated_{image_filename}"
+    # Vérifier si une image annotée par OpenCV existe
+     annotated_filename = f"annotated_{image_filename}"
     annotated_path = os.path.join(app.config['ANNOTATED_FOLDER'], annotated_filename)
     if os.path.exists(annotated_path):
         annotated_image_url = url_for('serve_annotated_image', filename=annotated_filename)
     else:
         annotated_image_url = None
+
+    # URL pour servir l'image depuis le bon dossier
+    image_url = url_for("serve_human_data_prediction", item_id=item_id, filename=image_filename)
+
 
     return render_template(
         "admin_prediction_detail.html",
@@ -988,9 +991,11 @@ def admin_annotation_manuelle_detail(item_id):
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
+            annotations = json_data.get("annotations", [])
+            unique_cats = {ann.get("category_id") for ann in annotations if ann.get("category_id") is not None}
             json_info = {
-                "nb_annotations": len(json_data.get("annotations", [])),
-                "categories": len(json_data.get("categories", [])),
+                "nb_annotations": len(annotations),
+                "categories": len(unique_cats),
                 "image_info": json_data.get("images", [{}])[0]
             }
     except Exception as e:
