@@ -1002,11 +1002,32 @@ def admin_annotation_manuelle_detail(item_id):
         json_info = {"error": f"Erreur lecture JSON: {e}"}
     
     image_url = url_for("serve_human_data_manual", item_id=item_id, filename=image_filename)
-    
-    return render_template("admin_annotation_manuelle_detail.html", 
+
+    annotated_filename = f"annotated_{item_id}.jpg"
+    base_dir = os.path.dirname(current_app.root_path)
+    annotated_dir = os.path.join(base_dir, "app", "data", "annoted_by_human")
+    os.makedirs(annotated_dir, exist_ok=True)
+    annotated_path = os.path.join(annotated_dir, annotated_filename)
+
+    if not os.path.exists(annotated_path):
+        manual_json_path = os.path.join(manual_folder, f"{item_id}.json")
+        if os.path.exists(manual_json_path):
+            try:
+                with open(manual_json_path, "r", encoding="utf-8") as f:
+                    anns = json.load(f)
+                draw_boxes_cv2(image_path, anns, annotated_path)
+            except Exception as e:
+                print(f"[ERROR] Unable to recreate annotated image: {e}")
+
+    annotated_image_url = None
+    if os.path.exists(annotated_path):
+        annotated_image_url = url_for("serve_manual_annotated_image", filename=annotated_filename)
+
+    return render_template("admin_annotation_manuelle_detail.html",
                          item_id=item_id,
                          image_url=image_url,
-                         json_info=json_info)
+                         json_info=json_info,
+                         annotated_image_url=annotated_image_url)
 
 @app.route("/admin/validate_annotation_manuelle/<item_id>", methods=["POST"])
 def admin_validate_annotation_manuelle(item_id):

@@ -2,7 +2,8 @@ from flask import Flask
 import os
 import json
 
-app = Flask(__name__)
+template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
+app = Flask(__name__, template_folder=template_dir)
 app.config['BASE_DIR'] = os.path.dirname(os.path.abspath(__file__))
 
 app.config['SECRET_KEY'] = 'dev_secret_key'  # À remplacer en production
