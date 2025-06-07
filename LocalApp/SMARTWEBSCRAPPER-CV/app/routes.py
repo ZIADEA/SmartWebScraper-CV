@@ -1002,11 +1002,35 @@ def admin_annotation_manuelle_detail(item_id):
         json_info = {"error": f"Erreur lecture JSON: {e}"}
     
     image_url = url_for("serve_human_data_manual", item_id=item_id, filename=image_filename)
-    
-    return render_template("admin_annotation_manuelle_detail.html", 
-                         item_id=item_id,
-                         image_url=image_url,
-                         json_info=json_info)
+
+    # Chemin de l'image annotée générée avec OpenCV
+    base_dir = os.path.dirname(current_app.root_path)
+    annotated_dir = os.path.join(base_dir, "app", "data", "annoted_by_human")
+    annotated_path = os.path.join(annotated_dir, f"annotated_{item_id}.jpg")
+    annotated_image_url = None
+
+    # Si l'image annotée n'existe pas, tenter de la recréer
+    if not os.path.exists(annotated_path):
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                annotations = json.load(f).get("annotations", [])
+            os.makedirs(annotated_dir, exist_ok=True)
+            success = draw_boxes_cv2(image_path, annotations, annotated_path)
+            if success:
+                print(f"[INFO] Image annotée recréée: {annotated_path}")
+        except Exception as e:
+            print(f"[ERROR] Recréation de l'image annotée: {e}")
+
+    if os.path.exists(annotated_path):
+        annotated_image_url = url_for("serve_manual_annotated_image", filename=f"annotated_{item_id}.jpg")
+
+    return render_template(
+        "admin_annotation_manuelle_detail.html",
+        item_id=item_id,
+        image_url=image_url,
+        annotated_image_url=annotated_image_url,
+        json_info=json_info
+    )
 
 @app.route("/admin/validate_annotation_manuelle/<item_id>", methods=["POST"])
 def admin_validate_annotation_manuelle(item_id):
