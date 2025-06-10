@@ -48,14 +48,24 @@ This directory contains the Flask web interface for SmartWebScraper-CV. The appl
 
 ## Running the Application
 
-1. Still inside `LocalApp/SMARTWEBSCRAPPER-CV`, start the server:
+0. you need to create your own gemini API key and put il on en .env file .
+   refere to this link for guid https://dev.to/explinks/how-to-obtain-a-gemini-api-key-step-by-step-guide-4m97
+   
+1.for the local LLM `MISTRAL` you need to install Ollama  from https://ollama.com/ , ollama is an open-source tool that runs large language models (LLMs) directly on a local machine.
+Download and install Ollama.
+
+Then, in a terminal run : 
+   ```bash
+   ollama run mistral
+   ```
+2. Still inside `LocalApp/SMARTWEBSCRAPPER-CV`, start the server:
    ```bash
    python run.py
    ```
 
-2. Open your web browser and visit [http://localhost:5000](http://localhost:5000). You should see the SmartWebScraper interface.
+3. Open your web browser and visit [http://localhost:5000](http://localhost:5000). You should see the SmartWebScraper interface.
 
-3. To stop the application press `Ctrl+C` in the terminal window.
+4. To stop the application press `Ctrl+C` in the terminal window.
 
 ## Generated Folders
 
