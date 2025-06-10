@@ -2,7 +2,7 @@
 
 This directory contains the Flask web interface for SmartWebScraper-CV. The application lets you capture web pages, annotate them and manage the data used to train detection models.
 
-## Prerequisites
+## Prerequisitesto run it locally
 
 - **Python 3.9 or higher** installed on your computer.
 - A command prompt/terminal window (Command Prompt on Windows or Terminal on macOS/Linux).
