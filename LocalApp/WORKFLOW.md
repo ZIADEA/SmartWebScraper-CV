@@ -32,57 +32,77 @@ This workflow allows non‑technical users to contribute data for improving the 
 
 ```mermaid
 flowchart TD
-    A[Page 1: Bienvenu dans votre scrapper intelligent] --> B[Se connecter]
-    B --> C[Utilisateur --> Page 1.1]
-    B --> D[Administrateur --> Page 1.2]
+    %% ========== ADMIN FLOW ==========
+    A[Page 1: Bienvenu<br>dans votre scrapper intelligent]:::main
+    B[Se connecter]:::neutral
+    C[Utilisateur]:::user
+    D[Administrateur]:::admin
     
-    D --> E[Page 1.2: Authentification]
+    A --> B
+    B --> C --> W
+    B --> D --> E
+    
+    E[Page 1.2:<br>Authentification<br>Mail: djeryala@gmail.com<br>MDP: DJERI]:::auth
     E -->|Incorrect| E
-    E -->|Correct| F[Page 1.2.1: Tableau de bord]
+    E -->|Correct| F
     
-    F --> G[Voir les liens des sites --> Page 1.2.1.1]
-    F --> H[Voir images annotées par modèle --> Page 1.2.1.2]
-    F --> I[Voir images annotées par utilisateur --> Page 1.2.1.3]
-    F --> J[Voir nombre d'images fine-tune --> Page 1.2.1.4]
+    F[Page 1.2.1:<br>Tableau de bord]:::dashboard
+    F --> G[Voir les liens<br>des sites]:::link
+    F --> H[Voir images<br>annotées modèle]:::model
+    F --> I[Voir images<br>annotées user]:::userimg
+    F --> J[Voir nb images<br>fine-tune]:::counter
     
-    H --> K[Page 1.2.1.2: Liste images]
-    K -->|Click image| L[Page 1.2.1.2.1: Affiche image]
-    L --> M[Valider --> Envoie fine-tune]
-    L --> N[Supprimer]
-    L --> O[Modifier --> Page AA]
+    G --> 1.2.1.1[Page 1.2.1.1:<br>Liens des sites]:::linkpage
+    H --> K[Page 1.2.1.2:<br>Liste images modèle] --> L[Page 1.2.1.2.1:<br>Image annotée modèle]:::modelview
+    I --> P[Page 1.2.1.3:<br>Liste images user] --> Q[Page 1.2.1.3.1:<br>Image annotée user]:::userview
+    J --> U[Page 1.2.1.4:<br>Nb images fine-tune]:::counterpage
     
-    I --> P[Page 1.2.1.3: Liste images]
-    P -->|Click image| Q[Page 1.2.1.3.1: Affiche image]
-    Q --> R[Valider --> Envoie fine-tune]
-    Q --> S[Supprimer]
-    Q --> T[Modifier --> Page AA]
+    L --> M[Valider<br>→ fine-tune data]:::validate
+    L --> N[Supprimer<br>image+json]:::delete
+    L --> O[Modifier<br>annotation] --> AA[Page AA:<br>Annotation admin]:::annotation
     
-    J --> U[Page 1.2.1.4: Affiche nombre]
-    U --> V[Lancer fine-tuning]
+    Q --> R[Valider<br>→ fine-tune data]:::validate
+    Q --> S[Supprimer<br>image+json]:::delete
+    Q --> T[Modifier<br>annotation] --> AA
     
-    AA[Page AA: Annotation admin] -->|Sauvegarde| U
+    U --> V[Lancer<br>fine-tuning]:::action
     
-    C --> W[Page 1.1: Entrer lien]
-    W --> X[Page 1.1.2: Capture + options]
-    X --> Y[Poser question --> Page 1.1.2.1]
-    X --> Z[Sauvegarder --> Page 1.1.2.2]
-    
-    Y --> Y1[ChatGPT --> Page 1.1.2.1.1]
-    Y --> Y2[NLP Classic --> Page 1.1.2.1.2]
-    
-    Z --> Z1[Modifier? Oui --> Page 1.1.2.2.1]
-    Z --> Z2[Non --> Page Tn]
-    
-    Z1 --> Z11[Page 1.1.2.2.1: Image annotée]
-    Z11 --> Z12[Feedback: Bonne détection?]
-    Z12 -->|Oui| To
-    Z12 -->|Non| FA
-    
-    FA -->|Oui| B[Page B: Annotation utilisateur]
-    B --> B1[Valider --> Page B1]
-    B1 --> B11[Supprimer box? Oui --> B1.1]
-    B1 --> B12[Non --> Tou]
-    
-    B1.1 --> To
-    To[Page To: Capture annotée]
-    Tou[Page Tou: Capture utilisateur]
+    %% ========== USER FLOW ==========
+    W[Page 1.1:<br>Entrer lien]:::input
+    W --> X[Page 1.1.2:<br>Capture + options]:::capture
+    X --> Y[Poser question] --> Y1[Page 1.1.2.1.1:<br>ChatGPT]:::chatgpt
+    Y --> Y2[Page 1.1.2.1.2:<br>NLP Classic]:::nlp
+    X --> Z[Sauvegarder] --> Z1[Modifier?]:::modify
+    Z1 -->|Oui| Z11[Page 1.1.2.2.1:<br>Image annotée modèle] --> Z12[Feedback] -->|Oui| To[Page To:<br>Capture annotée]
+    Z12 -->|Non| FA[Page FA:<br>Annoter vous-même?]:::feedback
+    FA -->|Oui| B[Page B:<br>Interface annotation]:::annotation
+    B --> B1[Valider] --> B11[Supprimer box?]
+    B11 -->|Oui| B1.1[Modifier annotations] --> To
+    B11 -->|Non| Tou[Page Tou:<br>Capture user]
+    Z1 -->|Non| Tn[Page Tn:<br>Télécharger image]
+
+    %% ========== STYLE DEFINITIONS ==========
+    classDef main fill:#2E0249,color:white,stroke:#000
+    classDef neutral fill:#937DC2,color:black
+    classDef user fill:#1A5F7A,color:white
+    classDef admin fill:#C70039,color:white
+    classDef auth fill:#F99417,color:black
+    classDef dashboard fill:#3E001F,color:white
+    classDef link fill:#293462,color:white
+    classDef model fill:#1C6758,color:white
+    classDef userimg fill:#7D1E6A,color:white
+    classDef counter fill:#3E6D9C,color:white
+    classDef linkpage fill:#408E91,color:black
+    classDef modelview fill:#245953,color:white
+    classDef userview fill:#A13333,color:white
+    classDef counterpage fill:#1E5128,color:white
+    classDef validate fill:#2D6E3C,color:white
+    classDef delete fill:#D82148,color:white
+    classDef annotation fill:#5B2A00,color:white
+    classDef action fill:#EC9B3B,color:black
+    classDef input fill:#1D5D9B,color:white
+    classDef capture fill:#39AEA9,color:black
+    classDef chatgpt fill:#3A1078,color:white
+    classDef nlp fill:#4E31AA,color:white
+    classDef modify fill:#7F5283,color:white
+    classDef feedback fill:#F24C4C,color:black
