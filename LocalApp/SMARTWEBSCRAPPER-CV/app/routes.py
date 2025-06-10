@@ -34,6 +34,105 @@ import time
 
 load_dotenv()
 
+
+ocr_cache = {}
+
+def get_image_hash(image_path):
+    """Génère un hash unique pour une image"""
+    import hashlib
+    
+    try:
+        # Hash basé sur le chemin et la taille du fichier
+        stat = os.stat(image_path)
+        content = f"{image_path}_{stat.st_size}_{stat.st_mtime}"
+        return hashlib.md5(content.encode()).hexdigest()
+    except:
+        return None
+
+def is_ocr_processed(capture_id, image_path):
+    """Vérifie si l'OCR a déjà été fait pour cette image"""
+    image_hash = get_image_hash(image_path)
+    if not image_hash:
+        return False
+    
+    # Vérifier si l'image est en cache ET si le nlp_system a des données
+    return (capture_id in ocr_cache and 
+            ocr_cache[capture_id].get('hash') == image_hash and
+            hasattr(nlp_system.qa_system, 'sentences') and 
+            len(nlp_system.qa_system.sentences) > 0)
+
+def process_ocr_with_cache(capture_id, image_path):
+    """Version avec préservation du contenu complet"""
+    
+    if is_ocr_processed(capture_id, image_path):
+        print(f"[CACHE] OCR déjà traité pour {capture_id}")
+        cached_data = ocr_cache[capture_id]
+        
+        # Restaurer TOUT le contenu
+        if not hasattr(nlp_system.qa_system, 'sentences') or not nlp_system.qa_system.sentences:
+            print("[CACHE] Restauration du contenu COMPLET depuis le cache")
+            nlp_system.qa_system.sentences = cached_data['sentences']  # TOUT le contenu
+            nlp_system.qa_system.sentences_for_vectorization = cached_data['sentences_for_vectorization']
+            nlp_system.qa_system.topics = cached_data['topics']
+            nlp_system.qa_system.sentence_vectors = cached_data['sentence_vectors']
+        
+        return f"OCR utilisé depuis le cache ({len(nlp_system.qa_system.sentences)} phrases complètes)"
+    
+    print(f"[OCR] Nouveau traitement avec préservation complète pour {capture_id}")
+    start_time = time.time()
+    
+    result = nlp_system.process_image_optimized(image_path, use_layout=True, parallel=True)
+    
+    end_time = time.time()
+    processing_time = end_time - start_time
+    
+    # Mise en cache du contenu COMPLET
+    image_hash = get_image_hash(image_path)
+    if image_hash and hasattr(nlp_system.qa_system, 'sentences'):
+        ocr_cache[capture_id] = {
+            'hash': image_hash,
+            'sentences': nlp_system.qa_system.sentences.copy(),  # TOUT le contenu
+            'sentences_for_vectorization': nlp_system.qa_system.sentences_for_vectorization.copy(),
+            'topics': nlp_system.qa_system.topics.copy(),
+            'sentence_vectors': nlp_system.qa_system.sentence_vectors,
+            'timestamp': time.time(),
+            'processing_time': processing_time
+        }
+        print(f"[CACHE] Contenu COMPLET mis en cache pour {capture_id}")
+    
+    return result
+
+def clear_old_cache_entries(max_age_hours=2, max_entries=10):
+    """Nettoie les anciennes entrées du cache"""
+    current_time = time.time()
+    max_age_seconds = max_age_hours * 3600
+    
+    # Supprimer les entrées trop anciennes
+    old_keys = [
+        key for key, data in ocr_cache.items() 
+        if current_time - data.get('timestamp', 0) > max_age_seconds
+    ]
+    
+    for key in old_keys:
+        del ocr_cache[key]
+        print(f"[CACHE] Suppression entrée expirée : {key}")
+    
+    # Limiter le nombre d'entrées (garder les plus récentes)
+    if len(ocr_cache) > max_entries:
+        sorted_items = sorted(
+            ocr_cache.items(), 
+            key=lambda x: x[1].get('timestamp', 0), 
+            reverse=True
+        )
+        
+        # Garder seulement les max_entries plus récentes
+        keys_to_keep = [item[0] for item in sorted_items[:max_entries]]
+        keys_to_remove = [key for key in ocr_cache.keys() if key not in keys_to_keep]
+        
+        for key in keys_to_remove:
+            del ocr_cache[key]
+            print(f"[CACHE] Suppression entrée excédentaire : {key}")
+
 # ═══════════════════════════════════════════════════════════════════
 # FILTRES JINJA2 ET CONTEXT PROCESSORS
 # ═══════════════════════════════════════════════════════════════════
@@ -75,8 +174,13 @@ def inject_global_vars():
 # ═══════════════════════════════════════════════════════════════════
 
 # NLP System
-nlp_system = CompleteOCRQASystem(language='french', ocr_lang='fr')
-
+nlp_system = CompleteOCRQASystem(
+    language='french', 
+    ocr_lang='fr',
+    max_image_height=2000,
+    use_gpu=False,
+    cpu_optimized=True
+)
 # Vérification des configurations requises
 required_configs = [
     'ORIGINALS_FOLDER', 'RESIZED_FOLDER', 'ANNOTATED_FOLDER',
@@ -1359,7 +1463,7 @@ def user_annotate_model(capture_id):
             "footer", "header", "chaine", "commentaire", "description",
             "left sidebar", "likes", "recommendations", "vues", "title", "right sidebar"
         }
-        to_ignore_classes = {"other", "none access", "suggestions"}
+        to_ignore_classes = {"other", "none access", "suggestions","vues","likes"}
 
         for crop, y_offset in slices:
             outputs = predictor(crop)["instances"].to("cpu")
@@ -1378,6 +1482,33 @@ def user_annotate_model(capture_id):
                 x1, y1, x2, y2 = map(int, boxes[i])
                 y1 += y_offset
                 y2 += y_offset
+
+                # Correction métier: reclasser "pop up" en "media"
+                if class_name == "pop up":
+                    class_name = "media"
+                    class_id = thing_classes.index("media")
+
+                # === Étape 1 : stocker les boîtes footer et header (dans une variable temporaire)
+                if class_name in ["footer", "header"]:
+                    if class_name not in kept:
+                        kept[class_name] = {"coords": [x1, y1, x2, y2], "score": score, "id": box_id, "class_id": class_id}
+
+                # === Étape 2 : si classe media, vérifier s’il est inclus dans footer/header
+                elif class_name == "media":
+                    def is_inside(inner, outer, margin=10):
+                        return (
+                            inner[0] >= outer[0] - margin and
+                            inner[1] >= outer[1] - margin and
+                            inner[2] <= outer[2] + margin and
+                            inner[3] <= outer[3] + margin
+                        )
+                    for zone in ["footer", "header"]:
+                        if zone in kept:
+                            if is_inside([x1, y1, x2, y2], kept[zone]["coords"], margin=10):
+                                class_name = "logo"
+                                class_id = thing_classes.index("logo")
+                                break
+
 
                 box_id = f"box{annotation_id}"
                 annotation_id += 1
@@ -1735,12 +1866,28 @@ def user_question_choice(capture_id):
 
 @app.route("/user/question_nlp/<capture_id>", methods=["GET", "POST"])
 def user_question_nlp(capture_id):
-    """Questions avec système NLP interne"""
+    """Questions avec système NLP interne - OPTIMISÉ AVEC CACHE"""
     capture_info = find_capture_by_id(capture_id)
+    if not capture_info:
+        flash("Capture non trouvée.", "danger")
+        return redirect(url_for("user_capture"))
+        
     image_filename = f"{capture_info['capture_id']}.png"
     absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
 
-    nlp_system.process_image(absolute_image_path, use_layout=True)
+    # ✅ OPTIMISATION : OCR avec cache intelligent
+    try:
+        # Nettoyer le cache périodiquement
+        clear_old_cache_entries()
+        
+        # Traitement OCR avec cache
+        result = process_ocr_with_cache(capture_id, absolute_image_path)
+        print(f"[NLP] {result}")
+        
+    except Exception as e:
+        print(f"[ERREUR NLP] : {e}")
+        flash(f"Erreur lors du traitement OCR : {e}", "danger")
+        return redirect(url_for("user_capture"))
 
     answer = None
     question = None
@@ -1748,18 +1895,34 @@ def user_question_nlp(capture_id):
     if request.method == "POST":
         question = request.form.get("question", "").strip()
         if question:
+            # Les données sont déjà en mémoire grâce au cache
             answer = nlp_system.ask_question(question)
 
-    return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+    return render_template("user_question.html", 
+                         capture_id=capture_id, 
+                         question=question, 
+                         answer=answer)
 
 @app.route("/user/question_chatgpt/<capture_id>", methods=["GET", "POST"])
-def user_question_chatgpt(capture_id):
-    """Questions avec ChatGPT"""
+def user_question_gemini(capture_id):
+    """Questions avec Gemini - OPTIMISÉ AVEC CACHE"""
     image_filename = f"{capture_id}.png"
     absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
 
-    nlp_system.process_image(absolute_image_path, use_layout=True)
-    context_text = " ".join(nlp_system.qa_system.sentences)
+    # ✅ OPTIMISATION : OCR avec cache
+    try:
+        clear_old_cache_entries()
+        result = process_ocr_with_cache(capture_id, absolute_image_path)
+        
+        # Récupérer le contexte (maintenant en cache)
+        if hasattr(nlp_system.qa_system, 'sentences') and nlp_system.qa_system.sentences:
+            context_text = " ".join(nlp_system.qa_system.sentences)
+        else:
+            context_text = "Aucun contenu extrait de l'image."
+            
+    except Exception as e:
+        print(f"[ERREUR OCR] : {e}")
+        context_text = f"Erreur lors de l'extraction OCR : {e}"
 
     answer = None
     question = None
@@ -1767,31 +1930,60 @@ def user_question_chatgpt(capture_id):
     if request.method == "POST":
         question = request.form.get("question", "").strip()
         if question:
-            api_key = os.getenv("OPENAI_API_KEY")
+            api_key = os.getenv("GEMINI_API_KEY")
             if not api_key:
-                answer = "Clé API OpenAI manquante"
+                answer = "Clé API Gemini manquante (variable d'environnement)"
             else:
                 try:
-                    client = openai.OpenAI(api_key=api_key)
-                    prompt = f"{context_text}\n\nQuestion: {question}\nRéponds en français :"
-                    response = client.chat.completions.create(
-                        model="gpt-3.5-turbo",
-                        messages=[{"role": "user", "content": prompt}]
-                    )
-                    answer = response.choices[0].message.content.strip()
-                except Exception as e:
-                    answer = f"Erreur OpenAI : {e}"
+                    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+                    headers = {"Content-Type": "application/json"}
+                    payload = {
+                        "contents": [
+                            {
+                                "parts": [
+                                    {
+                                        "text": f"{context_text}\n\nQuestion: {question}\nRéponds en français :"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                    params = {"key": api_key}
 
-    return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+                    response = requests.post(url, headers=headers, params=params, json=payload)
+                    response.raise_for_status()
+
+                    gemini_data = response.json()
+                    answer = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
+                except Exception as e:
+                    answer = f"Erreur Gemini : {e}"
+
+    return render_template("user_question.html", 
+                         capture_id=capture_id, 
+                         question=question, 
+                         answer=answer)
+
 
 @app.route("/user/question_local_llm/<capture_id>", methods=["GET", "POST"])
 def user_question_local_llm(capture_id):
-    """Questions avec LLM local (Ollama)"""
+    """Questions avec LLM local (Ollama) - OPTIMISÉ AVEC CACHE"""
     image_filename = f"{capture_id}.png"
     absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
 
-    nlp_system.process_image(absolute_image_path, use_layout=True)
-    context_text = " ".join(nlp_system.qa_system.sentences)
+    # ✅ OPTIMISATION : OCR avec cache
+    try:
+        clear_old_cache_entries()
+        result = process_ocr_with_cache(capture_id, absolute_image_path)
+        
+        # Récupérer le contexte (maintenant en cache)
+        if hasattr(nlp_system.qa_system, 'sentences') and nlp_system.qa_system.sentences:
+            context_text = " ".join(nlp_system.qa_system.sentences)
+        else:
+            context_text = "Aucun contenu extrait de l'image."
+            
+    except Exception as e:
+        print(f"[ERREUR OCR] : {e}")
+        context_text = f"Erreur lors de l'extraction OCR : {e}"
 
     answer = None
     question = None
@@ -1814,9 +2006,211 @@ def user_question_local_llm(capture_id):
             except Exception as e:
                 answer = f"Erreur LLM local : {e}"
 
-    return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+    return render_template("user_question.html", 
+                         capture_id=capture_id, 
+                         question=question, 
+                         answer=answer)
+
+@app.route("/admin/cache_status")
+def admin_cache_status():
+    """Affichage du statut du cache OCR"""
+    if not is_admin_logged_in():
+        return jsonify({"error": "Non autorisé"}), 401
+    
+    cache_info = []
+    total_size = 0
+    
+    for capture_id, data in ocr_cache.items():
+        size_estimate = (
+            len(data.get('sentences', [])) * 50 +  # Estimation taille phrases
+            len(str(data.get('sentence_vectors', ''))) +
+            len(data.get('topics', [])) * 100
+        )
+        total_size += size_estimate
+        
+        cache_info.append({
+            'capture_id': capture_id,
+            'sentences_count': len(data.get('sentences', [])),
+            'topics_count': len(data.get('topics', [])),
+            'processing_time': f"{data.get('processing_time', 0):.2f}s",
+            'timestamp': datetime.fromtimestamp(data.get('timestamp', 0)).strftime('%H:%M:%S'),
+            'size_estimate': f"{size_estimate / 1024:.1f} KB"
+        })
+    
+    return jsonify({
+        'total_entries': len(ocr_cache),
+        'total_size_estimate': f"{total_size / 1024:.1f} KB",
+        'entries': cache_info
+    })
+
+@app.route("/admin/clear_ocr_cache", methods=["POST"])
+def admin_clear_ocr_cache():
+    """Vider le cache OCR manuellement"""
+    if not is_admin_logged_in():
+        flash("Veuillez vous connecter pour effectuer cette action.", "warning")
+        return redirect(url_for("login"))
+    
+    global ocr_cache
+    entries_count = len(ocr_cache)
+    ocr_cache.clear()
+    
+    flash(f"Cache OCR vidé : {entries_count} entrées supprimées.", "success")
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/preload_ocr/<capture_id>", methods=["POST"])
+def admin_preload_ocr(capture_id):
+    """Précharger l'OCR pour une image spécifique"""
+    if not is_admin_logged_in():
+        return jsonify({"error": "Non autorisé"}), 401
+    
+    image_filename = f"{capture_id}.png"
+    absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
+    
+    if not os.path.exists(absolute_image_path):
+        return jsonify({"error": "Image non trouvée"}), 404
+    
+    try:
+        result = process_ocr_with_cache(capture_id, absolute_image_path)
+        return jsonify({
+            "status": "success",
+            "message": f"OCR préchargé pour {capture_id}",
+            "result": result
+        })
+    except Exception as e:
+        return jsonify({"error": f"Erreur préchargement : {e}"}), 500
 
 # ═══════════════════════════════════════════════════════════════════
+# ROUTE POUR PRÉCHARGER L'OCR DEPUIS LA PAGE DE CAPTURE
+# ═══════════════════════════════════════════════════════════════════
+
+@app.route("/user/preload_nlp/<capture_id>", methods=["POST"])
+def user_preload_nlp(capture_id):
+    """Précharger l'OCR en arrière-plan pour l'utilisateur"""
+    try:
+        image_filename = f"{capture_id}.png"
+        absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
+        
+        if not os.path.exists(absolute_image_path):
+            return jsonify({"error": "Image non trouvée"}), 404
+        
+        result = process_ocr_with_cache(capture_id, absolute_image_path)
+        
+        return jsonify({
+            "status": "success",
+            "message": "OCR préchargé avec succès",
+            "sentences_count": len(nlp_system.qa_system.sentences) if hasattr(nlp_system.qa_system, 'sentences') else 0
+        })
+        
+    except Exception as e:
+        return jsonify({"error": f"Erreur préchargement : {e}"}), 500 
+
+# ═══════════════════════════════════════════════════════════════════
+# ROUTE DE DEBUG POUR TESTER L'OCR
+# ═══════════════════════════════════════════════════════════════════
+
+@app.route("/debug/test_ocr/<capture_id>")
+def debug_test_ocr(capture_id):
+    """Route de debug pour tester l'OCR"""
+    if not is_admin_logged_in():
+        return jsonify({"error": "Non autorisé"}), 401
+    
+    image_filename = f"{capture_id}.png"
+    absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
+    
+    if not os.path.exists(absolute_image_path):
+        return jsonify({"error": f"Image non trouvée : {absolute_image_path}"}), 404
+    
+    try:
+        # Test du système OCR
+        start_time = time.time()
+        result = nlp_system.process_image_optimized(
+            absolute_image_path, 
+            use_layout=True,
+            parallel=True
+        )
+        end_time = time.time()
+        
+        # Statistiques
+        stats = {
+            "traitement_temps": f"{end_time - start_time:.2f}s",
+            "result": result,
+            "nb_phrases": len(nlp_system.qa_system.sentences) if hasattr(nlp_system.qa_system, 'sentences') else 0,
+            "nb_phrases_indexees": len(nlp_system.qa_system._sample_sentences) if hasattr(nlp_system.qa_system, '_sample_sentences') else 0,
+            "topics": nlp_system.qa_system.topics if hasattr(nlp_system.qa_system, 'topics') else [],
+            "image_path": absolute_image_path,
+            "image_exists": os.path.exists(absolute_image_path)
+        }
+        
+        return jsonify(stats)
+        
+    except Exception as e:
+        return jsonify({"error": f"Erreur OCR : {e}"}), 500
+
+# ═══════════════════════════════════════════════════════════════════
+# OPTIMISATION MÉMOIRE POUR PRODUCTION
+# ═══════════════════════════════════════════════════════════════════
+
+@app.route("/admin/clear_nlp_cache", methods=["POST"])
+def admin_clear_nlp_cache():
+    """Vider le cache NLP pour libérer la mémoire"""
+    if not is_admin_logged_in():
+        flash("Veuillez vous connecter pour effectuer cette action.", "warning")
+        return redirect(url_for("login"))
+    
+    try:
+        # Réinitialiser le système NLP
+        global nlp_system
+        del nlp_system
+        
+        nlp_system = CompleteOCRQASystem(
+            language='french', 
+            ocr_lang='fr',
+            max_image_height=2000,
+            use_gpu=False,
+            cpu_optimized=True
+        )
+        
+        flash("Cache NLP vidé et système réinitialisé.", "success")
+        
+    except Exception as e:
+        flash(f"Erreur lors du vidage du cache : {e}", "danger")
+    
+    return redirect(url_for("admin_dashboard"))
+
+
+# @app.route("/user/question_chatgpt/<capture_id>", methods=["GET", "POST"])
+# def user_question_chatgpt(capture_id):
+#     """Questions avec ChatGPT"""
+#     image_filename = f"{capture_id}.png"
+#     absolute_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], image_filename)
+
+#     nlp_system.process_image_optimized(absolute_image_path, use_layout=True)
+#     context_text = " ".join(nlp_system.qa_system.sentences)
+
+#     answer = None
+#     question = None
+
+#     if request.method == "POST":
+#         question = request.form.get("question", "").strip()
+#         if question:
+#             api_key = os.getenv("OPENAI_API_KEY")
+#             if not api_key:
+#                 answer = "Clé API OpenAI manquante"
+#             else:
+#                 try:
+#                     client = openai.OpenAI(api_key=api_key)
+#                     prompt = f"{context_text}\n\nQuestion: {question}\nRéponds en français :"
+#                     response = client.chat.completions.create(
+#                         model="gpt-3.5-turbo",
+#                         messages=[{"role": "user", "content": prompt}]
+#                     )
+#                     answer = response.choices[0].message.content.strip()
+#                 except Exception as e:
+#                     answer = f"Erreur OpenAI : {e}"
+
+#     return render_template("user_question.html", capture_id=capture_id, question=question, answer=answer)
+
+#════════════════════════════════════════════════════════════
 # ROUTES DE SERVICE (FICHIERS STATIQUES)
 # ═══════════════════════════════════════════════════════════════════
 
