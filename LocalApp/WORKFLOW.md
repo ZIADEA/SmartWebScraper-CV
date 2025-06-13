@@ -1,6 +1,7 @@
 # Application Workflow
 
-L’application locale **SmartWebScraper-CV** guide l’utilisateur à travers une série d’étapes pour capturer et annoter des sites web. Ci-dessous, une description simplifiée de son fonctionnement.
+L’application locale **SmartWebScraper-CV**
+guide l’utilisateur à travers une série d’étapes pour capturer et annoter des sites web. Ci-dessous, une description simplifiée de son fonctionnement.
 
 1. **Home Page**
    - Choisissez de continuer en tant qu’utilisateur standard ou connectez-vous en tant qu’administrateur.
@@ -14,6 +15,7 @@ L’application locale **SmartWebScraper-CV** guide l’utilisateur à travers u
 
 3. **Admin Path**
    - Connectez-vous avec les identifiants administrateur.
+   - pour se connecté en tant que administrateur le log in est djeryala@gmail.com et et mot de pass est DJERI
    - Le tableau de bord permet de :
      - Visualiser l’historique des liens visités.
      - Examiner les prédictions validées par les utilisateurs.
