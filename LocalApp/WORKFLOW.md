@@ -1,33 +1,33 @@
 # Application Workflow
 
-The SmartWebScraper-CV local app guides the user through a series of pages to capture and annotate websites. Below is a simplified description of how it works.
+L’application locale **SmartWebScraper-CV** guide l’utilisateur à travers une série d’étapes pour capturer et annoter des sites web. Ci-dessous, une description simplifiée de son fonctionnement.
 
 1. **Home Page**
-   - Choose to proceed as an ordinary user or log in as the administrator.
+   - Choisissez de continuer en tant qu’utilisateur standard ou connectez-vous en tant qu’administrateur.
 
 2. **User Path**
-   - Enter the URL of a website. The app uses Playwright to take a screenshot.
-   - The screenshot is passed through an object detection model which highlights common webpage elements (ads, headers, sidebars, etc.).
-   - You can ask a question about the page using ChatGPT or the local NLP engine.
-   - Validate or adjust the suggested bounding boxes. You may remove boxes or create new ones using the integrated annotation interface.
-   - When finished, the image and its annotations are stored in `human_data/` for review and can be promoted to `fine_tune_data/`.
+   - Entrez l’URL d’un site web. L’application utilise **Playwright** pour capturer une capture d’écran.
+   - Cette image est ensuite traitée par un modèle de détection d’objets qui met en évidence les éléments courants d’une page web (publicités, en-têtes, barres latérales, etc.).
+   - Vous pouvez poser une question sur la page en utilisant **ChatGPT** ou le moteur NLP local.
+   - Validez ou modifiez les zones de détection proposées. Il est possible de supprimer des boîtes ou d’en créer de nouvelles via l’interface d’annotation intégrée.
+   - Une fois terminé, l’image et ses annotations sont enregistrées dans le dossier `human_data/` pour relecture. Elles peuvent ensuite être promues dans `fine_tune_data/`.
 
 3. **Admin Path**
-   - Log in with the admin credentials.
-   - The dashboard lets you:
-     - View the history of visited links.
-     - Review predictions approved by users.
-     - Inspect manual annotations submitted by users.
-     - Monitor how many images are available for model fine-tuning.
-     - Trigger a fine‑tuning run of the detection model (after which the images in `fine_tune_data/` are cleared).
+   - Connectez-vous avec les identifiants administrateur.
+   - Le tableau de bord permet de :
+     - Visualiser l’historique des liens visités.
+     - Examiner les prédictions validées par les utilisateurs.
+     - Inspecter les annotations manuelles soumises par les utilisateurs.
+     - Suivre le nombre d’images disponibles pour l’affinage du modèle.
+     - Lancer une phase de **fine‑tuning** du modèle de détection (après quoi les images dans `fine_tune_data/` sont réinitialisées).
 
 4. **Data Folders**
-   - `originals/` – raw screenshots captured from the web.
-   - `annotated/` – screenshots with boxes drawn by the model.
-   - `human_data/` – images validated by users or manually annotated.
-   - `fine_tune_data/` – images selected for retraining the model.
+   - `originals/` – captures d’écran brutes prises depuis le web.
+   - `annotated/` – captures annotées automatiquement par le modèle.
+   - `human_data/` – images validées ou annotées manuellement par les utilisateurs.
+   - `fine_tune_data/` – données sélectionnées pour le réentraînement du modèle.
 
-This workflow allows non‑technical users to contribute data for improving the page element detection model while giving administrators tools to curate the dataset and manage training runs.
+Ce flux permet à des utilisateurs non techniques de contribuer à l’amélioration du modèle de détection des éléments de page, tout en offrant aux administrateurs les outils nécessaires pour gérer les jeux de données et les cycles d’apprentissage.
 
 
 ```mermaid
