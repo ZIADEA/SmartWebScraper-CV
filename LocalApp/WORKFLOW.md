@@ -31,7 +31,7 @@ guide l’utilisateur à travers une série d’étapes pour capturer et annoter
    - `pretictions_scaled/` – json des prediction du model. 
    - `human_data/` – contient 2 dossiers
    - `human_data/manual` – images + (2json pour chaque img) annoter par le user .
-   - `human_data/model` – dossier image contenant (image + toute les class predictible possible).
+   - `human_data/model` – dossier image contenant (image + toute les class predite).
    - `annotated_by_human/` – image avec les annotation du user.
    - `suppression_human/` – image editer avec les boxes (preditepar le model ) selectionner suprimer.
    - `fine_tune_data/` – données sélectionnées pour le réentraînement du modèle.
