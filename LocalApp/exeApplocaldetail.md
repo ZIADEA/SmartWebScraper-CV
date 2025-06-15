@@ -1,7 +1,7 @@
 ## Distribution & Support
 
 <div align="center">
-  <img src="https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif" alt="coming soon" width="300"/>
+  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnpieHBhYTE4ZTB0MDBmNmEzN3hveWwxc3Q2OGVqanlrOGUzNjRiYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lJNoBCvQYp7nq/giphy.gif" alt="coming soon" width="300"/>
 </div>
 
 # fr : 
