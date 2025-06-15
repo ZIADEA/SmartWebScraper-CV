@@ -45,77 +45,80 @@ Ce flux permet à des utilisateurs non techniques de contribuer à l’améliora
 
 ```mermaid
 flowchart TD
-    %% ========== ADMIN FLOW ==========
-    A[Page 1: Bienvenu<br>dans votre scrapper intelligent]:::main
-    B[Se connecter]:::neutral
-    C[Utilisateur]:::user
-    D[Administrateur]:::admin
+    %% Page d'accueil
+    A[🏠 Scrapper Intelligent<br/>Page d'Accueil] --> B{🔐 Connexion}
     
-    A --> B
-    B --> C --> W
-    B --> D --> E
+    %% Parcours Utilisateur
+    B -->|👤 Utilisateur| C[📝 Saisie URL]
+    C --> E[📷 Capture d'écran<br/>avec Playwright]
+    E --> F{⚡ Action}
     
-    E[Page 1.2:<br>Authentification<br>Mail: djeryala@gmail.com<br>MDP: DJERI]:::auth
-    E -->|Incorrect| E
-    E -->|Correct| F
+    F -->|❓ Question| G{🤖 Assistant IA}
+    F -->|💾 Sauvegarder| H{✏️ Modifications?}
     
-    F[Page 1.2.1:<br>Tableau de bord]:::dashboard
-    F --> G[Voir les liens<br>des sites]:::link
-    F --> H[Voir images<br>annotées modèle]:::model
-    F --> I[Voir images<br>annotées user]:::userimg
-    F --> J[Voir nb images<br>fine-tune]:::counter
+    G -->|🌟 ChatGPT| J[🔍 Paddle OCR +<br/>📡 ChatGPT API]
+    G -->|🧠 NLP Classic| K[🔍 Paddle OCR +<br/>⚙️ NLP Classique]
     
-    G --> 1.2.1.1[Page 1.2.1.1:<br>Liens des sites]:::linkpage
-    H --> K[Page 1.2.1.2:<br>Liste images modèle] --> L[Page 1.2.1.2.1:<br>Image annotée modèle]:::modelview
-    I --> P[Page 1.2.1.3:<br>Liste images user] --> Q[Page 1.2.1.3.1:<br>Image annotée user]:::userview
-    J --> U[Page 1.2.1.4:<br>Nb images fine-tune]:::counterpage
+    J --> L[✅ Réponse Générée]
+    K --> M[✅ Réponse Générée]
     
-    L --> M[Valider<br>→ fine-tune data]:::validate
-    L --> N[Supprimer<br>image+json]:::delete
-    L --> O[Modifier<br>annotation] --> AA[Page AA:<br>Annotation admin]:::annotation
+    H -->|✅ Oui| O[🎯 Détection Automatique<br/>par Modèle IA]
+    H -->|❌ Non| P[📥 Téléchargement Direct]
     
-    Q --> R[Valider<br>→ fine-tune data]:::validate
-    Q --> S[Supprimer<br>image+json]:::delete
-    Q --> T[Modifier<br>annotation] --> AA
+    O --> Q{🔍 Validation Détection}
+    Q -->|✅ Correct| R[🎨 Image Annotée<br/>+ Téléchargement]
+    Q -->|❌ Incorrect| S[👆 Annotation Manuelle]
     
-    U --> V[Lancer<br>fine-tuning]:::action
+    S --> T[🖊️ Interface Roboflow<br/>Annotation]
+    T --> U{🗑️ Supprimer Boxes?}
+    U -->|✅ Oui| V[✂️ Sélection Suppression]
+    U -->|❌ Non| W[🎨 Image Finale<br/>+ Téléchargement]
+    V --> R
     
-    %% ========== USER FLOW ==========
-    W[Page 1.1:<br>Entrer lien]:::input
-    W --> X[Page 1.1.2:<br>Capture + options]:::capture
-    X --> Y[Poser question] --> Y1[Page 1.1.2.1.1:<br>ChatGPT]:::chatgpt
-    Y --> Y2[Page 1.1.2.1.2:<br>NLP Classic]:::nlp
-    X --> Z[Sauvegarder] --> Z1[Modifier?]:::modify
-    Z1 -->|Oui| Z11[Page 1.1.2.2.1:<br>Image annotée modèle] --> Z12[Feedback] -->|Oui| To[Page To:<br>Capture annotée]
-    Z12 -->|Non| FA[Page FA:<br>Annoter vous-même?]:::feedback
-    FA -->|Oui| B[Page B:<br>Interface annotation]:::annotation
-    B --> B1[Valider] --> B11[Supprimer box?]
-    B11 -->|Oui| B1.1[Modifier annotations] --> To
-    B11 -->|Non| Tou[Page Tou:<br>Capture user]
-    Z1 -->|Non| Tn[Page Tn:<br>Télécharger image]
-
-    %% ========== STYLE DEFINITIONS ==========
-    classDef main fill:#2E0249,color:white,stroke:#000
-    classDef neutral fill:#937DC2,color:black
-    classDef user fill:#1A5F7A,color:white
-    classDef admin fill:#C70039,color:white
-    classDef auth fill:#F99417,color:black
-    classDef dashboard fill:#3E001F,color:white
-    classDef link fill:#293462,color:white
-    classDef model fill:#1C6758,color:white
-    classDef userimg fill:#7D1E6A,color:white
-    classDef counter fill:#3E6D9C,color:white
-    classDef linkpage fill:#408E91,color:black
-    classDef modelview fill:#245953,color:white
-    classDef userview fill:#A13333,color:white
-    classDef counterpage fill:#1E5128,color:white
-    classDef validate fill:#2D6E3C,color:white
-    classDef delete fill:#D82148,color:white
-    classDef annotation fill:#5B2A00,color:white
-    classDef action fill:#EC9B3B,color:black
-    classDef input fill:#1D5D9B,color:white
-    classDef capture fill:#39AEA9,color:black
-    classDef chatgpt fill:#3A1078,color:white
-    classDef nlp fill:#4E31AA,color:white
-    classDef modify fill:#7F5283,color:white
-    classDef feedback fill:#F24C4C,color:black
+    %% Parcours Administrateur
+    B -->|👨‍💼 Admin| D{🔒 Authentification}
+    D -->|✅ Valide| Y[📊 Tableau de Bord<br/>Administrateur]
+    D -->|❌ Invalide| D
+    
+    Y --> Z[🔗 Historique Liens<br/>Sites Visités]
+    Y --> AA[🤖 Images Modèle IA<br/>+ Validation User]
+    Y --> BB[👤 Images Annotées<br/>par Utilisateurs]
+    Y --> CC[📈 Dataset Fine-Tuning<br/>+ Lancement]
+    
+    %% Gestion images modèle
+    AA --> DD[🖼️ Visualisation Image<br/>Sélectionnée]
+    DD --> EE[✅ Valider → Dataset]
+    DD --> FF[🗑️ Supprimer Définitivement]
+    DD --> GG[✏️ Modifier Annotation]
+    
+    %% Gestion images utilisateur
+    BB --> HH[🖼️ Visualisation Image<br/>Sélectionnée]
+    HH --> II[✅ Valider → Dataset]
+    HH --> JJ[🗑️ Supprimer Définitivement]
+    HH --> KK[✏️ Modifier Annotation]
+    
+    %% Fine-tuning
+    CC --> LL[🚀 Lancement Fine-Tuning<br/>🔄 Auto-suppression post-training]
+    
+    %% Interface annotation admin
+    GG --> MM[🎨 Interface Canvas<br/>Annotation Avancée]
+    KK --> MM
+    
+    %% Styles visuels attractifs
+    classDef startNode fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
+    classDef userPath fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
+    classDef adminPath fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
+    classDef processNode fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff
+    classDef decisionNode fill:#FFC107,stroke:#F57F17,stroke-width:2px,color:#000
+    classDef finalNode fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
+    classDef aiNode fill:#E91E63,stroke:#AD1457,stroke-width:2px,color:#fff
+    classDef dataNode fill:#607D8B,stroke:#37474F,stroke-width:2px,color:#fff
+    
+    class A startNode
+    class C,E,J,K,T userPath
+    class Y,Z,AA,BB,CC,DD,HH,MM adminPath
+    class O,S,V,EE,FF,II,JJ,LL processNode
+    class B,F,G,H,Q,U,D decisionNode
+    class P,R,W,L,M finalNode
+    class J,K,O,MM aiNode
+    class Z,AA,BB,CC,LL dataNode
