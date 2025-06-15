@@ -1,5 +1,9 @@
 # SmartWebScraper-CV - Application Locale (Flask)
 
+<div align="center">
+  <img src="https://media.giphy.com/media/SWoSkN6DxTszqIKEqv/giphy.gif" alt="SmartWebScraper demonstration" width="500"/>
+</div>
+
 Ce dossier contient l’interface web Flask pour **SmartWebScraper-CV**.  
 L'application permet de capturer des pages web, d’annoter automatiquement ou manuellement les éléments détectés, et de gérer les données nécessaires à l'entraînement de modèles de détection.
 
