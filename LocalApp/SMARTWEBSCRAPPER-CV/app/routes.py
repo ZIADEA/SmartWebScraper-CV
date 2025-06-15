@@ -31,7 +31,11 @@ import requests
 from io import BytesIO
 import zipfile
 import time
-
+import json, subprocess, torch
+from detectron2.config import get_cfg
+from detectron2 import model_zoo
+from detectron2.data import DatasetCatalog, MetadataCatalog
+from detectron2.engine import DefaultTrainer
 load_dotenv()
 
 
@@ -49,6 +53,10 @@ def get_image_hash(image_path):
     except:
         return None
 
+MIN_HEIGHT = 800
+MAX_HEIGHT = 10000
+
+
 def is_ocr_processed(capture_id, image_path):
     """Vérifie si l'OCR a déjà été fait pour cette image"""
     image_hash = get_image_hash(image_path)
@@ -60,6 +68,7 @@ def is_ocr_processed(capture_id, image_path):
             ocr_cache[capture_id].get('hash') == image_hash and
             hasattr(nlp_system.qa_system, 'sentences') and 
             len(nlp_system.qa_system.sentences) > 0)
+
 
 def process_ocr_with_cache(capture_id, image_path):
     """Version avec préservation du contenu complet"""
@@ -184,7 +193,7 @@ nlp_system = CompleteOCRQASystem(
 # Vérification des configurations requises
 required_configs = [
     'ORIGINALS_FOLDER', 'RESIZED_FOLDER', 'ANNOTATED_FOLDER',
-    'PREDICTIONS_RAW_FOLDER', 'PREDICTIONS_SCALED_FOLDER',
+     'PREDICTIONS_SCALED_FOLDER',
     'HUMAN_DATA_FOLDER', 'FINE_TUNE_DATA_FOLDER'
 ]
 
@@ -272,54 +281,41 @@ def count_admin_data():
             'fine_tune_count': 0
         }
 
-def save_validated_prediction_to_human_data(capture_id, kept_box_ids):
-    """Sauvegarde une prédiction validée dans human_data/model"""
+def save_validated_prediction_to_human_data(capture_id, kept_box_ids=None):
+    """
+    Sauvegarde directe de l'image et du JSON de prédiction du modèle
+    dans human_data/model/<capture_id>/. Écrase le fichier JSON existant.
+    """
     try:
         human_data_path = app.config["HUMAN_DATA_FOLDER"]
         model_folder = os.path.join(human_data_path, "model", capture_id)
         os.makedirs(model_folder, exist_ok=True)
-        
-        # Copier l'image originale
+
+        # Chemins source et destination
         original_image_path = os.path.join(app.config["ORIGINALS_FOLDER"], f"{capture_id}.png")
+        prediction_json_path = os.path.join(app.config["PREDICTIONS_SCALED_FOLDER"], f"{capture_id}.json")
         target_image_path = os.path.join(model_folder, f"{capture_id}.png")
-        if os.path.exists(original_image_path):
-            shutil.copy2(original_image_path, target_image_path)
-        
-        # Filtrer et sauvegarder les prédictions en format COCO
-        json_pred_path = os.path.join(app.config["PREDICTIONS_SCALED_FOLDER"], f"{capture_id}.json")
-        if os.path.exists(json_pred_path):
-            with open(json_pred_path, "r") as f:
-                pred_data = json.load(f)
-            
-            filtered_annotations = []
-            for ann in pred_data.get("annotations", []):
-                box_id = f"box{ann['id']}"
-                if box_id in kept_box_ids:
-                    filtered_annotations.append(ann)
-            
-            coco_data = {
-                "images": [{
-                    "id": capture_id,
-                    "width": 1280,
-                    "height": 1024,
-                    "file_name": f"{capture_id}.png"
-                }],
-                "annotations": filtered_annotations,
-                "categories": [
-                    {"id": i+1, "name": class_name} 
-                    for i, class_name in enumerate(app.config.get("THING_CLASSES", []))
-                ]
-            }
-            
-            target_json_path = os.path.join(model_folder, f"{capture_id}_coco.json")
-            with open(target_json_path, "w", encoding='utf-8') as f:
-                json.dump(coco_data, f, indent=2, ensure_ascii=False)
-        
+        target_json_path = os.path.join(model_folder, f"{capture_id}_coco.json")
+
+        # Copie de l'image
+        if not os.path.exists(original_image_path):
+            print(f"[WARNING] Image originale non trouvée : {original_image_path}")
+            return False
+        shutil.copy2(original_image_path, target_image_path)
+
+        # Copie du JSON (prédiction modèle)
+        if not os.path.exists(prediction_json_path):
+            print(f"[WARNING] JSON de prédiction non trouvé : {prediction_json_path}")
+            return False
+        shutil.copy2(prediction_json_path, target_json_path)
+
+        print(f"[INFO] Image et prédiction copiées dans : {model_folder}")
         return True
-        
+
     except Exception as e:
-        print(f"Erreur lors de la sauvegarde de la prédiction validée: {e}")
+        print(f"[ERROR] save_validated_prediction_to_human_data : {e}")
         return False
+
 
 def find_capture_by_id(capture_id_or_filename):
     """Trouve une capture par ID ou nom de fichier"""
@@ -885,7 +881,7 @@ def admin_action_prediction(item_id, action):
             folders_to_clean = [
                 app.config["ORIGINALS_FOLDER"],
                 app.config["ANNOTATED_FOLDER"],
-                app.config["PREDICTIONS_RAW_FOLDER"],
+                # app.config["PREDICTIONS_RAW_FOLDER"],
                 app.config["PREDICTIONS_SCALED_FOLDER"],
                 os.path.join(app.root_path, "data", "suppression"),
                 os.path.join(app.root_path, "data", "annoted_by_human")
@@ -1190,96 +1186,162 @@ def admin_delete_annotation_manuelle(item_id):
 # GESTION DU FINE-TUNING
 # ───────────────────────────────────────────────────────────────────
 
+# --- IMPORTS ADDITIONNELS ---
+
+# ----------------------------
+
+
+# ──────────────────────────────────────────────────────────────
+# 1) PAGE DE GESTION : inchangée
+# ──────────────────────────────────────────────────────────────
 @app.route("/admin/fine_tune_management")
 def admin_fine_tune_management():
     """Gestion du fine-tuning"""
     if not is_admin_logged_in():
         flash("Veuillez vous connecter pour accéder à cette page.", "warning")
         return redirect(url_for("login"))
-    
+
     fine_tune_data_path = app.config["FINE_TUNE_DATA_FOLDER"]
-    
+
     image_count = 0
-    json_count = 0
-    files_info = []
-    
+    json_count  = 0
+    files_info  = []
+
     try:
         if os.path.exists(fine_tune_data_path):
-            all_files = os.listdir(fine_tune_data_path)
-            
-            for filename in all_files:
+            for filename in os.listdir(fine_tune_data_path):
                 file_path = os.path.join(fine_tune_data_path, filename)
-                if os.path.isfile(file_path):
-                    if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-                        image_count += 1
-                        files_info.append({
-                            "name": filename,
-                            "type": "image",
-                            "size": os.path.getsize(file_path),
-                            "timestamp": os.path.getctime(file_path)
-                        })
-                    elif filename.lower().endswith('.json'):
-                        json_count += 1
-                        files_info.append({
-                            "name": filename,
-                            "type": "json",
-                            "size": os.path.getsize(file_path),
-                            "timestamp": os.path.getctime(file_path)
-                        })
-        
-        files_info.sort(key=lambda x: x["timestamp"], reverse=True)
-        
-    except Exception as e:
-        flash(f"Erreur lors du scan du dossier fine_tune_data: {e}", "danger")
-    
-    return render_template("admin_fine_tune_management.html", 
-                         image_count=image_count,
-                         json_count=json_count,
-                         files_info=files_info)
+                if not os.path.isfile(file_path):
+                    continue
+                if filename.lower().endswith((".png", ".jpg", ".jpeg")):
+                    image_count += 1
+                    file_type = "image"
+                elif filename.lower().endswith(".json"):
+                    json_count += 1
+                    file_type = "json"
+                else:
+                    continue
 
+                files_info.append(
+                    dict(
+                        name=filename,
+                        type=file_type,
+                        size=os.path.getsize(file_path),
+                        timestamp=os.path.getctime(file_path),
+                    )
+                )
+
+        files_info.sort(key=lambda x: x["timestamp"], reverse=True)
+
+    except Exception as e:
+        flash(f"Erreur lors du scan du dossier fine_tune_data : {e}", "danger")
+
+    return render_template(
+        "admin_fine_tune_management.html",
+        image_count=image_count,
+        json_count=json_count,
+        files_info=files_info,
+    )
+
+
+# ──────────────────────────────────────────────────────────────
+# 2) LANCEMENT RÉEL DU FINE-TUNING
+# ──────────────────────────────────────────────────────────────
 @app.route("/admin/launch_fine_tuning", methods=["POST"])
 def admin_launch_fine_tuning():
-    """Lancer le processus de fine-tuning"""
+    """Sauvegarder les données puis lancer le fine-tuning Detectron2"""
     if not is_admin_logged_in():
         flash("Veuillez vous connecter pour effectuer cette action.", "warning")
         return redirect(url_for("login"))
-    
-    fine_tune_data_path = app.config["FINE_TUNE_DATA_FOLDER"]
-    
+
+    data_dir = app.config["FINE_TUNE_DATA_FOLDER"]
+    if not os.path.exists(data_dir):
+        flash("Aucun dossier fine_tune_data trouvé.", "danger")
+        return redirect(url_for("admin_fine_tune_management"))
+
+    files = os.listdir(data_dir)
+    if not files:
+        flash("Aucun fichier dans fine_tune_data.", "warning")
+        return redirect(url_for("admin_fine_tune_management"))
+
+    # 2-A. Backup
+    timestamp   = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_path = os.path.join(app.root_path, "data", "fine_tune_backup", f"backup_{timestamp}")
+    os.makedirs(backup_path, exist_ok=True)
+    for f in files:
+        shutil.move(os.path.join(data_dir, f), os.path.join(backup_path, f))
+
+    flash(f"{len(files)} fichiers déplacés dans backup_{timestamp}.", "success")
+
+    # 2-B. Préparation du dataset COCO
+    json_ann   = os.path.join(backup_path, "annotations.json")  # ← s'assure qu'il existe
+    images_dir = os.path.join(backup_path, "images")
+    if not os.path.isfile(json_ann):
+        flash("Le fichier annotations.json est introuvable dans le backup.", "danger")
+        return redirect(url_for("admin_fine_tune_management"))
+
+    def get_dicts():
+        with open(json_ann, encoding="utf-8") as f:
+            return json.load(f)
+
+    ds_name = f"fine_tune_{timestamp}"
+    if ds_name in DatasetCatalog.list():
+        DatasetCatalog.remove(ds_name)
+        MetadataCatalog.remove(ds_name)
+    DatasetCatalog.register(ds_name, get_dicts)
+
+    classes = [
+        "advertisement", "chaine", "commentaire", "description",
+        "header", "footer", "left sidebar", "logo", "likes", "media",
+        "pop up", "recommendations", "right sidebar", "suggestions",
+        "title", "vues", "none access", "other",
+    ]
+    MetadataCatalog.get(ds_name).set(thing_classes=classes, json_file=json_ann, image_root=images_dir)
+
+    # 2-C. Configuration Detectron2
+    cfg = get_cfg()
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"))
+    cfg.DATASETS.TRAIN = (ds_name,)
+    cfg.DATASETS.TEST  = ()
+    cfg.DATALOADER.NUM_WORKERS = 2
+    cfg.MODEL.WEIGHTS  = os.path.join(app.root_path, "app", "models", "best_model.pth")  # point de départ
+    cfg.SOLVER.IMS_PER_BATCH = 2
+    cfg.SOLVER.BASE_LR       = 1e-4
+    cfg.SOLVER.MAX_ITER      = 1000              # à ajuster
+    cfg.SOLVER.STEPS         = []
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES         = len(classes)
+    cfg.MODEL.DEVICE = "cpu"                 # passe à "cuda" si dispo
+
+    # 2-D. Dossier de sortie
+    cfg.OUTPUT_DIR = os.path.join(app.root_path, "app", "models", f"fine_tune_{timestamp}")
+    os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+
+    # 2-E. Entraînement
     try:
-        if not os.path.exists(fine_tune_data_path):
-            flash("Aucun dossier fine_tune_data trouvé.", "danger")
-            return redirect(url_for("admin_fine_tune_management"))
-        
-        files = os.listdir(fine_tune_data_path)
-        if not files:
-            flash("Aucun fichier dans fine_tune_data.", "warning")
-            return redirect(url_for("admin_fine_tune_management"))
-        
-        # Créer un dossier de backup
-        backup_folder = os.path.join(app.root_path, "data", "fine_tune_backup")
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        backup_path = os.path.join(backup_folder, f"backup_{timestamp}")
-        os.makedirs(backup_path, exist_ok=True)
-        
-        # Déplacer les fichiers vers le backup
-        for filename in files:
-            src = os.path.join(fine_tune_data_path, filename)
-            dst = os.path.join(backup_path, filename)
-            shutil.move(src, dst)
-        
-        flash(f"Fine-tuning lancé ! {len(files)} fichiers traités et sauvegardés dans backup_{timestamp}.", "success")
-        
-        # TODO: Ajouter le code de fine-tuning réel ici
-        
+        trainer = DefaultTrainer(cfg)
+        trainer.resume_or_load(resume=False)
+        trainer.train()
+        flash("Fine-tuning Detectron2 terminé avec succès.", "success")
+
+        # 2-F. Remplacer automatiquement le modèle courant
+        new_model = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+        dest_best = os.path.join(app.root_path, "app", "models", "best_model.pth")
+        shutil.copyfile(new_model, dest_best)
+        flash("`best_model.pth` mis à jour avec le modèle fine-tuné.", "info")
+
     except Exception as e:
-        flash(f"Erreur lors du lancement du fine-tuning: {e}", "danger")
-    
+        flash(f"Erreur pendant le fine-tuning : {e}", "danger")
+
     return redirect(url_for("admin_fine_tune_management"))
 
+
+# ──────────────────────────────────────────────────────────────
+# 3) ROUTE ALIAS : inchangée
+# ──────────────────────────────────────────────────────────────
 @app.route("/admin/launch_fine_tuning_validated", methods=["POST"])
 def admin_launch_fine_tuning_validated():
-    """Route alternative pour lancer le fine-tuning"""
+    """Alias -> lance la même fonction"""
     return admin_launch_fine_tuning()
 
 # ═══════════════════════════════════════════════════════════════════
@@ -1313,7 +1375,27 @@ def user_capture():
                 capture_id = filename.split(".")[0]
                 filepath = os.path.join(app.config["ORIGINALS_FOLDER"], filename)
 
-                page.screenshot(path=filepath, full_page=True)
+                # Obtenir la hauteur réelle de la page
+                scroll_height = page.evaluate("() => document.body.scrollHeight")
+
+                # Appliquer la contrainte de hauteur
+                clamped_height = max(MIN_HEIGHT, min(scroll_height, MAX_HEIGHT))
+
+                # Ajuster la taille de la capture
+                screenshot_bytes = page.screenshot(full_page=True)
+                from PIL import Image
+                import io
+
+                img = Image.open(io.BytesIO(screenshot_bytes))
+                width, height = img.size
+
+                # Rogner si nécessaire
+                if height > clamped_height:
+                    img = img.crop((0, 0, width, clamped_height))
+
+                # Sauvegarder l'image rognée
+                img.save(filepath)
+
                 context.close()
                 browser.close()
 
@@ -1540,6 +1622,7 @@ def user_annotate_model(capture_id):
 
         with open(coco_json_path, "w") as f:
             json.dump({"annotations": annotations}, f, indent=2)
+
 
         return render_template("user_annotate_model.html", 
                              capture_info=capture_info, 
