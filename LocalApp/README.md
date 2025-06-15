@@ -88,14 +88,22 @@ Dans le terminal ou vous avez demarer le terminal , utilisez `Ctrl + C` pour int
 L’application crée automatiquement un dossier `data/` contenant les sous-dossiers suivants :
 
 ```
-data/
-├── originals/            # Captures originales des pages
-├── resized/              # Images redimensionnées (si activé)
-├── annotated/            # Résultats d’annotation automatique
-├── predictions_raw/      # Prédictions du modèle (coordonnées brutes)
-├── predictions_scaled/   # Prédictions mises à l’échelle
-├── human_data/           # Annotations manuelles utilisateur
-├── fine_tune_data/       # Données validées pour le réentraînement
+app/
+├── data/
+│   ├── originals/            # Captures d’écran brutes prises depuis le web
+│   ├── model/                # Images + toutes les classes prédictibles possibles (référentiel du modèle)
+│   ├── annotated/            # Captures annotées automatiquement (prédictions du modèle)
+│   ├── suppression/          # Images éditées après suppression des zones sélectionnées dans les prédictions
+│   ├── predictions_scaled/   # JSON contenant les coordonnées des boîtes prédictes mises à l’échelle
+│   ├── human_data/           # Annotations manuelles de l’utilisateur
+│   │   ├── manual/           # 1 image + 2 JSON (brut & filtré) par image, créés par l’utilisateur
+│   │   └── model/            # Images et JSON contenant les coordonnées des boîtes prédictes mises à l’échelle  qui ont été validées par l’utilisateur
+│   ├── annotated_by_human/   # Images annotées par l’utilisateur (visuel final des boîtes)
+│   ├── suppression_human/    # Images éditées après suppression des zones choisies par l’utilisateur
+│   ├── fine_tune_data/       # Données (images + JSON) sélectionnées pour le ré-entraînement
+│   └── fine_tune_backup/     # Copie intégrale de fine_tune_data pour archivage (historique de train)
+└── visited_link.json         # Journal des URLs déjà visitées pour éviter les doublons
+
 ```
 
 ## :repeat: Workflow
