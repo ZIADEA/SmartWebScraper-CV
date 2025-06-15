@@ -88,15 +88,12 @@ Remarque : Assurez-vous de vous placer dans ce dossier avant de continuer avec l
    ```
 
 5. **Installez de detectron** (nécessaire uniquement la première fois)
-    Pour les utilisateur de Windows veillez suivre ce guide (compatible uniquement pour CPU ony) :
-
-` https://github.com/ZIADEA/SmartWebScraper-CV/blob/main/LocalApp/DetectronInstallationGuideForOnlyCPUonWindow.md   `
-   Pour les utilisateur de Windows veillez suivre ce guide (compatible uniquement pour GPU) :
    
-   ` https://medium.com/@yogeshkumarpilli/how-to-install-detectron2-on-windows-10-or-11-2021-aug-with-the-latest-build-v0-5-c7333909676f `
+    -Pour les utilisateur de Windows veillez suivre ce guide (compatible uniquement pour CPU ony) : https://github.com/ZIADEA/SmartWebScraper-CV/blob/main/LocalApp/DetectronInstallationGuideForOnlyCPUonWindow.md
+   
+   -Pour les utilisateur de Windows veillez suivre ce guide (compatible uniquement pour GPU) : https://medium.com/@yogeshkumarpilli/how-to-install-detectron2-on-windows-10-or-11-2021-aug-with-the-latest-build-v0-5-c7333909676f
 
-   Pour les utilisateur de linux veillez suivre ce guide (compatible pour CPU et GPU) :
-   ` https://detectron2.readthedocs.io/en/latest/tutorials/install.html `
+   -Pour les utilisateur de linux veillez suivre ce guide (compatible pour CPU et GPU) : https://detectron2.readthedocs.io/en/latest/tutorials/install.html
 
 5. **Configurez le compte admin**  
    Vous pouvez définir les variables d’environnement dans le fichier `.env` comme ce qui suit :
