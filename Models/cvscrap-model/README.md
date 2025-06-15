@@ -9,7 +9,7 @@ Ce dossier contient le modèle fine-tuné `faster_rcnn_R_101_FPN_3x` basé sur [
 
 - 🧾 **Dataset utilisé pour l'entraînement** (format COCO) :
   👉 [Accès Hugging Face - Dataset](https://huggingface.co/datasets/DJERI-ALASSANI/MINESMARTWEBSCRAPERCV-datasetV2/tree/main)
-
+consulte https://github.com/ZIADEA/SmartWebScraper-CV/tree/main/data for more info about the data 
 ---
 
 ## 📊 Résultats du modèle
