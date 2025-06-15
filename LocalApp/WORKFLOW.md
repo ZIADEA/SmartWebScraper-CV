@@ -56,23 +56,24 @@ flowchart TD
     F -->|❓ Question| G{🤖 Assistant IA}
     F -->|💾 Sauvegarder| H{✏️ Modifications?}
     
-    G -->|🌟 ChatGPT| J[🔍 Paddle OCR +<br/>📡 ChatGPT API]
+    G -->|🌟 Gemini| J[🔍 Paddle OCR +<br/>📡 Gemini API]
     G -->|🧠 NLP Classic| K[🔍 Paddle OCR +<br/>⚙️ NLP Classique]
-    
-    J --> L[✅ Réponse Générée]
-    K --> M[✅ Réponse Générée]
-    
-    H -->|✅ Oui| O[🎯 Détection Automatique<br/>par Modèle IA]
+G -->|🧠  Mistral| K1[🔍 Paddle OCR +<br/>⚙️ local Mistral by Ollama ]
+
+    J --> L[✅ Chat bot sur le contenu de l image screener]
+    K --> M[✅ Chat bot sur le contenu de l image screener]
+   K1 --> M1[✅ Chat bot sur le contenu de l image screener]
+
+    H -->|✅ Oui| O[🎯 Détection Automatique par Modèle IA <br/> et selection des element asupprimer]
     H -->|❌ Non| P[📥 Téléchargement Direct]
     
     O --> Q{🔍 Validation Détection}
-    Q -->|✅ Correct| R[🎨 Image Annotée<br/>+ Téléchargement]
+    Q -->|✅ Correct| R[🎨 Image editer avec supression des choix<br/>+ Téléchargement]
     Q -->|❌ Incorrect| S[👆 Annotation Manuelle]
     
-    S --> T[🖊️ Interface Roboflow<br/>Annotation]
-    T --> U{🗑️ Supprimer Boxes?}
-    U -->|✅ Oui| V[✂️ Sélection Suppression]
-    U -->|❌ Non| W[🎨 Image Finale<br/>+ Téléchargement]
+    S --> T[🖊️ Interface Canvas<br/>Annotation Avancée]
+    T --> U{🗑️ choix des  Boxes a Supprimer}
+    U --> V[✂️ Sélection Suppression]
     V --> R
     
     %% Parcours Administrateur
