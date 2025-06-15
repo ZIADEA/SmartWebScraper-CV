@@ -1,3 +1,9 @@
+## Distribution & Support
+
+<div align="center">
+  <img src="https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif" alt="coming soon" width="300"/>
+</div>
+
 # fr : 
 Vous trouverez la version .exe de l’application à ce lien : Pas encore disponible 😢
 
