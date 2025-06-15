@@ -86,6 +86,10 @@ Remarque : Assurez-vous de vous placer dans ce dossier avant de continuer avec l
    ```bash
    pip install -r requirements.txt
    ```
+ou vous pourver aussi creer un environnement local a partir du .yml du depot avec 
+  ```bash
+  conda env create -f environment.yml && conda activate mon_env
+   ```
 
 5. **Installez de detectron** (nécessaire uniquement la première fois)
    
