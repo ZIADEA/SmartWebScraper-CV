@@ -94,4 +94,4 @@ https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5
 **Github Detectron2 Issue#9**
 Vous pouvez voir d'autres solutions [ici](https://github.com/facebookresearch/detectron2/issues/9)
 
-for end sepcial thank to this repository https://github.com/aldyhelnawan/detectron2_windows_installation_guide  by @aldy @aldyhelnawan
+for end sepcial thank to this repository https://github.com/aldyhelnawan/detectron2_windows_installation_guide  by https://github.com/aldyhelnawan
