@@ -161,6 +161,13 @@ SmartWebScraper-CV/
 │       ├── fine_tune_data/   # Données destinées au retrain
 ```
 
+## Probleme 
+
+* **mistral** : prend 20 a 30 min avant de repondre cela depends aussi de la longeur de l ocr
+
+---
+
+
 ---
 
 ## Performances et Optimisation
