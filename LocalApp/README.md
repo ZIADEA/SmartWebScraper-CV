@@ -92,6 +92,7 @@ Remarque : Assurez-vous de vous placer dans ce dossier avant de continuer avec l
 
    
    Pour les utilisateur de Windows veillez suivre ce guide (compatible uniquement pour GPU) :
+   
    ` https://medium.com/@yogeshkumarpilli/how-to-install-detectron2-on-windows-10-or-11-2021-aug-with-the-latest-build-v0-5-c7333909676f `
 
    Pour les utilisateur de linux veillez suivre ce guide (compatible pour CPU et GPU) :
