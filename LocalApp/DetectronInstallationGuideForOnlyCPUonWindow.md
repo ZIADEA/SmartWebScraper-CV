@@ -57,28 +57,18 @@ Les prérequis pour votre environnement Python avec anaconda :
   
 Pour les étapes, installez ces dépendances avant d'installer detectron2 dans votre environnement Python.
 
-Pour installer detectron2, voir [ici](https://github.com/facebookresearch/detectron2)
+Enfin veiller vous placer dans le Dossier detectron2 cloner en local dans votre terminal 
+puis assurer vous que il contient le fichier setup.py a sa racine 
+puis executer : 
+```Bash
+conda install -e .
+```
 
-## Optionnel
+![Detectron2 Demo](https://github.com/facebookresearch/detectron2/raw/main/demo/demo.gif)
 
-Au lieu d'installer manuellement l'environnement anaconda pour installer detectron2, voici le fichier d'environnement anaconda (.yaml) que vous pouvez utiliser pour la version CPU.
+## Ajout
 
-Après avoir importé l'environnement virtuel, la prochaine étape consiste à configurer detectron2 :
-
-* Définir les distutils
- 
-     SET DISTUTILS_USE_SDK=1
-   
-* Appeler le fichier **vcvars64.bat** dans votre fenêtre cmd :
- 
-     call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-     
-* Aller dans le dossier detectron2 et insérer cette commande :
- 
-     python setup.py build develop
-  
-* Ensuite, vous pouvez vérifier l'installation en testant pytorch et detectron2 (Voir le guide officiel [ici1](https://detectron2.readthedocs.io/en/latest/tutorials/install.html) 
-ou [ici2](https://detectron2.readthedocs.io/en/latest/tutorials/getting_started.html) pour confirmer l'installation).
+vous pouver vous documenter plus sur l instalation via : https://detectron2.readthedocs.io/en/latest/tutorials/getting_started.html#use-detectron2-apis-in-your-code
 
 ## Références :
 
