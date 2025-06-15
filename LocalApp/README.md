@@ -62,29 +62,42 @@ Remarque : Assurez-vous de vous placer dans ce dossier avant de continuer avec l
 
 
 
-3. **Accédez au dossier de l’application locale**
-   ```bash
-   cd SmartWebScraper-CV/LocalApp/SMARTWEBSCRAPPER-CV
-   ```
-
-4. **(Optionnel) Créez un environnement virtuel**
+3. **(Optionnel) Créez un environnement virtuel**
+   Avec venv (standard Python)
+   executer das le terminal la commande suivante 
    ```bash
    python -m venv venv
    ```
+   et tu active l environement avec : 
    - Windows : `venv\Scripts\activate`
    - macOS/Linux : `source venv/bin/activate`
+   
+  Ou Avec Conda (si tu utilises Anaconda ou Miniconda) : 
+  
+   ```bash
+    conda create -n nom_env python=3.10
+   ```
 
-5. **Installez les dépendances**
+  et tu active l environement avec : 
+    `conda activate nom_env`
+
+
+4. **Installez les dépendances**
    ```bash
    pip install -r requirements.txt
    ```
 
-6. **Installez les navigateurs Playwright** (nécessaire uniquement la première fois)
-   ```bash
-   playwright install
-   ```
+5. **Installez de detectron** (nécessaire uniquement la première fois)
+    Pour les utilisateur de Windows veillez suivre ce guide (compatible uniquement pour CPU ony) :
 
-7. **Configurez le compte admin**  
+   
+   Pour les utilisateur de Windows veillez suivre ce guide (compatible uniquement pour GPU) :
+   ` https://medium.com/@yogeshkumarpilli/how-to-install-detectron2-on-windows-10-or-11-2021-aug-with-the-latest-build-v0-5-c7333909676f `
+
+   Pour les utilisateur de linux veillez suivre ce guide (compatible pour CPU et GPU) :
+   ` https://detectron2.readthedocs.io/en/latest/tutorials/install.html `
+
+5. **Configurez le compte admin**  
    Vous pouvez définir les variables d’environnement dans le fichier `.env` comme ce qui suit :
    - macOS/Linux :
      ```bash
