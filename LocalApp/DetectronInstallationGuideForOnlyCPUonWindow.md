@@ -60,8 +60,10 @@ conda install -e .
 ```
 
 <div align="center">
-  <img src="https://example.com/votre-gif.gif" alt="Description du GIF">
+  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2FqMHJ5bnNyMmdtczR4MTIzbXVwYnhmYWIzajdya21pMmpqYnliMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT8qBepJQzUjXpeWU8/giphy.gif" alt="SmartWebScraper demonstration" width="500"/>
 </div>
+
+
 ## Ajout
 
 vous pouver vous documenter plus sur l instalation via : https://detectron2.readthedocs.io/en/latest/tutorials/getting_started.html#use-detectron2-apis-in-your-code
