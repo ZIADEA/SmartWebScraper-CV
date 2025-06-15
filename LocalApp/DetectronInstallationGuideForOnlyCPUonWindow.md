@@ -75,7 +75,7 @@ vous pouver vous documenter plus sur l instalation via : https://detectron2.read
  author =       {Yuxin Wu and Alexander Kirillov and Francisco Massa and
                  Wan-Yen Lo and Ross Girshick},
  title =        {Detectron2},
- howpublished = {\url{https://github.com/facebookresearch/detectron2}},
+ howpublished = {\url{[https://github.com/facebookresearch/detectron2}](https://github.com/facebookresearch/detectron2)}},
  year =         {2019}
 }
 
@@ -88,5 +88,10 @@ https://pytorch.org/
 **AugmentedStartups**
 J'ai trouvé quelques solutions dans cette [vidéo](https://youtu.be/JC4D9kfZdDI) par AugmentedStartups
 
+**Collab Detectron2 UserManual**
+https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5
+
 **Github Detectron2 Issue#9**
 Vous pouvez voir d'autres solutions [ici](https://github.com/facebookresearch/detectron2/issues/9)
+
+for end sepcial thank to this repository https://github.com/aldyhelnawan/detectron2_windows_installation_guide  by @aldy @aldyhelnawan
