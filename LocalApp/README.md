@@ -1,86 +1,98 @@
-# SmartWebScraper-CV Local App
+# SmartWebScraper-CV - Application Locale (Flask)
 
-This directory contains the Flask web interface for SmartWebScraper-CV. The application lets you capture web pages, annotate them and manage the data used to train detection models.
+Ce dossier contient l’interface web Flask pour **SmartWebScraper-CV**.  
+L'application permet de capturer des pages web, d’annoter automatiquement ou manuellement les éléments détectés, et de gérer les données nécessaires à l'entraînement de modèles de détection.
 
-## Prerequisites to run it locally
+## :dart: Prérequis
 
-- **Python 3.9 or higher** installed on your computer.
-- A command prompt/terminal window (Command Prompt on Windows or Terminal on macOS/Linux).
-- Optionally **Git** if you want to clone the repository.
+- **Python 3.9 ou supérieur** installé.
+- Un terminal (Command Prompt sur Windows, Terminal sur macOS/Linux).
+- **Git** (optionnel) pour cloner le dépôt.
 
-## Installation
+## :gear: Installation
 
-1. **Download the project**
-   - If you use Git:
+1. **Téléchargement du projet**
+
+   - Via Git :
      ```bash
      git clone https://github.com/ZIADEA/SmartWebScraper-CV.git
      ```
-   - Or download the ZIP archive from GitHub and unzip it.
+   - Ou téléchargez le fichier ZIP via GitHub et extrayez-le.
 
-2. **Open a terminal** and go to the local app folder:
+2. **Accédez au dossier de l’application locale**
    ```bash
    cd SmartWebScraper-CV/LocalApp/SMARTWEBSCRAPPER-CV
    ```
 
-3. **(Optional) Create a virtual environment** to keep the dependencies isolated:
+3. **(Optionnel) Créez un environnement virtuel**
    ```bash
    python -m venv venv
    ```
-   - On Windows run: `venv\Scripts\activate`
-   - On macOS/Linux run: `source venv/bin/activate`
+   - Windows : `venv\Scripts\activate`
+   - macOS/Linux : `source venv/bin/activate`
 
-4. **Install the required packages** (this can take a few minutes):
+4. **Installez les dépendances**
    ```bash
    pip install -r requirements.txt
    ```
 
-5. **Install Playwright browsers** (only needed the first time):
+5. **Installez les navigateurs Playwright** (nécessaire uniquement la première fois)
    ```bash
    playwright install
    ```
 
-6. **Configure the admin account**. You can either set environment variables or edit the `admin_config.json` file provided in this directory:
-   ```bash
-   export ADMIN_EMAIL="admin@example.com"
-   export ADMIN_PASSWORD="your_password"
-   ```
-   *(On Windows use `set` instead of `export`.)*
+6. **Configurez le compte admin**  
+   Vous pouvez définir les variables d’environnement ou modifier le fichier `admin_config.json` :
+   - macOS/Linux :
+     ```bash
+     export ADMIN_EMAIL="admin@example.com"
+     export ADMIN_PASSWORD="your_password"
+     ```
+   - Windows :
+     ```cmd
+     set ADMIN_EMAIL="admin@example.com"
+     set ADMIN_PASSWORD="your_password"
+     ```
 
-## Running the Application
+## :rocket: Lancement de l'application
 
-0. you need to create your own gemini API key and put il on en .env file .
-   refere to this link for guid https://dev.to/explinks/how-to-obtain-a-gemini-api-key-step-by-step-guide-4m97
-   
-1.for the local LLM `MISTRAL` you need to install Ollama  from https://ollama.com/ , ollama is an open-source tool that runs large language models (LLMs) directly on a local machine.
-Download and install Ollama.
+### Étape 0 — Clé API Gemini (obligatoire)
+Créez un fichier `.env` et ajoutez votre clé API Gemini.  
+Suivez ce guide : [How to obtain a Gemini API key](https://dev.to/explinks/how-to-obtain-a-gemini-api-key-step-by-step-guide-4m97)
 
-Then, in a terminal run : 
-   ```bash
-   ollama run mistral
-   ```
-2. Still inside `LocalApp/SMARTWEBSCRAPPER-CV`, start the server:
-   ```bash
-   python run.py
-   ```
-
-3. Open your web browser and visit [http://localhost:5000](http://localhost:5000). You should see the SmartWebScraper interface.
-
-4. To stop the application press `Ctrl+C` in the terminal window.
-
-## Generated Folders
-
-When the app runs it automatically creates a `data/` folder with several subdirectories to store images and annotations:
-
-```
-originals/
-resized/
-annotated/
-predictions_raw/
-predictions_scaled/
-human_data/
-fine_tune_data/
+### Étape 1 — Modèle local Mistral
+Téléchargez et installez **Ollama** : [https://ollama.com/](https://ollama.com/)  
+Puis lancez dans un terminal :
+```bash
+ollama run mistral
 ```
 
-These directories keep the screenshots and labeled data used for model training.
+### Étape 2 — Démarrer le serveur Flask
+```bash
+python run.py
+```
 
-For a description of how the different pages of the application interact, see [WORKFLOW.md](WORKFLOW.md).
+### Étape 3 — Accéder à l'application
+Ouvrez votre navigateur et allez sur : [http://localhost:5000](http://localhost:5000)
+
+### Étape 4 — Arrêter l'application
+Dans le terminal, utilisez `Ctrl + C` pour interrompre l’exécution.
+
+## :file_folder: Dossiers générés
+
+L’application crée automatiquement un dossier `data/` contenant les sous-dossiers suivants :
+
+```
+data/
+├── originals/            # Captures originales des pages
+├── resized/              # Images redimensionnées (si activé)
+├── annotated/            # Résultats d’annotation automatique
+├── predictions_raw/      # Prédictions du modèle (coordonnées brutes)
+├── predictions_scaled/   # Prédictions mises à l’échelle
+├── human_data/           # Annotations manuelles utilisateur
+├── fine_tune_data/       # Données validées pour le réentraînement
+```
+
+## :repeat: Workflow
+
+Pour comprendre le fonctionnement global de l'application et l’enchaînement des pages/interfaces, veuillez consulter le fichier [`WORKFLOW.md`](WORKFLOW.md).
