@@ -1,17 +1,8 @@
-#  Modèle de traitement de langage - SmartWebScraper-CV
-
-##  Processing
-
-## LanguageModels
-
-## Grand modèle de langage
-
-
 # Rapport Technique : SmartWebScraper-CV avec Moteur NLP Intégré
 
 ## Présentation Générale
 
-**SmartWebScraper-CV** est une application complète de vision par ordinateur et de traitement de texte destinée à l’analyse intelligente des pages web capturées sous forme d’images. L’objectif est double : (1) détecter et annoter les zones importantes d’une page web (en-tête, publicité, contenu, etc.) à l’aide d’un modèle de détection entraîné, puis (2) extraire le texte via OCR et permettre une interaction intelligente avec ce contenu via un moteur NLP interne, sans dépendance à des API cloud.
+**SmartWebScraper-CV** est une application complète de vision par ordinateur et de traitement de texte destinée à l’analyse intelligente des pages web capturées sous forme d’images. L’objectif est double : (1) détecter et annoter les zones importantes d’une page web (en-tête, publicité, contenu, etc.) à l’aide d’un modèle de détection entraîné, puis (2) extraire le texte via OCR et permettre une interaction intelligente avec ce contenu via un moteur NLP interne ou connecté à un LLM externe (Gemini API ou Mistral via Ollama).
 
 Le projet est découpé en plusieurs modules bien structurés :
 
@@ -20,7 +11,7 @@ Le projet est découpé en plusieurs modules bien structurés :
 * **Nettoyage et structuration du texte**
 * **Indexation et Vectorisation (TF-IDF, Word2Vec)**
 * **Résumé automatique et extraction de sujets**
-* **Moteur de question-réponse basé sur la similarité**
+* **Moteur de question-réponse local ou LLM**
 * **NER (reconnaissance d'entités nommées) avec spaCy**
 
 ---
@@ -117,6 +108,40 @@ Le module `WebQASystem` permet de répondre à des requêtes utilisateur sans AP
 
 ---
 
+## Intégration de LLM externes (Gemini & Mistral)
+
+En complément du moteur NLP local, le système permet aussi de s’appuyer sur des **modèles de langage externes** pour enrichir la qualité des réponses ou produire des résumés avancés :
+
+### 1. **Gemini via API Google Cloud**
+
+* Envoi du texte OCR nettoyé (ou résumé partiel) à **Gemini Pro** via API REST sécurisée.
+* Possibilité de poser des questions ouvertes, de demander un résumé abstrait ou une traduction.
+* Utilisé principalement dans les cas suivants :
+
+  * Résumés complexes ou style rédactionnel amélioré.
+  * Questions nécessitant une compréhension large du document.
+  * Traduction automatique multi-langue.
+
+### 2. **Mistral via Ollama (exécution locale)**
+
+* Déploiement local du modèle **Mistral-7B-Instruct** via l’outil **Ollama**.
+* Communication par requêtes HTTP sur `localhost`, sans connexion externe.
+* Permet de :
+
+  * Répondre à des questions complexes en offline.
+  * Résumer des textes longs avec contrôle du style.
+  * Suggérer des reformulations ou des analyses thématiques.
+
+### Avantages combinés :
+
+| Modèle                          | Avantage principal                          | Déploiement     |
+| ------------------------------- | ------------------------------------------- | --------------- |
+| Moteur local (TF-IDF, Word2Vec) | Ultra rapide, interprétable, 100% offline   | Local pur       |
+| Gemini (Google API)             | Résumés abstractive, compréhension profonde | Cloud (clé API) |
+| Mistral (Ollama)                | Raisonnement local, LLM puissant et gratuit | Local (CPU/GPU) |
+
+---
+
 ## Architecture Modulaire
 
 ```text
@@ -125,9 +150,8 @@ SmartWebScraper-CV/
 │   ├── routes/               # Routes Flask
 │   ├── templates/            # Interface HTML
 │   ├── utils/
-│   │   ├── ocr.py            # PaddleOCR wrapper + découpage
-│   │   ├── nlp_cleaner.py    # Nettoyage de texte OCR
-│   │   ├── qa_engine.py      # Moteur NLP complet
+│   │   ├── nlp_module.py      #Decoupage OCR +  Moteur NLP complet (TF-IDF, QA)
+
 │   ├── models/
 │   │   └── modelcv/          # Modèle de détection d’objet
 │   └── data/
@@ -141,21 +165,12 @@ SmartWebScraper-CV/
 
 ## Performances et Optimisation
 
-* **Traitement OCR parallèle** : gain de 30–50% sur grandes images.
+* **Traitement OCR parallèle** : gain de 30–50% de temps sur grandes images.
 * **Découpage intelligent** : évite les limites de PaddleOCR sur très grandes dimensions.
 * **Indexation rapide** : TF-IDF sur échantillon réduit.
-* **Traitement 100% local** : aucune dépendance à une API LLM.
+* **Traitement 100% local possible** (sans Gemini).
 * **Modes CPU/GPU adaptatifs** : nombre de workers, batch size, dimensions images.
-
----
-
-## Limitations & Améliorations Possibles
-
-* Intégrer un résumé **neural abstractive** (ex. BART ou T5).
-* Ajouter une interface graphique de **visualisation de topics**.
-* Implémenter un système de **feedback utilisateur supervisé** (renforcement).
-* Permettre la **traduction multilingue automatique**.
-* Ajouter des **features de recherche contextuelle** (ex: BM25, Dense Vectors).
+* **Fallback vers LLM (Gemini ou Mistral)** si besoin d'un raisonnement complexe.
 
 ---
 
@@ -163,6 +178,6 @@ SmartWebScraper-CV/
 
 Ce module NLP intégré à SmartWebScraper-CV constitue un moteur complet d’analyse documentaire, capable de traiter un site web capturé en image, d’en extraire le texte, de structurer l’information, d’en proposer une synthèse et de répondre à des questions. Il repose uniquement sur des bibliothèques open-source puissantes : PaddleOCR, scikit-learn, NLTK, spaCy, Gensim, etc.
 
-Cette architecture offre une solution robuste, extensible, optimisée pour le CPU, et capable d’être embarquée dans une application finale **sans dépendre du cloud**.
+La possibilité d’interfacer ce moteur avec **Gemini (via API)** ou **Mistral (via Ollama)** rend la solution particulièrement puissante et flexible : rapide, locale, mais extensible à des tâches nécessitant plus de raisonnement ou de style.
 
-Un moteur NLP **pratique, intelligent et local**.
+C’est une solution **hybride, modulaire et intelligente** adaptée aux cas d’usage de scraping légal, d’analyse documentaire offline, ou de traitement IA de rapports métiers.
