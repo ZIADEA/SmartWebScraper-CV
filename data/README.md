@@ -56,7 +56,7 @@ Il vise à créer un pipeline complet :
 3. Annotation automatique ou manuelle  
 4. OCR (PaddleOCR) pour extraire les textes utiles  
 5. Interaction NLP (résumé automatique, classification de requêtes, etc.)
-
+6. Interaction avec Geminivia API et mistral via Ollama
 ---
 
 ## 📬 Contact
