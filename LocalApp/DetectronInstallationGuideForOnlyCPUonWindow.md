@@ -8,11 +8,6 @@ La première chose à faire est de cloner le [dépôt detectron2](https://github
 
    git clone https://github.com/facebookresearch/detectron2.git
 
-Et les prérequis pour Windows 10 :
-
-1. Ninja pour Windows (Pour référence, voir le [site web Ninja Build](https://ninja-build.org/))
-2. Installer [MinGW 64-bit](https://sourceforge.net/projects/mingw/) (CygWin fonctionne aussi)
-3. Installer Visual Studio Community 2019
 
 Les prérequis pour votre environnement Python avec anaconda :
 
@@ -64,8 +59,9 @@ puis executer :
 conda install -e .
 ```
 
-![Detectron2 Demo](https://github.com/facebookresearch/detectron2/raw/main/demo/demo.gif)
-
+<div align="center">
+  <img src="https://example.com/votre-gif.gif" alt="Description du GIF">
+</div>
 ## Ajout
 
 vous pouver vous documenter plus sur l instalation via : https://detectron2.readthedocs.io/en/latest/tutorials/getting_started.html#use-detectron2-apis-in-your-code
