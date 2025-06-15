@@ -1,43 +1,83 @@
 ## Distribution & Support
 
 <div align="center">
-  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnpieHBhYTE4ZTB0MDBmNmEzN3hveWwxc3Q2OGVqanlrOGUzNjRiYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lJNoBCvQYp7nq/giphy.gif" alt="coming soon" width="300"/>
+  <img src="https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif" alt="coming soon" width="300"/>
 </div>
 
-# fr : 
-Vous trouverez la version .exe de l’application à ce lien : Pas encore disponible 😢
+---
 
-Désolé pour le désagrément.
-En attendant, veuillez consulter le fichier README.md présent dans le dépôt. Il vous suffit de suivre pas à pas les instructions indiquées pour exécuter l’application en local sur votre machine.
+### Version française
 
-Si vous rencontrez un problème lors de l’installation, je me ferai un plaisir de vous aider personnellement.
-👉 Contactez-moi à l’adresse suivante : djeryala@gmail.com
-avec comme objet :
-« Scrapp LocalApp Problem installation »
+> **[ Information ]**  
+> La version `.exe` de l’application sera disponible prochainement sur cette page.
 
-Si un composant spécifique de l’application ne fonctionne pas correctement, n’hésitez pas à me le signaler également.
-👉 Contactez-moi à l’adresse : djeryala@gmail.com
-avec comme objet :
-« Scrapp LocalApp Problem composant »
+<div align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdzBxZ21uYTRzMHRyZW5hdzE3eGJja3FtdjF5eWpmZWZsdXV3czdwYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlNQ03J5JxX6lva/giphy.gif" width="260" alt="Work in progress"/>
+</div>
 
-Je travaille actuellement sur le déploiement de l’application via Oracle Cloud, et une version autonome en .exe est également prévue pour vous faciliter l’utilisation. Restez à l’écoute !
+Désolé pour le désagrément.  
+En attendant, veuillez consulter le fichier `README.md` du dépôt. Il contient les étapes détaillées pour exécuter l'application en local.
 
+---
 
+#### Assistance à l'installation
 
-#en : 
-You will find the .exe version of the application at this link: Not yet available 😢
+Si vous avez des difficultés à installer l'application :
+- Contactez-moi à l’adresse : [djeryala@gmail.com](mailto:djeryala@gmail.com)
+- Objet du mail : `Scrapp LocalApp Problem installation`
 
-Sorry for the inconvenience.
-In the meantime, please consult the README.md file included in the repository. Just follow the step-by-step instructions to run the application locally on your machine.
+#### Problème d'un composant spécifique ?
 
-If you encounter any issues during installation, I’ll be happy to provide personal support.
-👉 Contact me at: djeryala@gmail.com
-with the subject line:
-"Scrapp LocalApp Installation Problem"
+- Contactez-moi à l’adresse : [djeryala@gmail.com](mailto:djeryala@gmail.com)
+- Objet du mail : `Scrapp LocalApp Problem composant`
 
-If a specific component of the application is not working as expected, feel free to reach out as well.
-👉 Contact me at: djeryala@gmail.com
-with the subject line:
-"Scrapp LocalApp Component Issue"
+---
 
-I'm currently working on deploying the application via Oracle Cloud, and a standalone .exe version is also planned to simplify usage for you. Stay tuned!
+#### Déploiement à venir
+
+Je travaille activement sur :
+- Le déploiement de l’application via **Oracle Cloud** ;
+- Une version `.exe` autonome pour une installation simplifiée.
+
+<div align="center">
+  <img src="https://media.giphy.com/media/h4OGa0npayr99WEO7z/giphy.gif" alt="Déploiement en cours" width="320"/>
+</div>
+
+---
+
+### English Version
+
+> **[ Information ]**  
+> The `.exe` version of the application will be available soon on this page.
+
+<div align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3NqNmp3dGgwODN6Z2hrZWh0b2dwbjA3Mmc3NmVnM3ZtbGVwaWJxcyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3ohhwF34cGDoFFhRfy/giphy.gif" width="260" alt="Deployment coming soon"/>
+</div>
+
+Sorry for the inconvenience.  
+In the meantime, please refer to the `README.md` file in the repository. It contains step-by-step instructions to run the app locally.
+
+---
+
+#### Installation Support
+
+If you encounter any installation issue:
+- Contact me at: [djeryala@gmail.com](mailto:djeryala@gmail.com)
+- Email subject: `Scrapp LocalApp Installation Problem`
+
+#### A component not working properly?
+
+- Contact me at: [djeryala@gmail.com](mailto:djeryala@gmail.com)
+- Email subject: `Scrapp LocalApp Component Issue`
+
+---
+
+#### Upcoming Deployment
+
+I'm currently working on:
+- Deploying the app on **Oracle Cloud**
+- A standalone `.exe` version to simplify installation
+
+<div align="center">
+  <img src="https://media.giphy.com/media/l2R01JcZ0aWwKFOw0/giphy.gif" alt="Stay tuned" width="320"/>
+</div>
