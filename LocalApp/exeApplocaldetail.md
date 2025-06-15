@@ -1,4 +1,4 @@
-fr : 
+# fr : 
 Vous trouverez la version .exe de l’application à ce lien : Pas encore disponible 😢
 
 Désolé pour le désagrément.
@@ -15,7 +15,10 @@ avec comme objet :
 « Scrapp LocalApp Problem composant »
 
 Je travaille actuellement sur le déploiement de l’application via Oracle Cloud, et une version autonome en .exe est également prévue pour vous faciliter l’utilisation. Restez à l’écoute !
-en : 
+
+
+
+#en : 
 You will find the .exe version of the application at this link: Not yet available 😢
 
 Sorry for the inconvenience.
