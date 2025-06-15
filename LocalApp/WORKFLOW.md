@@ -28,8 +28,19 @@ guide l’utilisateur à travers une série d’étapes pour capturer et annoter
    - `annotated/` – captures annotées automatiquement par le modèle.
    - `human_data/` – images validées ou annotées manuellement par les utilisateurs.
    - `fine_tune_data/` – données sélectionnées pour le réentraînement du modèle.
-
-Ce flux permet à des utilisateurs non techniques de contribuer à l’amélioration du modèle de détection des éléments de page, tout en offrant aux administrateurs les outils nécessaires pour gérer les jeux de données et les cycles d’apprentissage.
+   - `annotated_by_human/` – captures d’écran brutes prises depuis le web.
+   - `fine_tune_backup/` – captures d’écran brutes prises depuis le web.
+   - `human_data/manual` – captures d’écran brutes prises depuis le web.
+   - `human_data/model` – captures d’écran brutes prises depuis le web.
+   - `pretictions_raw/` – captures d’écran brutes prises depuis le web.
+   - `pretictions_scaled/` – captures d’écran brutes prises depuis le web.
+   - `resized/` – captures d’écran brutes prises depuis le web.
+   - `suppression/` – captures d’écran brutes prises depuis le web.
+   - `suppression_human/` – captures d’écran brutes prises depuis le web.
+   - `visited_link.json` – garde une trace des sites visite .
+     
+Ce flux permet à des utilisateurs non techniques de contribuer à l’amélioration du modèle de détection des 
+éléments de page, tout en offrant aux administrateurs les outils nécessaires pour gérer les jeux de données et les cycles d’apprentissage.
 
 
 ```mermaid
