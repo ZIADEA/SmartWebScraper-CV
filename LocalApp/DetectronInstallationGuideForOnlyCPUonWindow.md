@@ -95,3 +95,9 @@ https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5
 Vous pouvez voir d'autres solutions [ici](https://github.com/facebookresearch/detectron2/issues/9)
 
 for end sepcial thank to this repository https://github.com/aldyhelnawan/detectron2_windows_installation_guide  by https://github.com/aldyhelnawan
+
+
+<div align="center">
+  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWg0NHRrajB6NHg2OWhzNmdhdGV4ZHVzanh3MzF4YnVyZHg3ZHJuaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/yTrk5kRx2sKU2fowK0/giphy.gif" alt="SmartWebScraper demonstration" width="500"/>
+</div>
+
