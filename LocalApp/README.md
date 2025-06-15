@@ -16,37 +16,76 @@ L'application permet de capturer des pages web, d’annoter automatiquement ou m
 ## :gear: Installation
 
 1. **Téléchargement du projet**
+Il existe deux méthodes pour récupérer le projet SmartWebScraper-CV sur votre machine :
 
-   - Via Git :
-     ```bash
-     git clone https://github.com/ZIADEA/SmartWebScraper-CV.git
-     ```
-   - Ou téléchargez le fichier ZIP via GitHub et extrayez-le.
+a) Via Git (recommandé)
 
-2. **Accédez au dossier de l’application locale**
+Cette méthode vous permet de télécharger tout le projet et son historique Git (commits, branches, etc.). Elle est idéale si vous souhaitez contribuer ou maintenir une version synchronisée avec le projet d'origine.
+
+Prérequis :
+
+Avoir Git installé sur votre machine. Pour vérifier, tapez :
+```bash
+git --version
+```
+Si Git n'est pas installé, téléchargez-le depuis : https://git-scm.com/downloads
+
+Commande :
+
+Dans un terminal (ou directement depuis VSCode) :
+```bash
+git clone https://github.com/ZIADEA/SmartWebScraper-CV.git
+```
+Cela va créer un dossier SmartWebScraper-CV/ contenant tout le projet.
+
+b) Via le téléchargement ZIP (alternative)
+
+Si vous ne souhaitez pas utiliser Git, vous pouvez simplement :
+
+Aller sur le dépôt GitHub du projet.
+
+Cliquer sur le bouton "Code", puis "Download ZIP".
+
+Extraire l'archive ZIP dans le dossier de votre choix.
+
+2. **Accéder au dossier de l'application locale**
+
+Une fois le projet cloné ou extrait, vous devez accéder à l'application Flask locale.
+
+Dans votre terminal :
+```bash
+cd SmartWebScraper-CV/LocalApp/SMARTWEBSCRAPPER-CV
+```
+Ce dossier contient l'application principale que vous pourrez exécuter localement.
+
+Remarque : Assurez-vous de vous placer dans ce dossier avant de continuer avec l'installation des dépendances ou le lancement du serveur Flask.
+
+
+
+3. **Accédez au dossier de l’application locale**
    ```bash
    cd SmartWebScraper-CV/LocalApp/SMARTWEBSCRAPPER-CV
    ```
 
-3. **(Optionnel) Créez un environnement virtuel**
+4. **(Optionnel) Créez un environnement virtuel**
    ```bash
    python -m venv venv
    ```
    - Windows : `venv\Scripts\activate`
    - macOS/Linux : `source venv/bin/activate`
 
-4. **Installez les dépendances**
+5. **Installez les dépendances**
    ```bash
    pip install -r requirements.txt
    ```
 
-5. **Installez les navigateurs Playwright** (nécessaire uniquement la première fois)
+6. **Installez les navigateurs Playwright** (nécessaire uniquement la première fois)
    ```bash
    playwright install
    ```
 
-6. **Configurez le compte admin**  
-   Vous pouvez définir les variables d’environnement ou modifier le fichier `admin_config.json` :
+7. **Configurez le compte admin**  
+   Vous pouvez définir les variables d’environnement dans le fichier `.env` comme ce qui suit :
    - macOS/Linux :
      ```bash
      export ADMIN_EMAIL="admin@example.com"
@@ -54,9 +93,10 @@ L'application permet de capturer des pages web, d’annoter automatiquement ou m
      ```
    - Windows :
      ```cmd
-     set ADMIN_EMAIL="admin@example.com"
-     set ADMIN_PASSWORD="your_password"
+      ADMIN_EMAIL="admin@example.com"
+      ADMIN_PASSWORD="your_password"
      ```
+  et modifier le fichier `admin_config.json`
 
 ## :rocket: Lancement de l'application
 
