@@ -15,7 +15,7 @@ Les données utilisées dans ce projet (images annotées, JSON COCO, résultats 
 Le dataset utilisé pour le fine-tuning de notre modèle de détection est également publié sur Hugging Face :
 
 👉 [📁 Dataset Hugging Face - MINESMARTWEBSCRAPERCV](https://huggingface.co/datasets/DJERI-ALASSANI/MINESMARTWEBSCRAPERCV-datasetV1)
-
+👉 [📁 Dataset Hugging Face - MINESMARTWEBSCRAPERCV](https://huggingface.co/datasets/DJERI-ALASSANI/MINESMARTWEBSCRAPERCV-datasetV2)(Utiliser pour le model disploble actuellement)
 
 ---
 
