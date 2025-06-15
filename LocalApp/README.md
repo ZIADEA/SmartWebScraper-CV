@@ -70,6 +70,7 @@ Puis lancez dans un terminal :
 ```bash
 ollama run mistral
 ```
+et laisse le tourner en backend 
 
 ### Étape 2 — Démarrer le serveur Flask
 ```bash
@@ -80,7 +81,7 @@ python run.py
 Ouvrez votre navigateur et allez sur : [http://localhost:5000](http://localhost:5000)
 
 ### Étape 4 — Arrêter l'application
-Dans le terminal, utilisez `Ctrl + C` pour interrompre l’exécution.
+Dans le terminal ou vous avez demarer le terminal , utilisez `Ctrl + C` pour interrompre l’exécution.
 
 ## :file_folder: Dossiers générés
 
