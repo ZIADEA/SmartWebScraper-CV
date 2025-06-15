@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/d4994de8-d7da-43d7-9bd2-f650524bc709)# Application Workflow
+# Application Workflow
 
 L’application locale **SmartWebScraper-CV**
 guide l’utilisateur à travers une série d’étapes pour capturer et annoter des sites web. Ci-dessous, une description simplifiée de son fonctionnement.
