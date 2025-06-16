@@ -1,20 +1,57 @@
-# Minimal makefile for Sphinx documentation
-#
+# Makefile pour SmartWebScraper-CV Documentation
 
-# You can set these variables from the command line, and also
-# from the environment for the first two.
+# Variables
 SPHINXOPTS    ?=
-SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = source
-BUILDDIR      = build
+SPHINXBUILD  ?= sphinx-build
+SOURCEDIR    = docs/source
+BUILDDIR     = docs/build
 
-# Put it first so that "make" without argument is like "make help".
+# Aide par défaut
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile
+# Nettoyage
+clean:
+	@$(SPHINXBUILD) -M clean "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@echo "Documentation nettoyée."
 
-# Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+# Construction HTML
+html:
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@echo "Build HTML terminé. Les fichiers sont dans $(BUILDDIR)/html/"
+
+# Construction PDF
+latexpdf:
+	@$(SPHINXBUILD) -M latexpdf "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@echo "Build PDF terminé. Le fichier est dans $(BUILDDIR)/latex/"
+
+# Serveur de développement
+serve:
+	@echo "Démarrage du serveur de développement..."
+	@cd $(BUILDDIR)/html && python -m http.server 8000
+
+# Installation des dépendances
+install:
+	@echo "Installation des dépendances..."
+	@pip install -r docs/requirements.txt
+
+# Construction complète
+all: clean install html
+	@echo "Documentation construite avec succès!"
+
+# Vérification des liens
+linkcheck:
+	@$(SPHINXBUILD) -M linkcheck "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+# Mode surveillance (autoreload)
+watch:
+	@echo "Mode surveillance activé. Ctrl+C pour arrêter."
+	@sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)/html" $(SPHINXOPTS) $(O)
+
+# Déploiement ReadTheDocs (simulation locale)
+rtd-build:
+	@echo "Simulation build ReadTheDocs..."
+	@$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)/html" -D language=fr $(SPHINXOPTS) $(O)
+	@$(SPHINXBUILD) -b epub "$(SOURCEDIR)" "$(BUILDDIR)/epub" -D language=fr $(SPHINXOPTS) $(O)
+
+.PHONY: help clean html latexpdf serve install all linkcheck watch rtd-build
