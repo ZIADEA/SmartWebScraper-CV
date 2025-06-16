@@ -198,4 +198,141 @@ Le nettoyage manuel s'est concentré sur :
 
 **Critères de Conservation :**
 
-* Prés
+* Présence de contenu textuel significatif
+* Structure web reconnaissable (header, content, footer)
+* Qualité de capture acceptable (pas de flou majeur)
+* Diversité des mises en page
+* Absence d'éléments perturbateurs (pop-ups bloquants, erreurs)
+
+Traçabilité et Métadonnées
+===========================
+
+Un système complet de traçabilité a été mis en place :
+
+.. code-block:: python
+
+   metadata_structure = {
+       "collection_info": {
+           "date_start": "2025-01-15",
+           "date_end": "2025-02-28", 
+           "total_queries": 30,
+           "urls_collected": 3000,
+           "images_captured": 2980,
+           "images_kept": 2663
+       },
+       "quality_metrics": {
+           "success_rate": 0.89,
+           "avg_loading_time": 3.2,
+           "error_types": ["timeout", "404", "captcha", "blocked"]
+       }
+   }
+
+Défis Techniques Rencontrés
+============================
+
+Gestion des Sites Modernes
+---------------------------
+
+.. list-table:: Problèmes et Solutions
+   :header-rows: 1
+   :widths: 40 60
+
+   * - **Problème**
+     - **Solution Adoptée**
+   * - Contenu chargé en JavaScript
+     - Attente supplémentaire après scroll
+   * - Protection anti-bot
+     - undetected-chromedriver + rotation User-Agent
+   * - Infinite scroll
+     - Limitation à 30 scrolls maximum
+   * - Pop-ups cookies/RGPD
+     - Script de fermeture automatique
+   * - Redirections
+     - Suivi et validation de l'URL finale
+
+Performance et Optimisation
+----------------------------
+
+**Gestion de la Mémoire :**
+
+.. code-block:: python
+
+   # Optimisations appliquées
+   def optimize_memory():
+       # Nettoyage cache navigateur
+       driver.delete_all_cookies()
+       driver.execute_script("window.localStorage.clear();")
+       
+       # Limitation taille images
+       max_height = 10000
+       if image_height > max_height:
+           # Scroll partiel uniquement
+           pass
+
+**Parallélisation :**
+
+* Utilisation de plusieurs instances Chrome
+* Traitement par lots de 50 URLs
+* Gestion des timeouts et reprises automatiques
+
+Validation de la Qualité
+=========================
+
+Métriques de Qualité Automatiques
+----------------------------------
+
+.. code-block:: python
+
+   def validate_capture_quality(image_path):
+       image = cv2.imread(image_path)
+       
+       # Vérifications automatiques
+       checks = {
+           "min_height": image.shape[0] > 600,
+           "min_width": image.shape[1] > 800, 
+           "not_blank": cv2.countNonZero(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)) > 1000,
+           "has_content": detect_text_presence(image),
+           "valid_format": image is not None
+       }
+       
+       return all(checks.values())
+
+Contrôle Qualité Manuel
+-----------------------
+
+Un échantillonnage de 10% des images a été vérifié manuellement pour :
+
+* Cohérence de la structure de page
+* Lisibilité du contenu textuel
+* Présence des éléments web standard
+* Absence d'artefacts de capture
+
+.. tip::
+   **Bonnes Pratiques Identifiées :**
+   
+   * Prioriser la diversité sur la quantité
+   * Maintenir une traçabilité complète
+   * Valider la qualité à chaque étape
+   * Préserver la résolution originale pour l'annotation
+
+Préparation pour l'Annotation
+==============================
+
+Les images validées sont organisées selon la structure suivante :
+
+.. code-block:: text
+
+   dataset_raw/
+   ├── images/
+   │   ├── capture_001.png
+   │   ├── capture_002.png
+   │   └── ...
+   ├── metadata/
+   │   ├── urls.json
+   │   ├── capture_info.json
+   │   └── quality_report.json
+   └── logs/
+       ├── collection.log
+       └── errors.log
+
+Cette organisation facilite l'étape suivante d'annotation manuelle via Roboflow et assure une transition fluide vers la phase de modélisation.
