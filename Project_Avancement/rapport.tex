@@ -1,0 +1,1108 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{textcomp}
+\usepackage{gensymb}
+
+% Configuration de la géométrie
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+% Configuration des liens hypertexte
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+% Configuration des listings de code
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    showstringspaces=false
+}
+
+% Configuration des en-têtes et pieds de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{SmartWebScraper-CV}
+\fancyhead[R]{ENSAM Meknès}
+\fancyfoot[C]{\thepage}
+
+% Redéfinition des titres de sections
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-30pt}{40pt}
+
+\begin{document}
+
+% Page de titre
+\begin{titlepage}
+\centering
+\vspace{2cm}
+
+{\Large \textbf{École Nationale Supérieure des Arts et Métiers}}\\
+\vspace{0.5cm}
+{\large ENSAM Meknès – Université Moulay Ismaïl}\\
+\vspace{1cm}
+
+{\large Cycle Ingénieur – Filière IATD-SI}\\
+{\small (Ingénierie de l'Intelligence Artificielle et des Technologies de la Donnée pour les Systèmes Industriels)}\\
+
+\vspace{3cm}
+
+{\Huge \textbf{Rapport de Projet de Fin d'Année}}\\
+
+\vspace{2cm}
+
+{\LARGE \textbf{SmartWebScraper-CV}}\\
+\vspace{0.5cm}
+{\Large Application intelligente d'annotation de pages web par Computer Vision, OCR, NLP et LLM}\\
+
+\vspace{3cm}
+
+{\large Présenté par :}\\
+{\Large \textbf{DJERI-ALASSANI OUBENOUPOU}}\\
+{\Large \textbf{             \&           }}\\
+{\Large \textbf{EL MAJDI WALID}}\\
+
+\vspace{1.5cm}
+
+{\large Encadré par :}\\
+{\Large Monsieur le Professeur \textbf{Tawfik MASROUR}}\\
+
+\vspace{2cm}
+
+{\large Date :16 Juin 2025}
+
+\end{titlepage}
+
+% Table des matières
+\tableofcontents
+\newpage
+
+% Début du contenu
+\chapter*{ Page À propos et Remerciements}
+\addcontentsline{toc}{chapter}{Page "À propos" et Remerciements}
+
+Ce projet a été réalisé dans le cadre de la formation d'ingénieur à l'ENSAM Meknès, au sein de la filière IATD-SI.
+Il représente l'aboutissement de plusieurs mois de réflexion, d'exploration technologique, de prototypage, et de tests intensifs.
+
+Je tiens à adresser mes plus sincères remerciements à :
+\begin{itemize}
+\item Monsieur Tawfik Masrour, professeur encadrant, pour sa disponibilité, sa bienveillance, et ses conseils rigoureux tout au long de ce travail.
+\item L'ensemble de l'équipe pédagogique de l'ENSAM Meknès, pour la qualité de leur enseignement et leur accompagnement durant notre parcours.
+\item Nos camarades de classe  de projet pour leurs échanges constructifs, critiques bienveillantes et idées inspirantes.
+\item Et bien sûr, à toutes les personnes qui, de près ou de loin, ont contribué au succès de ce projet.
+\end{itemize}
+
+Ce travail marque une étape importante de notre formation, mais aussi une base concrète sur laquelle je compte bâtir des solutions encore plus ambitieuses au croisement de la vision par ordinateur, du traitement du langage et des systèmes intelligents.
+
+\chapter{ Introduction}
+
+\section{Contexte général}
+
+Dans un monde où le contenu numérique est massivement généré, stocké et diffusé via des interfaces web, la capacité à extraire, comprendre, organiser et exploiter automatiquement ces informations devient cruciale. C'est dans cette perspective que s'inscrit ce projet : SmartWebScraper-CV, une application intelligente combinant Computer Vision, OCR, NLP et LLM pour extraire, comprendre et structurer automatiquement le contenu de pages web capturées sous forme d'images.
+
+Le projet trouve son utilité aussi dans les probleme se scrapping textuelle du à :
+\item L'obfuscation du code HTML.
+\item Obfuscation JavaScript lourde .
+\item Texte rendu sous forme d'image(PDF,, etc.).
+\item Interfaces complexes ou graphiques.
+
+\section{Objectif du projet}
+
+Ce projet a pour objectif de scraper visuellement une page web, c'est-à-dire :
+\begin{itemize}
+\item capturer l'image d'un site,
+\item détecter automatiquement les zones d'intérêt (titre, pub, footer, etc.),
+\item extraire le texte des zones conservées,
+\item et permettre une interaction intelligente avec ce texte (résumé, questions, entités, traduction…).
+\end{itemize}
+
+Le tout s'intègre dans une application complète développée en Flask, avec deux profils :
+\begin{itemize}
+\item utilisateur final, qui peut interagir avec l'image et le texte extrait,
+\item administrateur, qui supervise, corrige et valide les annotations, prépare les données pour le fine-tuning, et évalue la qualité du système.
+\end{itemize}
+
+\section{Technologies clés utilisées}
+
+\begin{itemize}
+\item \textbf{Recolte d images} : Capture des pages web via Selenium pour générer un dataset d'images, utilisation de SerpAPI pour collecter des URLs depuis Google sans blocage, et undetected-chromedriver pour naviguer de manière indétectable en mode headless (Navigateur invisible, optimisé pour l’automatisation.) .
+\item \textbf{Annotation d images}} : Dataset annoté manuellement via Roboflow.
+\item \textbf{Computer Vision} : Detectron2 (Faster R-CNN), annotations COCO, training supervisé sur dataset annoté Roboflow.
+\item \textbf{OCR} : PaddleOCR, traitement avancé de zones, découpe verticale, prétraitement d'image.
+\item \textbf{NLP} : NLTK, TF-IDF, Word2Vec, spaCy, clustering, résumé extractif, moteur de QA, NER.
+\item \textbf{LLM} : Gemini API (Google Cloud), Mistral via Ollama en local.
+\item \textbf{Web App} : Flask, HTML5 canvas pour annotation manuelle, interface responsive.
+\end{itemize}
+
+\section{Historique du développement}
+
+Le projet s'est développé sur plusieurs mois, avec des phases successives :
+\begin{enumerate}
+\item Obtention de \~ 3000 images via un scraping visuel avec Selenium .
+\item Premiers tests d'Annotation des image via  HTML avec l architecture DOM ( une représentation en arborescence d'une page HTML, créée par le navigateur. par Selenium et JavaScript via la méthode getBoundingClientRect) (inefficace sur les sites modernes protégés).
+
+\item Annotation manuelle sur Roboflow, puis fine-tuning d'un détecteur de Facebook AI .
+\item Déploiement de l'annotation automatique dans l'application.
+\item Ajout de l'OCR + NLP modulaire pour interagir avec le texte ainsi que du model de llm moderne pour une meilleur interaction avec l utilisateur .
+\item Intégration d'un système d'administrateur complet pour la validation, correction et enrichissement des données.
+\end{enumerate}
+
+\section{Portée actuelle}
+
+L'application permet aujourd'hui :
+\begin{itemize}
+\item de détecter automatiquement les blocs fonctionnels dans une page,
+\item de nettoyer, résumer, analyser le contenu OCR,
+\item de poser des questions ou lancer des requêtes spécifiques,
+\item de valider ou corriger manuellement les prédictions du modèle,
+\item de constituer un dataset de fine-tuning progressif basé sur les retours utilisateurs.
+\end{itemize}
+
+\chapter{ Constitution et acquisition des données}
+
+
+
+\section{Début de Constitution du Dataset : Captures via Selenium + undetected-chromedriver}
+
+La capture est effectuée avec un navigateur piloté par Selenium, combiné à undetected-chromedriver pour éviter les blocages par Google ou les systèmes anti-automatisation et utilisation de SerAPI pour obtenir leslien des page a screener .
+
+Les étapes sont les suivantes :
+\begin{enumerate}
+\item SerAPI genere des liens de page existant sur internet a partir de nos queries . pour chaque  max 100 doivent etre collecter et un sauvegarde des lien est effectué ainsi le code aete relencer 5 fois .
+
+\includegraphics[width=0.8\textwidth]{queries.png}
+
+\item Le driver  lance Chrome en ariere plan  avec une un largeur de la fentre de 1280  ; un minimum de hauteur de 800 et un maximun de hauteur de 10000.
+\item Un scroll progressif et fluide est appliqué via Le driver . avec un maximun de 30 scrolL et 1 temps de pause de 1 .
+\item Une capture d'écran complète (screenshot) est prise à la taille de la fenêtre affichée.
+\item L'image est sauvegardée ainsi que le lien corespondant et d autre information suplementair pour une tracabiliter total de l image .
+
+
+\item les image obtenu fut \~ 3000 ensuite un netoyage manuel fut fait pour supprimer les image ou il y avait des erreur de domaine .
+
+\item Il est a noter que aucun controle sur la taille de l image n est effectuer . \~ 2663 images fut garder apres ce netoyage
+
+\item Il est a noter que aucin controle sur la taille de l image n est effectuer .
+
+\includegraphics[width=0.8\textwidth]{taille.png}
+
+
+\item Il est a noter que  les pages sous forme d artice et celles qui representent l apparence d une page youtube de visualisation d un video on ete prioriser dans ce projet .
+
+\end{enumerate}
+
+
+
+\section{Limites de cette phase}
+
+\begin{itemize}
+\item Certaines captures on de grande taille.
+
+\item Les captures très longues posaient des problèmes de RAM à l'ouverture pour annotation.
+\item Aucun resize n'a été appliqué par choix volontaire : on a travaillé en pleine résolution dès le départ pour le premier test .
+\end{itemize}
+
+\chapter{ Annotation et structuration du dataset}
+
+\section{Objectif de l'annotation}
+
+L'objectif est de permettre au modèle de détecter visuellement les zones fonctionnelles d'une page web capturée.
+
+Nous avons défini les classes suivantes, utilisées dans toutes les annotations :
+lors du 1er test d anotation on avait etablit pour classe : 
+\begin{itemize}
+\item \textbf{title} : titre principal de la page
+\item \textbf{content} : zone de texte central (article, fiche produit, etc.)
+\item \textbf{media} : image, vidéo ou lecteur embarqué
+\item \textbf{header} : bandeau supérieur, souvent identique sur toutes les pages
+\item \textbf{footer} : bas de page contenant liens, mentions, etc.
+\item \textbf{ads} : publicités et contenus sponsorisés
+\item \textbf{sidebar} : barres latérales (souvent avec des menus ou contenus annexes) \\  \\ 
+
+
+Aucour du developpement l objectif s est agrandi a : \\ \\
+
+
+ \item \textbf{advertisement} : Zone contenant des publicités ou bannières sponsorisées.
+  \item \textbf{chaine} : Nom de la chaîne (dans le cas d’une plateforme comme YouTube).
+  \item \textbf{commentaire} : Section de commentaires postés par les utilisateurs.(dans le cas d’une plateforme comme YouTube) 
+  \item \textbf{description} : Texte descriptif associé au contenu principal ( description d’une vidéo).(dans le cas d’une plateforme comme YouTube)
+  \item \textbf{footer} : Pied de page du site contenant souvent des liens secondaires ou informations légales.
+  \item \textbf{header} : En-tête du site contenant généralement le menu de navigation ou le logo.
+  \item \textbf{left sidebar} : Barre latérale située à gauche contenant des liens, filtres ou menus.
+  \item \textbf{likes} : Nombre et icône représentant les mentions "j'aime".(dans le cas d’une plateforme comme YouTube)
+  \item \textbf{logo} : Logo du site ou de la plateforme.
+  \item \textbf{media} : Élément multimédia principal (image, vidéo, lecteur audio).
+  \item \textbf{none access} : Zone inaccessible ou masquée (souvent protégée ou privée).
+  \item \textbf{other} : Élément visuel ou textuel non classé dans les autres catégories.
+  \item \textbf{pop up} : Fenêtre ou élément surgissant de manière dynamique (souvent des alertes ou pubs).
+  \item \textbf{recommendations} : Bloc proposant du d autre video recommandé (dans le cas d’une plateforme comme YouTube).
+  \item \textbf{right sidebar} : Barre latérale située à droite avec contenu additionnel ou suggestions.
+  \item \textbf{suggestions} : Éléments suggérés en lien avec le contenu consulté.
+  \item \textbf{title} : Titre principal du contenu (ex : titre d’un article ou d’une vidéo).
+  \item \textbf{vues} : Nombre de fois que le contenu a été vu ou consulté (dans le cas d’une plateforme comme YouTube) .
+  
+\end{itemize}
+
+\section{1er tentative : tentative d annotation via HTML (DOM)}
+
+Au départ, notre idée était simple : détecte les coordonnées des éléments (en-tête, contenu, etc.) avec JavaScript a partir des lien web corespondant au image.
+ensuite classer chaque zone par type et ajuste les positions pour les annoter sur l'image.
+ Enfin, il dessine des boîtes colorées et sauvegarde l'image analysée .\\
+
+ Mais très vite, nous avons été confrontés à plusieurs limitations justement a raison du projet que nous avons evoque plus haut notament : \\
+\begin{itemize}
+
+
+ \item l obfuscation du html 
+\item Protection anti-bot (Cloudflare, Captcha, JavaScript dynamique),
+\item contenu masqué ou injecté dynamiquement par JavaScript (impossible à détecter au chargement initial du HTML),
+\item structure très variable d'un site à l'autre, rendant impossible la définition d'une règle générale,
+\item faible robustesse pour identifier les zones fonctionnelles (footer, sidebar, media, etc.) \\
+
+NB : cette tentative a ete fait sur la base de nos 7  classes initial .
+\end{itemize}
+NB : cette tentative a ete fait sur la base de nos 7  classes initial .
+
+
+\section{Annotation manuelle sur Roboflow}
+Face à ces contraintes, nous avons décidé de basculer vers une approche Manuelle en annotant nous meme chaque images manuellement.
+
+les 1er classes test seul 14 on eté annote .
+le data c est par la suite agrandi a 200 images + annotations  au forma coco .
+Les images  ont été annotées manuellement à l'aide de Roboflow :
+\begin{itemize}
+\item Interface simple pour dessiner des boîtes (bounding boxes),
+\item Exportation au format COCO JSON (compatible Detectron2),
+\item Gestion par projet avec classes prédéfinies,
+\item Possibilité d'ajouter des collaborateurs pour validation croisée.
+\end{itemize}
+
+Ces images ont servi à créer la base de données d'apprentissage initiale pour notre modèle Faster R-CNN.
+
+\section{Structuration du dataset coco }
+
+L'organisation des données en local a été structurée comme suit :
+
+\begin{lstlisting}[language=bash,caption={Structure du dataset exporté depuis Roboflow (format COCO)},label={lst:roboflow-structure}]
+web_scrapper_images_annotes.v4i.coco/
+│
+├── train/                      # Dossier contenant les images d'entraînement
+│   ├── image1.jpg
+│   ├── image2.jpg
+│   └── ...
+│
+├── valid/                      # Dossier contenant les images de validation
+│   ├── image1.jpg
+│   └── ...
+│
+├── test/                       # Dossier contenant les images de test
+│   ├── image1.jpg
+│   └── ...
+│
+├── README.dataset.txt          # Fichier décrivant le dataset (infos Roboflow, classes, etc.)
+├── README.roboflow.txt         # Informations sur l’export généré par Roboflow
+├── train/_annotations.coco.json   # Fichier d’annotations COCO pour les images d'entraînement
+├── valid/_annotations.coco.json   # Fichier d’annotations COCO pour la validation
+└── test/_annotations.coco.json    # Fichier d’annotations COCO pour le test
+\end{lstlisting}
+
+
+\section{Problèmes rencontrés}
+\begin{itemize}
+\item Certaines zones comme  étaient difficiles à distinguer sur certaines captures.
+\item Les zones se chevauchaient parfois (ex. : media dans content), il a fallu les segmenter proprement.
+\item Certaines classes comme ads ou sidebar ne sont pas nombreuse dans le dataset final .
+\item Une normalisation des tailles et résolutions n'était pas souhaitée car cela rendait totalement flou le contenu de la page (entrainant un parentisage su model uniquement sur les position ce qui n est pas  profitable car nous avon remarquer la recurence de certain mot cler pour detecte des classe comme 'advertisement' par exemple , ce qui a demandé des efforts supplémentaires de gestion de formats (un slice des image a ete fait ).
+\end{itemize}
+
+
+\section{Slicing des images du dataset final obtenu}
+
+Après l’annotation manuelle de 200 images via la plateforme Roboflow, nous avons procédé à une découpe verticale (\textit{slicing}) de ces images pour répondre à plusieurs objectifs :
+\begin{itemize}
+  \item réduire la taille des images d’entrée afin d’alléger les besoins en mémoire GPU lors de l’entraînement,
+  \item augmenter artificiellement le nombre d’images,
+  \item améliorer la diversité spatiale des données en gardant un chevauchement entre les tranches,
+  \item conserver la structure COCO avec des annotations correctement adaptées à chaque slice.
+\end{itemize}
+
+\subsection{Paramètres utilisés pour le slicing}
+
+Voici les principaux paramètres fixés dans le script :
+
+\begin{itemize}
+  \item \textbf{Hauteur maximale d’un slice} : \texttt{3000~px}. Cela signifie que chaque tranche verticale découpée d’une image ne dépasse pas 3000 pixels de haut.
+  \item \textbf{Chevauchement entre les tranches} : \texttt{200~px}. Cette superposition entre les slices permet d’éviter la perte d’éléments présents à la frontière entre deux zones.
+  \item \textbf{Chemins d’entrée et de sortie} :
+    \begin{itemize}
+      \item les images originales sont lues depuis \texttt{web\_scrapper\_images\_annotes.v4i.coco/},
+      \item les images découpées sont sauvegardées dans \texttt{web\_scrapper\_images\_sliced.v4i.coco/}, organisées selon les splits \texttt{train}, \texttt{valid} et \texttt{test}.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Principe général du traitement}
+
+\begin{itemize}
+  \item Le script lit chaque image d’un split (\texttt{train}, \texttt{valid}, \texttt{test}) et la découpe verticalement en plusieurs tranches de \texttt{3000~px} maximum.
+  \item Un chevauchement de \texttt{200~px} est conservé entre deux slices successives.
+  \item Pour chaque slice généré :
+  \begin{itemize}
+    \item une nouvelle image est sauvegardée avec un nom unique du type \texttt{nomImage\_slice\_i.png},
+    \item les annotations COCO associées à la zone de découpe sont copiées et adaptées :
+    \begin{itemize}
+      \item les coordonnées verticales des boîtes englobantes (\texttt{bbox}) sont ajustées en tenant compte du \textit{décalage} (\texttt{offset}) lié à la découpe,
+      \item les identifiants d’image (\texttt{image\_id}) et d’annotation (\texttt{id}) sont régénérés pour assurer l’unicité.
+    \end{itemize}
+  \end{itemize}
+  \item À la fin, un nouveau fichier \texttt{\_annotations.coco.json} est généré pour chaque split, contenant les métadonnées des nouvelles images et annotations transformées.
+\end{itemize}
+
+\subsection{Résultat obtenu}
+
+Le nombre total d’images a été multiplié (en fonction de la hauteur initiale des screenshots), sans altérer le format COCO. Le dataset est maintenant plus riche, plus léger à traiter par le modèle, et prêt à être utilisé pour l’entraînement de modèles de détection d’objets comme \texttt{Faster R-CNN}.
+
+
+
+\section{Annotation manuelle intégrée à l'application}
+L un des probleme majeur de ce projet est l insuffisance de donnée . 200 ilage c est tres peut pour atteindre un model comerciable .
+Etant contient de cela nous avont integre a notre application l a generation de data .
+Pour ne plus dépendre de Roboflow, nous avons développé notre propre interface d'annotation :
+\begin{itemize}
+\item Utilise un feedback utilisateur,
+\item Utilise un canvas HTML5,
+\item Permet de dessiner des boîtes rectangulaires,
+\item Sauvegarde les annotations sous forme JSON dans human\_data/manual/,
+\item Affiche les 18 classes du projet, avec descriptions pour aider l'utilisateur,
+\item Permet de sélectionner les boîtes à conserver, puis de lancer un nettoyage de l'image,
+\item Les annotations validées par l administrateur sont envoyées dans fine\_tune\_data/ avec l'image correspondante.
+\end{itemize}
+
+\section{Gestion de feedback utilisateur}
+
+Un système de feedback a été intégré :
+\begin{itemize}
+\item Si la prédiction est bonne → l'utilisateur la valide et elle sera ensuite controler par l administrateur pour qu il confirme un second fois la validite de la prediction . 
+
+\item Si elle est  maivaise → l'utilisateur la modifie manuellement l anotation et elle sera ensuite controler par l administrateur pour qu il confirme un second fois la validite de l annotation  .
+\item cela constituera un data de plus pour reentrainer notre model .
+
+\end{itemize}
+
+\chapter{ Détection d'objets : Modélisation et Fine-Tuning}
+
+\section{Choix du modèle de détection}
+
+Plusieurs architectures de détection d'objets ont été envisagées, notamment :
+\begin{itemize}
+\item YOLOv5 (rapide, mais moins adapté aux zones longues et étroites comme un header)
+\item SSD MobileNet (léger mais imprécis sur les petites zones)
+\item Faster R-CNN (meilleure précision pour des zones complexes, même si plus lent)
+\end{itemize}
+
+✅ Nous avons finalement choisi Faster R-CNN avec ResNet-50 comme backbone via Detectron2, pour les raisons suivantes :
+\begin{itemize}
+\item Très bonne précision sur des données complexes,
+\item Support natif du format COCO,
+\item Facilité de fine-tuning via cfg.merge\_from\_file(),
+\item Possibilité de reprendre un modèle pré-entraîné et l'adapter à nos classes.
+\end{itemize}
+
+\section{Entraînement initial}
+
+L'entraînement initial a été réalisé sur les annotations manuelles issues de Roboflow, avec :
+\begin{itemize}
+\item 100 images (split 80/20),
+\item augmentation de données basique (flip, blur),
+\item 1500 itérations,
+\item Base-RCNN-FPN de Detectron2 comme configuration de départ.
+\end{itemize}
+
+L'apprentissage s'est fait en local sur GPU (NVIDIA RTX 3060), avec un environnement Anaconda configuré pour CUDA 11.3.
+
+\section{Métriques obtenues}
+
+Après entraînement, le modèle obtenait :
+\begin{itemize}
+\item mAP (mean Average Precision) à 53.2 \% (IOU > 0.5),
+\item IoU moyen par classe :
+\begin{itemize}
+\item title → 72 \%
+\item footer → 55 \%
+\item ads → 38 \% (souvent confondu avec sidebar)
+\item media → 63 \%
+\item content → 69 \%
+\item sidebar → 46 \%
+\end{itemize}
+\item Perte finale (loss total) : 0.98
+\end{itemize}
+
+Ces résultats ont été jugés satisfaisants pour un modèle de première génération, mais appelaient à un second entraînement.
+
+\section{Intégration dans l'application}
+
+Une fois entraîné, le modèle a été :
+\begin{itemize}
+\item exporté au format .pth (fichier de poids),
+\item intégré dans l'application Flask via une fonction predict\_boxes(image\_path),
+\item utilisé pour générer des prédictions affichées à l'utilisateur.
+\end{itemize}
+
+Le système offre une visualisation directe sur l'image, avec les boîtes colorées et leur label.
+
+\section{Fine-Tuning progressif via feedback}
+
+L'application propose une amélioration continue via le retour utilisateur :
+\begin{itemize}
+\item Lorsque le modèle est validé → l'image + prédiction vont dans model/.
+\item Ces éléments sont utilisés pour constituer un nouveau jeu d'entraînement.
+\item Un script fintune.py permet de relancer automatiquement un entraînement sur ce dataset étendu.
+\end{itemize}
+
+Ce fine-tuning incrémental est crucial pour améliorer la robustesse du modèle sur des cas réels, annotés par des humains.
+
+\section{Difficultés rencontrées}
+
+\begin{itemize}
+\item Problèmes de résolution extrême (certaines images > 9000 px de haut),
+\item Trop de boîtes détectées → surcharge visuelle → besoin de filtrage par confiance,
+\item Confusions fréquentes entre sidebar et ads,
+\item Problèmes de convergence si trop peu de nouvelles images annotées.
+\end{itemize}
+
+\chapter{�� Intégration OCR et extraction de texte ciblée}
+
+\section{Objectif}
+
+Une fois les zones pertinentes détectées dans l'image, il devient indispensable d'en extraire le contenu textuel, afin d'activer des fonctions de résumé, question-réponse, traduction, etc.
+
+Le module OCR a donc pour but :
+\begin{itemize}
+\item de segmenter l'image selon les zones gardées par l'utilisateur,
+\item d'y appliquer un système de reconnaissance optique des caractères,
+\item de stocker le texte extrait pour un traitement NLP ultérieur.
+\end{itemize}
+
+\section{Choix de PaddleOCR}
+
+Parmi les moteurs OCR testés :
+\begin{itemize}
+\item Tesseract OCR : rapide, mais résultats bruts et faible robustesse sur les textes superposés à des images,
+\item EasyOCR : compatible multilingue mais moins précis,
+\item ✅ PaddleOCR : excellent compromis entre précision, vitesse, et support multilingue.
+\end{itemize}
+
+Nous avons donc choisi PaddleOCR (modèle PP-OCRv3), intégré dans notre backend via paddleocr.OCR.
+
+\section{Pipeline d'extraction OCR}
+
+Voici les étapes de traitement :
+\begin{enumerate}
+\item Le modèle de détection d'objets propose des boîtes (predict\_boxes()).
+\item L'utilisateur choisit les boîtes à garder (manuellement ou via validation automatique).
+\item L'image est découpée verticalement selon ces boîtes via cv2 (OpenCV).
+\item Chaque sous-image passe dans le pipeline PaddleOCR.
+\item Le texte est récupéré, nettoyé (clean\_ocr\_text), segmenté par bloc.
+\item L'ensemble est stocké dans un dictionnaire capture\_id → list[text\_block].
+\end{enumerate}
+
+⚠️ Tous les textes OCR sont temporairement sauvegardés en RAM ; aucune écriture locale n'est effectuée par défaut.
+
+\section{Optimisations appliquées}
+
+\begin{itemize}
+\item Découpe précise avec ajustement des boîtes en pixels (évite de couper des mots).
+\item Filtrage des boîtes OCR trop petites (probabilité basse ou taille < seuil).
+\item Pré-traitement des sous-images avec des filtres de contraste, binarisation, redressement.
+\item Découpe sans redimensionnement pour préserver la fidélité des proportions.
+\end{itemize}
+
+\section{Problèmes rencontrés}
+
+\begin{itemize}
+\item Certaines boîtes contiennent peu ou pas de texte → bruit OCR inutile.
+\item L'ordre de lecture peut être inversé si les boîtes sont désordonnées (géré par tri y1 croissant).
+\item Caractères spéciaux ou logos parfois mal interprétés (non-texte détecté).
+\item Détection de texte en plusieurs lignes mal segmentée (corrigé via heuristiques sur la hauteur).
+\end{itemize}
+
+\section{Exemple de sortie (simplifiée)}
+
+\begin{lstlisting}[language=Python]
+{
+  "capture_37a.png": [
+    "Breaking News: AI Revolutionizes Web Scraping",
+    "Published on June 2025 by ENSAM Meknes",
+    "SmartWebScraper-CV combines OCR, NLP and CV to extract insights."
+  ]
+}
+\end{lstlisting}
+
+Cette sortie est ensuite transmise au module NLP pour analyse, résumé, QA ou toute autre interaction.
+
+\chapter{Traitement NLP des textes extraits}
+
+\section{Objectif du module NLP}
+
+Le texte extrait par OCR est soumis à un pipeline nommé \textbf{CompleteOCRQASystem}.  
+Celui-ci doit :
+
+\begin{itemize}
+  \item nettoyer et normaliser le texte de manière robuste\,;
+  \item indexer \underline{l’intégralité} du contenu (principe de préservation à 100~\%) pour ne rien perdre d’information\,;
+  \item produire à la demande : résumé, sujets dominants, mots-clés, réponses à des questions spécifiques, et contexte complet pour d’éventuels LLM externes.
+\end{itemize}
+
+Le module repose principalement sur \texttt{NLTK}, \texttt{spaCy}, \texttt{Scikit-learn} (TF–IDF, KMeans), \texttt{Gensim} (Word2Vec) et de petites heuristiques Python. Les appels vers des modèles LLM (Gemini, Mistral) sont optionnels : ils ne sont sollicités que si le contexte dépasse la capacité locale ou si la requête est jugée « complexe ».
+
+\section{Étapes de traitement}
+
+\subsection{Nettoyage et pré-traitement}
+
+Une classe \texttt{TextCleaner} effectue :
+
+\begin{itemize}
+  \item corrections d’erreurs OCR fréquentes par expressions régulières pré-compilées\footnote{ex.~: \texttt{rn} $\rightarrow$ \texttt{m}, \texttt{vv} $\rightarrow$ \texttt{w}}\,;
+  \item passage en minuscules, suppression ponctuation / caractères spéciaux\,;
+  \item filtrage de mots isolés et des \emph{stop-words} (français ou anglais)\,;
+  \item lemmatisation légère si nécessaire.
+\end{itemize}
+
+Ce nettoyage précède systématiquement toute autre opération, sauf dans le cas d’un envoi direct du « plein contexte » à un LLM externe. :contentReference[oaicite:0]{index=0}
+
+\subsection{Segmentation en phrases}
+
+La segmentation utilise \verb|nltk.sent_tokenize| ; un filtre vectorisé écarte les phrases trop courtes / trop longues ou sans contenu alphanumérique pertinent. :contentReference[oaicite:1]{index=1}
+
+\subsection{Indexation et principe de préservation}
+
+\begin{itemize}
+  \item \textbf{Préservation~:} l’ensemble des phrases propres est conservé en mémoire.  
+        Un échantillon réduit (≤400 phrases) n’est créé qu’\emph{pour} la vectorisation TF–IDF quand le corpus est volumineux ; cela économise RAM / CPU tout en gardant le texte intégral accessible. :contentReference[oaicite:2]{index=2}
+  \item \textbf{Vectorisation~:} TF–IDF (\texttt{TfidfVectorizer}) + \texttt{Word2Vec} léger (5 époques max, 100 dimensions).  
+        Les vecteurs TF–IDF alimentent ensuite :  
+        \emph{(i)} un clustering KMeans adaptatif pour dériver 3–5 phrases représentatives (sujets dominants) ;  
+        \emph{(ii)} un système de similarité cosine pour la recherche de réponses. :contentReference[oaicite:3]{index=3}
+  \item \textbf{Entités nommées~:} extraction NER avec \texttt{spaCy}\footnote{Modèle \texttt{fr\_core\_news\_sm}.}. Les entités DATE, ORG, PERSON servent à affiner certaines réponses prédéfinies. :contentReference[oaicite:4]{index=4}
+\end{itemize}
+
+\section{Résumé automatique}
+
+Une fonction \verb|generate_summary_from| classe les phrases par score TF–IDF, pénalise les phrases trop courtes / trop longues et retient au plus 8–10 phrases.  
+Cette méthode est purement \emph{extractive}.  
+Si la question contient un mot-clé « résume(r) », elle est appelée automatiquement. :contentReference[oaicite:5]{index=5}
+
+\section{Détection de sujets et mots-clés}
+
+\begin{itemize}
+  \item \textbf{Sujets} : KMeans sur les vecteurs TF–IDF (échantillon), sélection de la phrase la plus représentative de chaque cluster ; affichage des 3 premiers sujets.  
+  \item \textbf{Mots-clés} : fréquence brute des tokens nettoyés (hors stop-words), top-20. :contentReference[oaicite:6]{index=6}
+\end{itemize}
+
+\section{Système Question-Réponse local}
+
+\begin{enumerate}
+  \item Détection rapide d’intention par mots-clés (\textit{résume}, \textit{quoi}, \textit{date}, \textit{titre}, etc.).  
+  \item Recherche de phrases pertinentes : similarité cosine entre la question et les vecteurs TF–IDF des phrases indexées, seuil adaptatif.  
+  \item Bonus heuristique : inclusion de phrases contenant ≥2 mots communs avec la question pour enrichir la réponse.  
+  \item Si aucune information locale n’est jugée suffisante, le contexte complet peut être fourni à un LLM externe (fonction \verb|get_full_context_for_llm|). :contentReference[oaicite:7]{index=7}
+\end{enumerate}
+
+\section{Appel optionnel aux LLM}
+
+Deux routes Flask distinctes déclenchent un grand modèle de langage :
+
+\begin{description}
+  \item[Mistral local (\texttt{/user/question\_local\_llm/\textless capture\_id\textgreater})]%
+        \begin{itemize}
+          \item Requêtes HTTP \verb|POST| vers \url{http://localhost:11434/api/chat} exposé par \emph{Ollama}.  
+          \item Paramètre \verb|"model": "mistral"| ; retour JSON directement exploité.
+          \item Fonctionne hors-ligne ; latence faible (pas de transit réseau).  
+          \item Le prompt inclut : \verb|Réponds en français :| pour garantir la langue.
+        \end{itemize}
+
+  \item[Gemini – API Google (\texttt{/user/question\_chatgpt/\textless capture\_id\textgreater})]%
+        \begin{itemize}
+          \item Appel REST sur l’endpoint \texttt{gemini-2.0-flash:generateContent}.  
+          \item Nécessite la variable d’environnement \verb|GEMINI_API_KEY| (\textbf{contrôle d’accès côté serveur}).  
+          \item Même prompt que pour Mistral ; réponse insérée telle quelle dans l’interface.  
+          \item Si la clé est absente ou la connexion échoue, un message d’erreur est renvoyé à l’utilisateur.
+        \end{itemize}
+\end{description}
+
+\textbf{Choix du moteur :} il n’est pas automatique ; l’utilisateur emprunte l’une ou l’autre route (bouton ou URL).  
+Dans les deux cas, le texte extrait par OCR est pré-servé en cache, concaténé, puis envoyé au LLM sans troncature supplémentaire (le modèle gère la longueur ou renvoie une erreur s’il est saturé).  
+L’interface Flask ne fait apparaître aucune différence visuelle ; seule la latence peut varier légèrement (Gemini dépendant du réseau).%
+
+
+\section{Modes CPU et optimisation}
+
+Un mode « CPU » limite la hauteur d’image, réduit le nombre de traits TF–IDF, diminue les itérations de KMeans et entraîne Word2Vec sur un échantillon restreint ; l’utilisateur peut ainsi traiter de grandes captures sur des machines modestes sans sacrifier la couverture du texte. :contentReference[oaicite:8]{index=8}
+
+
+
+\chapter{ Architecture de l'application Flask}
+
+\section{Structure générale}
+
+L'application SmartWebScraper-CV est une application Flask modulaire construite autour de plusieurs dossiers fonctionnels :
+
+\begin{lstlisting}
+SmartWebScraper-CV/
+│
+├── app/
+│   ├── routes/              # Toutes les routes Flask (logique métier)
+│   ├── utils/               # Fonctions de traitement : OCR, NLP, nettoyage, etc.
+│   ├── models/              # Modèles entraînés (Detectron2, Word2Vec…)
+│   ├── templates/           # Templates HTML (Jinja2)
+│
+├── data/                    # Données utilisateurs et annotations
+│   ├── originals/
+│   ├── annotated/
+│   ├── human_data/
+│   ├── fine_tune_data/
+│   └── suppression/
+│
+├── run.py                   # Point d'entrée principal
+└── requirements.txt         # Dépendances Python
+\end{lstlisting}
+
+Cette structure respecte les bonnes pratiques d'un projet Flask professionnel : séparation des responsabilités, modularité, clarté.
+
+\section{Composants principaux}
+
+\begin{longtable}{|p{3cm}|p{10cm}|}
+\hline
+\textbf{Composant} & \textbf{Description} \\
+\hline
+routes.py & Centralise toutes les routes : capture, annotation, feedback, NLP, admin \\
+\hline
+nlp\_module.py & Module complet de traitement de texte, résumé, QA, vectorisation \\
+\hline
+fintune.py & Script d'entraînement automatique (Detectron2) à partir des données validées \\
+\hline
+capture.py & Gère la capture de site web avec Playwright (image PNG) \\
+\hline
+ocr\_utils.py & Contient PaddleOCR et segmentation des zones \\
+\hline
+\end{longtable}
+
+\section{Rôles et logique conditionnelle}
+
+\subsection{Utilisateur}
+
+\begin{itemize}
+\item Accès à la page d'accueil
+\item Soumission d'un lien → screenshot
+\item Affichage de l'image annotée
+\item Choix des zones à supprimer ou interroger (OCR + NLP ou LLM)
+\item Option d'annotation manuelle si prédiction incorrecte
+\end{itemize}
+
+\subsection{Administrateur}
+
+\begin{itemize}
+\item Connexion via identifiants (email/mot de passe)
+\item Tableau de bord de validation :
+\begin{itemize}
+\item Accepter ou refuser des annotations utilisateur et du model
+\item voir l historique de l app 
+\item Lancer le fine-tuning
+\item Gérer les datasets (clean, move, backup)
+\end{itemize}
+\item Accès à des pages conditionnelles selon l'état d'annotation ou validation
+\item Visualisation des performances modèles
+\end{itemize}
+
+\section{Navigation fluide}
+
+Grâce à une gestion centralisée des routes et des redirections :
+\begin{itemize}
+\item L'utilisateur ne peut jamais accéder à une page qui ne correspond pas à son contexte actuel (ex. : feedback sans capture).
+\item Les retours en arrière sont gérés proprement avec des boutons dédiés.
+\item Les étapes de validation ou d'annotation sont linéaires, sans boucle inutile.
+\end{itemize}
+
+\section{Interfaces personnalisées}
+
+\begin{itemize}
+\item L'interface utilisateur d'annotation utilise HTML5 Canvas (dessin de boîtes),
+\item La sélection des boîtes à conserver s'effectue via des checkboxes avec nom de classe,
+\item Tous les résultats NLP (résumé, QA, etc.) sont affichés dynamiquement dans une zone de texte,
+\item Les erreurs (pas de texte OCR, questions non traitables) sont gérées proprement côté Flask.
+\end{itemize}
+\includegraphics[width=0.8\textwidth]{flow.png}
+
+\chapter{⚠️ Problèmes rencontrés et solutions techniques}
+
+\section{Problèmes liés à la capture d'écran}
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{6cm}|}
+\hline
+\textbf{Problème} & \textbf{Description} & \textbf{Solution apportée} \\
+\hline
+Résolution excessive & Certaines pages web dépassaient 9000 px de hauteur & Fenêtre fixée (1280 x 10000 max) + scroll automatique par Playwright \\
+\hline
+Scroll incomplet & Playwright ne scrollait pas tout le contenu & Fonction scroll\_smooth() implémentée avec time.sleep(3) et evaluate() \\
+\hline
+Contenu dynamique (JS) & Certains éléments se chargeaient après scroll & Ajout d'un wait\_for\_timeout() après le scroll pour s'assurer du rendu final \\
+\hline
+Erreur 429 & Bloquage Google pour scraping trop fréquent & Passage à undetected\_chromedriver ou Playwright stealth mode \\
+\hline
+\end{longtable}
+
+\section{Problèmes liés à la détection automatique}
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{6cm}|}
+\hline
+\textbf{Problème} & \textbf{Cause} & \textbf{Solution} \\
+\hline
+Confusion entre classes ads et sidebar & Similarité visuelle & Ajout de contexte via largeur et position relative dans l'image \\
+\hline
+Mauvais alignement des boîtes & Résolution variable des images & Passage à un modèle entraîné sans redimensionnement \\
+\hline
+Résultats trop nombreux & Trop de fausses positives & Seuil de confiance minimum fixé à 0.4 \\
+\hline
+\end{longtable}
+
+\section{Problèmes liés à l'OCR}
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{6cm}|}
+\hline
+\textbf{Problème} & \textbf{Impact} & \textbf{Correction} \\
+\hline
+Texte illisible & OCR vide ou faux & Application de filtres : binarisation, contraste \\
+\hline
+Mauvaise découpe & texte tronqué & Correction automatique des bords des boîtes avec +padding \\
+\hline
+Ordre incohérent & Lecture dans le désordre & Tri des boîtes OCR par y1 (top position) \\
+\hline
+\end{longtable}
+
+\section{Problèmes liés au NLP}
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{6cm}|}
+\hline
+\textbf{Problème} & \textbf{Détail} & \textbf{Solution} \\
+\hline
+Résumé non pertinent & Mots vides en entrée & Nettoyage poussé avant traitement \\
+\hline
+Mauvaise réponse QA & Question mal classée & Classification automatique avec heuristiques TF-IDF + logique \\
+\hline
+Réponse vide & Pas de texte OCR extrait & Message explicite affiché à l'utilisateur + redirection vers page d'annotation \\
+\hline
+\end{longtable}
+
+\section{Problèmes côté utilisateur}
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{6cm}|}
+\hline
+\textbf{Problème} & \textbf{Type} & \textbf{Correction} \\
+\hline
+Feedback oublié & L'utilisateur quitte avant de valider & Ajout d'un blocage conditionnel avec message "Veuillez valider votre choix" \\
+\hline
+Navigation cassée & Retour arrière non géré & Redirection automatique à la bonne étape (via session Flask) \\
+\hline
+Annotation difficile & UI trop chargée & Refonte UI + mode manuel simplifié avec un seul outil rectangle \\
+\hline
+\end{longtable}
+
+\section{Problèmes côté administrateur}
+
+\begin{longtable}{|p{3cm}|p{5cm}|p{6cm}|}
+\hline
+\textbf{Problème} & \textbf{Description} & \textbf{Correction} \\
+\hline
+Confusion entre données validées et brutes & Chevauchement model/ vs human\_data/ & Séparation stricte des chemins + renommage explicite \\
+\hline
+Perte d'image après annotation & Mauvaise sauvegarde & Ajout de os.makedirs() + shutil.copy2() avec try/except \\
+\hline
+Fine-tuning impossible si trop peu d'images & Échec silencieux & Affichage d'un message d'erreur + vérification du nombre minimal avant lancement \\
+\hline
+\end{longtable}
+
+\chapter{�� Résultats finaux et évaluation des performances}
+
+\section{Évolution du dataset}
+
+Au départ, notre dataset contenait :
+\begin{itemize}
+\item 11 images annotées manuellement sur Roboflow,
+\end{itemize}
+
+Puis progressivement :
+\begin{itemize}
+\item annoté 200 images avec des classes web : header, footer, ads, media, sidebar, etc.
+\end{itemize}
+
+Le passage par annotation manuelle + prédictions filtrées a permis d'obtenir un COCO dataset robuste à partir des données utilisateur.
+
+\section{Fine-tuning du modèle}
+
+Nous avons entraîné plusieurs variantes :
+
+\begin{longtable}{|p{2.5cm}|p{1.5cm}|p{2cm}|p{1.5cm}|p{2cm}|p{1.5cm}|p{3cm}|}
+\hline
+\textbf{Modèle} & \textbf{Base} & \textbf{Type} & \textbf{Données} & \textbf{Résolution} & \textbf{AP (IoU>0.5)} & \textbf{Remarques} \\
+\hline
+faster_rcnn_R_50_DC5_3x avec 61M de parametres & COCO & faster_rcnn & 11 img & taille exacte  & ~10\% & taille exacte ; entrainer sur 1000 iteration \\
+\hline
+faster_rcnn_R_50_FPN_3x avec 41M  & COCO  & faster_rcnn & 200 img & 1553X3000 & ~41\% & taille exacte et priorise la précision + légèreté + efficacité ; entrainer sur 10000 \\
+
+\hline
+\end{longtable}
+
+Le modèle final sélectionné est un faster_rcnn_R_50_FPN_3x modifié (Detectron2) entraîné en local sur les images decouper pour éviter les problèmes d'alignement entre prédictions .
+
+\section{Évaluation des performances}
+
+Notre model de tetection final  nous donne  : \\
+
+\begin{center}
+\begin{tabular}{cccccc}
+\toprule
+\textbf{AP} & \textbf{AP50} & \textbf{AP75} & \textbf{APs} & \textbf{APm} & \textbf{APl} \\
+\midrule
+41.629 & 58.162 & 46.123 & nan & 20.150 & 45.339 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\texttt{[06/05 23:36:26 d2.evaluation.coco\_evaluation]} : Certaines métriques ne peuvent pas être calculées et apparaissent comme \texttt{NaN}.\\
+
+\vspace{0.5cm}
+
+\texttt{[06/05 23:36:26 d2.evaluation.coco\_evaluation]} : \textbf{AP par catégorie (bbox)} :
+
+\begin{longtable}{|l|c|l|c|l|c|}
+\hline
+\textbf{Catégorie} & \textbf{AP} & \textbf{Catégorie} & \textbf{AP} & \textbf{Catégorie} & \textbf{AP} \\
+\hline
+header & nan & advertisement & 16.211 & chaine & 80.000 \\
+commentaire & 0.169 & description & 80.000 & footer & 43.996 \\
+header & 63.601 & left sidebar & 49.498 & likes & 30.000 \\
+logo & 27.321 & media & 63.313 & none access & nan \\
+other & 90.000 & pop up & 55.339 & recommendations & 0.000 \\
+right sidebar & 52.256 & suggestions & 18.713 & title & 37.284 \\
+vues & 0.000 & & & & \\
+\hline
+\end{longtable}
+Les metric AP sont aceptable en global mais lorsque on ragarde lAP par classe on se rend compte que le model n est pas assez robuste sur beaucoup de class et en confond certain . cela s explique en majouriter par la petitesse de dataset pour un assez grand nombre de classe (18+1background)
+
+\begin{longtable}{|p{4cm}|p{4cm}|p{6cm}|}
+\hline
+\textbf{Module} & \textbf{Métrique} & \textbf{Score} \\
+\hline
+Détection d'objet & mAP : 20.150 & 41 \% \\
+
+\hline
+QA (Model temps de reponse ) & temps de réponse correcte & 5seconde a 1minute selon la taille de l image  \\
+
+
+\hline
+OCR (PaddleOCR) & Taux d'extraction correcte & > 90 \% sur zones textuelles nettes \\
+\hline
+Résumé (BART) & Pertinence subjectif (unique pour effectuer des resumer ) & Bonne (résumés concis et cohérents) \\
+\hline
+QA (Gemini/Mistral) & Taux de réponse correcte & 85–95 \% selon complexité \\
+\hline
+QA (Gemini temps de reponse ) & temps de réponse correcte & 5seconde - 1 minute selon la taille du texte et la question  \\
+
+QA (Mistral temps de reponse ) & temps de réponse mauvais  & 20 - 50 minute selon la taille du texte et la question en raison de l utilisation de cpu   \\
+
+
+\hline
+Temps moyen traitement (1 page) & Capture + détection + OCR + NLP & 4–6 sec en local \\
+\hline
+Satisfaction utilisateur (tests internes) & 4,6/5 & Interfaces claires, retours positifs \\
+\hline
+\end{longtable}
+
+
+\chapter{ Public cible et cas d'usage visés}
+
+\section{Public cible}
+
+Ce projet a été conçu pour répondre aux besoins de différents types d'utilisateurs, allant des chercheurs aux professionnels du web, en passant par les data scientists. On identifie trois grands profils principaux :
+
+\subsection{Utilisateur académique / étudiant}
+
+\begin{itemize}
+\item Souhaite extraire et analyser le contenu d'un grand nombre de pages web.
+\item Utilise l'application pour effectuer un résumé automatique, interroger une page, ou construire un corpus pour NLP.
+\item Bénéficie d'un système sans code, prêt à l'emploi, rapide.
+\end{itemize}
+
+\subsection{Web analyst / UX designer}
+
+\begin{itemize}
+\item Analyse les structures des pages web (répartition header/footer/ads) à partir de captures réelles.
+\item Utilise les annotations pour améliorer le design UX ou détecter les zones envahissantes (ads par exemple).
+\item Peut télécharger les images annotées ou traiter par lots.
+\end{itemize}
+
+\subsection{Développeur en Computer Vision / IA}
+
+\begin{itemize}
+\item Utilise la plateforme pour constituer un dataset réel de pages web annotées.
+\item Fait évoluer le modèle (Detectron2) avec des images validées par feedback humain.
+\item Teste des modules OCR, NLP et fine-tuning en environnement intégré.
+\end{itemize}
+
+\section{Cas d'usage possibles}
+
+\begin{longtable}{|p{5cm}|p{9cm}|}
+\hline
+\textbf{Cas d'usage} & \textbf{Description} \\
+\hline
+Détection automatique de zones nuisibles & Supprimer automatiquement les publicités ou pop-ups d'une page \\
+\hline
+Création d'un dataset COCO web & Extraire des milliers d'annotations de zones (headers, content, ads…) \\
+\hline
+Résumé ou interrogation de documents web & Générer automatiquement un résumé ou répondre à une question sur une page \\
+\hline
+Extraction OCR contextualisée & Capturer une zone (ex. : article, image), extraire le texte, et l'utiliser pour une tâche NLP \\
+\hline
+Annotation manuelle intelligente & Permet à un annotateur humain de corriger les erreurs du modèle en quelques clics \\
+\hline
+Prétraitement de données pour recherche en IA & Pipeline complet pour préparer des données d'entraînement dans des projets de recherche \\
+\hline
+\end{longtable}
+
+\section{Points forts de l'application}
+
+\begin{itemize}
+\item \textbf{Multimodale} : vision + texte + interaction
+\item \textbf{Accessible} : pas besoin de configuration lourde ou cloud payant
+\item \textbf{Extensible} : ajout facile de nouveaux modèles (YOLO, Tesseract, etc.)
+\item \textbf{Personnalisable} : architecture modulaire Flask, tous les composants sont modifiables
+\item \textbf{Feedback loop intégrée} : l'utilisateur améliore progressivement le modèle
+\end{itemize}
+
+\chapter{�� Perspectives d'amélioration et évolutions futures}
+
+\section{Améliorations prévues côté administrateur (intégrées en fin de projet)}
+
+Durant les dernières semaines du projet, plusieurs fonctionnalités ont été pensées puis ajoutées dans l'espace administrateur :
+
+\begin{longtable}{|p{4cm}|p{5cm}|p{5cm}|}
+\hline
+\textbf{Fonctionnalité} & \textbf{Objectif} & \textbf{Implémentation} \\
+\hline
+Visualisation directe des annotations & Vérifier rapidement les prédictions & Affichage image + JSON converti en overlay interactif \\
+\hline
+Validation manuelle avancée & Sélectionner les boîtes à conserver & Interface de filtrage + suppression ciblée \\
+\hline
+Lancement de fine-tuning automatisé & Réentraîner le modèle avec un clic & Route dédiée POST /fine\_tune\_model \\
+\hline
+Téléchargement JSON/Image & Récupération locale des annotations & Génération dynamique de fichiers via Flask \\
+\hline
+Tri et archivage & Éviter la surcharge du dataset principal & Système de répertoire human\_data → fine\_tune\_data automatique après validation \\
+\hline
+\end{longtable}
+
+\section{Possibilités techniques non encore intégrées (mais prévues)}
+
+\begin{itemize}
+\item Ajout d'un système d'authentification OAuth2 ou JWT pour une application multi-utilisateur sécurisée.
+\item Système de feedback dynamique basé sur les performances des modèles (si erreur fréquente sur une classe, retour au fine-tuning).
+\item Dashboard avec graphiques en temps réel sur l'évolution des classes, la qualité des annotations, la précision du modèle (via Plotly ou Dash).
+\item Upload d'images manuelles par l'utilisateur, pour annoter sans passer par une URL.
+\item API REST publique pour soumettre des images ou récupérer les prédictions sans passer par l'interface graphique.
+\end{itemize}
+
+\section{Intégration d'un apprentissage par renforcement (Reinforcement Learning)}
+
+Idée proposée : utiliser l'évaluation humaine (feedback) comme signal de récompense pour ajuster le modèle.
+
+\begin{longtable}{|p{3cm}|p{11cm}|}
+\hline
+\textbf{Élément} & \textbf{Détail} \\
+\hline
+Environnement & Ensemble des images web avec leurs structures \\
+\hline
+Agent & Le modèle de détection (Detectron2) \\
+\hline
+Action & Prédiction d'une boîte (bbox, label) \\
+\hline
+Récompense & +1 si validée par l'utilisateur, -1 si rejetée \\
+\hline
+Politique & S'ajuste à chaque boucle de validation par les humains \\
+\hline
+\end{longtable}
+
+Ce type de boucle pourrait être implémenté en ajoutant un buffer de replay, ou en s'inspirant des approches comme RLHF (Reinforcement Learning with Human Feedback) appliquées aux LLM. Cela transformerait le système en modèle adaptatif auto-amélioré.
+
+\section{Évolution vers un SaaS en ligne}
+
+Ce projet peut aisément devenir :
+\begin{itemize}
+\item un outil d'annotation web en ligne (comme Labelbox ou Roboflow),
+\item une solution de nettoyage intelligent de page (pour accessibilité ou analyse UX),
+\item un plugin de browser pour résumer ou interroger une page à la volée.
+\end{itemize}
+
+Un futur déploiement via Docker + Cloud (GCP, Azure ou Oracle Free Tier) est possible, avec hébergement des modèles en local ou via API.
+
+\chapter{�� Conclusion générale du projet}
+
+\section{Résumé global}
+
+Ce projet, initié comme une simple tentative de scraping web, a rapidement évolué vers une solution complète de traitement multimodal, combinant :
+\begin{itemize}
+\item Computer Vision pour l'analyse visuelle des pages web,
+\item OCR pour l'extraction précise de texte à partir d'images capturées,
+\item NLP pour la compréhension, le résumé et l'interaction avec le contenu,
+\item LLMs (Gemini via API, Mistral via Ollama) pour renforcer l'intelligence de l'interface,
+\item une architecture web robuste en Flask, entièrement modulaire et extensible,
+\item un pipeline complet d'acquisition, annotation, validation et fine-tuning automatique.
+\end{itemize}
+
+\section{Difficultés majeures surmontées}
+
+Tout au long de ce projet, nous avons été confrontés à des problèmes variés :
+scroll incomplet, erreurs d'alignement des boîtes, mauvaise qualité OCR, stockage désorganisé, etc.
+
+Chaque obstacle a été documenté, testé et résolu, renforçant ainsi notre compréhension technique mais aussi notre capacité à concevoir un système fiable et évolutif.
+
+\section{Portée pédagogique}
+
+En plus des résultats obtenus, ce projet a été un terrain d'apprentissage exceptionnel, nous amenant à :
+\begin{itemize}
+\item manipuler des modèles avancés de CV comme Faster R-CNN,
+\item comprendre les limites des LLMs et comment les intégrer proprement à une chaîne NLP,
+\item créer un jeu complet de données annotées à partir de captures web,
+\item construire une application Flask complexe avec logique multi-rôle (utilisateur/admin),
+\item et surtout, apprendre à gérer un projet IA de bout en bout, dans des conditions proches du réel.
+\end{itemize}
+
+\section{Bilan}
+
+Nous avons pu démontrer qu'il est possible de créer un système intelligent, complet, intuitif et réentraînable basé sur l'annotation visuelle du web.
+
+Ce travail peut maintenant servir de base pour des projets encore plus avancés dans les domaines de l'accessibilité, de l'UX, de la data intelligence ou même de la gouvernance numérique.
+
+\end{document}
