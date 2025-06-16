@@ -136,6 +136,7 @@ Table des Matières
    
    usage/public
    usage/cas_usage
+   usage/workflow
    usage/perspectives
 
 .. toctree::
