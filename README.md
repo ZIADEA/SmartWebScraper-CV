@@ -1,3 +1,5 @@
+## READTHEDOC
+https://smartwebscraper-cv.readthedocs.io/fr/latest/
 ## 🚀 Installation Rapide
 
 ### Prérequis
