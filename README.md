@@ -1,5 +1,10 @@
-## READTHEDOC
-https://smartwebscraper-cv.readthedocs.io/fr/latest/
+## 🎥 Demo
+
+Découvrez une démonstration complète de l'application **SmartWebScraper-CV** en action :
+
+[![Watch the demo](https://img.youtube.com/vi/TIGsxCHhcps/0.jpg)](https://youtu.be/TIGsxCHhcps)
+
+
 ## 🚀 Installation Rapide
 
 ### Prérequis
